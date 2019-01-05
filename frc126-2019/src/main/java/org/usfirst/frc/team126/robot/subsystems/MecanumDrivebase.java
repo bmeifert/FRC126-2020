@@ -19,8 +19,6 @@ public class MecanumDrivebase extends Subsystem {
 		setDefaultCommand(new DriveWithJoysticks());
 	}
 	public void Drive(double fb, double rot, double genmult) { /** Coefficient Drive Base by Keith Meifert **/
-		fb = fb * RobotMap.fbinversion;
-		rot = rot * RobotMap.rotinversion;
 		frontLeftMultiplier = fb + rot;
 		frontRightMultiplier = fb - rot;
 		frontLeftMultiplier = frontLeftMultiplier * genmult; // Set general speed multiplier

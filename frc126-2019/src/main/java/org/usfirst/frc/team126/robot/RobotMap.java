@@ -1,24 +1,23 @@
 package org.usfirst.frc.team126.robot;
 
 /**
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		   _      ___      ____    
-		 /' \   /'___`\   /'___\   
-		/\_, \ /\_\ /\ \ /\ \__/   
-		\/_/\ \\/_/// /__\ \  _``\ 
-		   \ \ \  // /_\ \\ \ \L\ \
-		    \ \_\/\______/ \ \____/
-		     \/_/\/_____/   \/___/ 
-	
-	>>>[Minimal 2018 legacy]<<<
 
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-	
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+	   _      ___      ____    
+	 /' \   /'___`\   /'___\   
+	/\_, \ /\_\ /\ \ /\ \__/   
+	\/_/\ \\/_/// /__\ \  _``\ 
+	   \ \ \  // /_\ \\ \ \L\ \
+	    \ \_\/\______/ \ \____/
+		 \/_/\/_____/   \/___/ 
+                               
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 **/
 public class RobotMap {
 
 	// Controls
-	public static int contLR = 0; // Left stick Y
+	public static int contLR = 0; // Axis 0 (Stick 1 X) > Rotation
 	
 	// Motor IDs
 	public static int frontLeft = 2;
@@ -29,7 +28,4 @@ public class RobotMap {
 	public static int blinversion = 1;
 	public static int frinversion = 1;
 	public static int brinversion = 1;
-	public static int fbinversion = 1;
-	public static int lrinversion = 1;
-	public static int rotinversion = 1;
 }
