@@ -2,13 +2,8 @@ package org.usfirst.frc.team126.robot.commands;
 
 import org.usfirst.frc.team126.robot.Robot;
 import org.usfirst.frc.team126.robot.RobotMap;
-import org.usfirst.frc.team126.robot.subsystems.*;
-
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.command.Command;
-/**
- *
- */
+
 public class DriveWithJoysticks extends Command {
 	double rot;
 	boolean xboxLT, xboxRT, xboxRS, xboxLS, camMode, enabled;
