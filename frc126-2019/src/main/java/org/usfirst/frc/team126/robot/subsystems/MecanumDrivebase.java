@@ -3,14 +3,9 @@ package org.usfirst.frc.team126.robot.subsystems;
 import org.usfirst.frc.team126.robot.Robot;
 import org.usfirst.frc.team126.robot.RobotMap;
 import org.usfirst.frc.team126.robot.commands.DriveWithJoysticks;
-
 // import com.ctre.phoenix.motorcontrol.ControlMode;
-
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-/**
- * climberMotor.set(ControlMode.PercentOutput,0.0); 
- */
 public class MecanumDrivebase extends Subsystem {
 
 	double frontLeftMultiplier;
@@ -18,7 +13,7 @@ public class MecanumDrivebase extends Subsystem {
 	public void initDefaultCommand() {
 		setDefaultCommand(new DriveWithJoysticks());
 	}
-	public void Drive(double fb, double rot, double genmult) { /** Coefficient Drive Base by Keith Meifert **/
+	public void Drive(double fb, double rot, double genmult) {
 		frontLeftMultiplier = fb + rot;
 		frontRightMultiplier = fb - rot;
 		frontLeftMultiplier = frontLeftMultiplier * genmult; // Set general speed multiplier

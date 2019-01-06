@@ -10,6 +10,9 @@ package org.usfirst.frc.team126.robot;
 	   \ \ \  // /_\ \\ \ \L\ \
 	    \ \_\/\______/ \ \____/
 		 \/_/\/_____/   \/___/ 
+
+		"get to work kid"
+		- Paul Morrison (2018)
                                
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 

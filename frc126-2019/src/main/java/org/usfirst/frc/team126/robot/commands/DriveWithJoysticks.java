@@ -8,28 +8,29 @@ public class DriveWithJoysticks extends Command {
 	double rot;
 	boolean xboxLT, xboxRT, xboxRS, xboxLS, camMode, enabled;
 	public DriveWithJoysticks() {
+		// Use requires() here to declare subsystem dependencies
 		requires(Robot.driveBase);
 	}
 
-	// Called just before this Command runs the first time
+	// Run before command starts 1st iteration
 	@Override
 	protected void initialize() {
 			
 	}
 
-	// Called repeatedly when this Command is scheduled to run
+	// Called every tick (20ms)
 	@SuppressWarnings("static-access")
 	@Override
 	protected void execute() {
-		rot = Robot.oi.driveController.getRawAxis(RobotMap.contLR); // Get and assign controller values
+		rot = Robot.oi.driveController.getRawAxis(RobotMap.contLR);
 		if(Math.abs(rot) < 0.1) {
 			rot = 0;
 		}
-		Robot.driveBase.Drive(0.0,rot,1); // Drive with standard inversion offsets
+		Robot.driveBase.Drive(0.0,rot,1);
 
 	}
 
-	// Make this return true when this Command no longer needs to run execute()
+	// Returns true if command finished
 	@Override
 	protected boolean isFinished() {
 		return false;
@@ -38,11 +39,12 @@ public class DriveWithJoysticks extends Command {
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
+
 	}
 
-	// Called when another command which requires one or more of the same
-	// subsystems is scheduled to run
+	// Called when another command tries to use this command's subsystem
 	@Override
 	protected void interrupted() {
+
 	}
 }
