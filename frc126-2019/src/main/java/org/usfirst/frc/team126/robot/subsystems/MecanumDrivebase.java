@@ -13,7 +13,7 @@ public class MecanumDrivebase extends Subsystem {
 	public void initDefaultCommand() {
 		setDefaultCommand(new DriveWithJoysticks());
 	}
-	public void Drive(double fb, double rot, double genmult) {
+	public void Drive(double fb, double rot, double genmult) { // west coast driven't
 		frontLeftMultiplier = fb + rot;
 		frontRightMultiplier = fb - rot;
 		frontLeftMultiplier = frontLeftMultiplier * genmult; // Set general speed multiplier
