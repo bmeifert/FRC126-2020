@@ -16,7 +16,7 @@ public class Pause extends Command {
 
     // Called every tick (20ms)
     protected void execute() {
-    	Robot.driveBase.Drive(0, 0,1);
+    	Robot.driveBase.Drive(0, 0, 0, false);
     	
     }
 

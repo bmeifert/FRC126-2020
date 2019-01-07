@@ -17,6 +17,8 @@ public class Robot extends TimedRobot {
 
 	public static Talon frontLeft = new Talon(RobotMap.frontLeft); // Create devices
 	public static Talon frontRight = new Talon(RobotMap.frontRight);
+	public static Talon backLeft = new Talon(RobotMap.backLeft);
+	public static Talon backRight = new Talon(RobotMap.backRight);
 
 	@SuppressWarnings("unchecked")
 	@Override

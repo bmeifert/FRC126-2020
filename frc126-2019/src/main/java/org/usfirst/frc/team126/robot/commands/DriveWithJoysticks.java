@@ -5,8 +5,9 @@ import org.usfirst.frc.team126.robot.RobotMap;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class DriveWithJoysticks extends Command {
-	double rot;
-	boolean xboxLT, xboxRT, xboxRS, xboxLS, camMode, enabled;
+	double fb, lr, rot, tl, tr;
+	boolean xboxLTrig, xboxRTrig, xboxA, xboxB, xboxX, xboxY, xboxLStick, xboxRStick;
+	boolean isCurved = true;
 	public DriveWithJoysticks() {
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.driveBase);
@@ -22,11 +23,22 @@ public class DriveWithJoysticks extends Command {
 	@SuppressWarnings("static-access")
 	@Override
 	protected void execute() {
-		rot = Robot.oi.driveController.getRawAxis(RobotMap.contLR);
+		fb = Robot.oi.driveController.getRawAxis(RobotMap.lStickY); // Forward and backward movement (Left stick Y)
+		tl = Robot.oi.driveController.getRawAxis(RobotMap.Ltrigger); // Left trigger (for strafe L)
+		tr = Robot.oi.driveController.getRawAxis(RobotMap.Rtrigger); // Right trigger (for strafe R)
+		rot = Robot.oi.driveController.getRawAxis(RobotMap.rStickX); // Rotation (Right stick X)
+
+		if(tr > 0) {
+			lr = tr;
+		}
+		else {
+			lr = tl * -1;
+		}
 		if(Math.abs(rot) < 0.1) {
 			rot = 0;
 		}
-		Robot.driveBase.Drive(0.0,rot,1);
+
+		Robot.driveBase.Drive(fb, lr, rot, isCurved);
 
 	}
 
