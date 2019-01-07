@@ -8,6 +8,7 @@ public class DriveWithJoysticks extends Command {
 	double fb, lr, rot, tl, tr;
 	boolean xboxLTrig, xboxRTrig, xboxA, xboxB, xboxX, xboxY, xboxLStick, xboxRStick;
 	boolean isCurved = true;
+	boolean isSmoothed = true;
 	public DriveWithJoysticks() {
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.driveBase);
@@ -24,11 +25,11 @@ public class DriveWithJoysticks extends Command {
 	@Override
 	protected void execute() {
 		fb = Robot.oi.driveController.getRawAxis(RobotMap.lStickY); // Forward and backward movement (Left stick Y)
-		tl = Robot.oi.driveController.getRawAxis(RobotMap.Ltrigger); // Left trigger (for strafe L)
-		tr = Robot.oi.driveController.getRawAxis(RobotMap.Rtrigger); // Right trigger (for strafe R)
-		rot = Robot.oi.driveController.getRawAxis(RobotMap.rStickX); // Rotation (Right stick X)
+		tl = Robot.oi.driveController.getRawAxis(RobotMap.Ltrigger) * -1; // Left trigger (for strafe L)
+		tr = Robot.oi.driveController.getRawAxis(RobotMap.Rtrigger) * -1; // Right trigger (for strafe R)
+		rot = Robot.oi.driveController.getRawAxis(RobotMap.rStickX) * -1; // Rotation (Right stick X)
 
-		if(tr > 0) {
+		if(tr < 0) {
 			lr = tr;
 		}
 		else {
@@ -38,7 +39,7 @@ public class DriveWithJoysticks extends Command {
 			rot = 0;
 		}
 
-		Robot.driveBase.Drive(fb, lr, rot, isCurved);
+		Robot.driveBase.Drive(fb, lr, rot, isCurved, isSmoothed);
 
 	}
 

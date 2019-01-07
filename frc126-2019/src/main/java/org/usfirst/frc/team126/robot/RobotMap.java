@@ -39,13 +39,13 @@ public class RobotMap {
 	
 	// Motor IDs
 	public static int frontLeft = 1;
-	public static int frontRight = 2;
-	public static int backLeft = 3;
+	public static int frontRight = 3;
+	public static int backLeft = 2;
 	public static int backRight = 4;
 	
 	// Inversions
-	public static int frontLeftInversion = 1;
-	public static int backLeftInversion = 1;
+	public static int frontLeftInversion = -1;
+	public static int backLeftInversion = -1;
 	public static int frontRightInversion = 1;
 	public static int backRightInversion = 1;
 }

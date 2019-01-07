@@ -2,23 +2,23 @@
 package org.usfirst.frc.team126.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.usfirst.frc.team126.robot.commands.AutoCenterToLeft;
 import org.usfirst.frc.team126.robot.subsystems.MecanumDrivebase;
 import org.usfirst.frc.team126.robot.RobotMap;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 public class Robot extends TimedRobot {
 
 	public static Command autonomous; // Create commands
 	public static MecanumDrivebase driveBase;
 	public static OI oi;
 
-	public static Talon frontLeft = new Talon(RobotMap.frontLeft); // Create devices
-	public static Talon frontRight = new Talon(RobotMap.frontRight);
-	public static Talon backLeft = new Talon(RobotMap.backLeft);
-	public static Talon backRight = new Talon(RobotMap.backRight);
+	public static TalonSRX frontLeft = new TalonSRX(RobotMap.frontLeft); // Create devices
+	public static TalonSRX frontRight = new TalonSRX(RobotMap.frontRight);
+	public static TalonSRX backLeft = new TalonSRX(RobotMap.backLeft);
+	public static TalonSRX backRight = new TalonSRX(RobotMap.backRight);
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -45,6 +45,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		
 	}
 
 	@Override
@@ -57,6 +58,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+		SmartDashboard.putNumber("testNum", 0);
 	}
 
 	@Override
