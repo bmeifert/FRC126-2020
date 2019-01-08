@@ -9,7 +9,6 @@ import org.usfirst.frc.team126.robot.subsystems.InternalData;
 import org.usfirst.frc.team126.robot.subsystems.MecanumDrivebase;
 import org.usfirst.frc.team126.robot.RobotMap;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 public class Robot extends TimedRobot {
 
@@ -23,13 +22,12 @@ public class Robot extends TimedRobot {
 	public static TalonSRX backLeft = new TalonSRX(RobotMap.backLeft);
 	public static TalonSRX backRight = new TalonSRX(RobotMap.backRight);
 
-	public static PowerDistributionPanel pdp = new PowerDistributionPanel();
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public void robotInit() {
 		oi = new OI();
 		driveBase = new MecanumDrivebase();
+		internalData = new InternalData();
 	}
 	
 	@Override

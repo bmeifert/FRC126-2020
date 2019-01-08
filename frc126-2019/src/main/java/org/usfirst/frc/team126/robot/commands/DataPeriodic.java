@@ -21,13 +21,10 @@ public class DataPeriodic extends Command {
 	@SuppressWarnings("static-access")
 	@Override
 	protected void execute() {
-		SmartDashboard.putNumber("Bus Voltage", InternalData.getBusVoltage());
-		SmartDashboard.putNumber("Total Power Draw", InternalData.getBusTotalPower());
 		SmartDashboard.putNumber("Match Time Left", InternalData.getMatchTime());
 		SmartDashboard.putBoolean("Teleop", InternalData.isTeleop());
 		SmartDashboard.putBoolean("Autonomous", InternalData.isAuto());
 		SmartDashboard.putBoolean("Enabled", InternalData.isEnabled());
-
 	}
 
 	// Returns true if command finished

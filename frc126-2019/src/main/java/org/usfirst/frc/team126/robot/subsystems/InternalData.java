@@ -1,6 +1,4 @@
 package org.usfirst.frc.team126.robot.subsystems;
-
-import org.usfirst.frc.team126.robot.Robot;
 import org.usfirst.frc.team126.robot.commands.DataPeriodic;
 
 import edu.wpi.first.wpilibj.RobotState;
@@ -11,17 +9,6 @@ public class InternalData extends Subsystem {
 
 	public void initDefaultCommand() {
 		setDefaultCommand(new DataPeriodic());
-	}
-
-	// Power stats
-	public static double getBusVoltage() { // Get the primary bus voltage
-		return  Robot.pdp.getVoltage();
-	}
-	public static double getBusCurrent(int channel) { // Get the amperage of a single channel
-		return  Robot.pdp.getCurrent(channel);
-	}
-	public static double getBusTotalPower() { // Get the total power draw in watts
-		return  Robot.pdp.getTotalPower();
 	}
 
 	// Match stats
