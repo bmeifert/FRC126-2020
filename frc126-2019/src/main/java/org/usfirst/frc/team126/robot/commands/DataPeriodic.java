@@ -1,8 +1,9 @@
 package org.usfirst.frc.team126.robot.commands;
 
 import org.usfirst.frc.team126.robot.Robot;
-import org.usfirst.frc.team126.robot.RobotMap;
+import org.usfirst.frc.team126.robot.subsystems.InternalData;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DataPeriodic extends Command {
 	public DataPeriodic() {
@@ -20,6 +21,12 @@ public class DataPeriodic extends Command {
 	@SuppressWarnings("static-access")
 	@Override
 	protected void execute() {
+		SmartDashboard.putNumber("Bus Voltage", InternalData.getBusVoltage());
+		SmartDashboard.putNumber("Total Power Draw", InternalData.getBusTotalPower());
+		SmartDashboard.putNumber("Match Time Left", InternalData.getMatchTime());
+		SmartDashboard.putBoolean("Teleop", InternalData.isTeleop());
+		SmartDashboard.putBoolean("Autonomous", InternalData.isAuto());
+		SmartDashboard.putBoolean("Enabled", InternalData.isEnabled());
 
 	}
 

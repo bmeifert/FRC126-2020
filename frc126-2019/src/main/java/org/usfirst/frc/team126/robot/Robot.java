@@ -8,7 +8,6 @@ import org.usfirst.frc.team126.robot.commands.AutoCenterToLeft;
 import org.usfirst.frc.team126.robot.subsystems.InternalData;
 import org.usfirst.frc.team126.robot.subsystems.MecanumDrivebase;
 import org.usfirst.frc.team126.robot.RobotMap;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
@@ -69,7 +68,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		SmartDashboard.putNumber("testNum", 0);
 	}
 
 	@Override
