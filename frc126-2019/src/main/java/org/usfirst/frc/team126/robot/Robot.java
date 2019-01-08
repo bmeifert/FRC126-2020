@@ -5,14 +5,16 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.usfirst.frc.team126.robot.commands.AutoCenterToLeft;
+import org.usfirst.frc.team126.robot.subsystems.InternalData;
 import org.usfirst.frc.team126.robot.subsystems.MecanumDrivebase;
 import org.usfirst.frc.team126.robot.RobotMap;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 public class Robot extends TimedRobot {
 
 	public static Command autonomous; // Create commands
 	public static MecanumDrivebase driveBase;
+	public static InternalData internalData;
 	public static OI oi;
 
 	public static TalonSRX frontLeft = new TalonSRX(RobotMap.frontLeft); // Create devices
@@ -22,9 +24,15 @@ public class Robot extends TimedRobot {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void robotInit() { // Init components
+	public void robotInit() {
 		oi = new OI();
 		driveBase = new MecanumDrivebase();
+		internalData = new InternalData();
+	}
+	
+	@Override
+	public void robotPeriodic() {
+
 	}
 
 	@Override
@@ -58,7 +66,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		SmartDashboard.putNumber("testNum", 0);
 	}
 
 	@Override
