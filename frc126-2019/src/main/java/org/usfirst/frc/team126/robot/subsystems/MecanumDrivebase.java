@@ -19,7 +19,7 @@ public class MecanumDrivebase extends Subsystem {
 		brSpeed = 0;
 	}
 
-	public void Drive(double fb, double lr, double rot, boolean isCurved, boolean isSmoothed) { // Smooth drive
+	public void Drive(double fb, double lr, double rot, boolean isCurved, boolean isSmoothed, int smoothFactor) { // Smooth drive
 		if(isCurved) { // curve inputs for more prescision
 
 			if(fb > 0) {
@@ -42,11 +42,18 @@ public class MecanumDrivebase extends Subsystem {
 			}
 		}
 
+		if(smoothFactor < 1) { // Smooth factor failsafe
+			smoothFactor = 1;
+		}
+		if(smoothFactor > 50) {
+			smoothFactor = 50;
+		}
+
 		frontLeftMultiplier = fb + rot;
 		frontRightMultiplier = fb - rot;
 		backLeftMultiplier = fb + rot;
 		backRightMultiplier = fb - rot;
-
+		lr = 0; // WEST COAST DRIVE SIMULATOR 2019
 		if(lr > 0) { // Sideways coefficients (take precedence over but do not limit movement)
 			frontLeftMultiplier = frontLeftMultiplier + Math.abs(lr);
 			frontRightMultiplier = frontRightMultiplier - Math.abs(lr);
@@ -61,10 +68,10 @@ public class MecanumDrivebase extends Subsystem {
 		}
 
 		if(isSmoothed) {
-			flSpeed = (flSpeed * 6 + frontLeftMultiplier) / 7; // Smooth out spikes and sudden movements by averaging speeds
-			frSpeed = (frSpeed * 6 + frontRightMultiplier) / 7;
-			blSpeed = (blSpeed * 6 + backLeftMultiplier) / 7;
-			brSpeed = (brSpeed * 6 + backRightMultiplier) / 7;
+			flSpeed = (flSpeed * smoothFactor + frontLeftMultiplier) / (smoothFactor + 1); // Smooth out spikes and sudden movements by averaging speeds
+			frSpeed = (frSpeed * smoothFactor + frontRightMultiplier) / (smoothFactor + 1);
+			blSpeed = (blSpeed * smoothFactor + backLeftMultiplier) / (smoothFactor + 1);
+			brSpeed = (brSpeed * smoothFactor + backRightMultiplier) / (smoothFactor + 1);
 		}
 		else {
 			flSpeed = frontLeftMultiplier;
