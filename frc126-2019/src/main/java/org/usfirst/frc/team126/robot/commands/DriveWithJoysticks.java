@@ -61,11 +61,6 @@ public class DriveWithJoysticks extends Command {
 		if(Math.abs(rot) < 0.1) {
 			rot = 0;
 		}
-		fb = 0;
-		rot = 0;
-		isCurved = false;
-		isSmoothed = false;
-		smoothFactor = 5;
 		Robot.driveBase.Drive(fb, 0, rot, isCurved, isSmoothed, smoothFactor);
 		Robot.intake.setIntake(lr);
 
