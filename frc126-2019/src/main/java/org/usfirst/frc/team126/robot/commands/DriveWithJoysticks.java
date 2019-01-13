@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class DriveWithJoysticks extends Command {
 	double fb, lr, rot, tl, tr;
+	int smoothFactor = 5;
 	boolean xboxLTrig, xboxRTrig, xboxA, xboxB, xboxX, xboxY, xboxLStick, xboxRStick;
 	boolean isCurved = true;
 	boolean isSmoothed = true;
@@ -28,6 +29,27 @@ public class DriveWithJoysticks extends Command {
 		tl = Robot.oi.driveController.getRawAxis(RobotMap.Ltrigger) * -1; // Left trigger (for strafe L)
 		tr = Robot.oi.driveController.getRawAxis(RobotMap.Rtrigger) * -1; // Right trigger (for strafe R)
 		rot = Robot.oi.driveController.getRawAxis(RobotMap.rStickX) * -1; // Rotation (Right stick X)
+		xboxA = Robot.oi.driveController.getRawButton(RobotMap.xboxA);
+		xboxB = Robot.oi.driveController.getRawButton(RobotMap.xboxB);
+		xboxX = Robot.oi.driveController.getRawButton(RobotMap.xboxX);
+		xboxY = Robot.oi.driveController.getRawButton(RobotMap.xboxY);
+		xboxLTrig = Robot.oi.driveController.getRawButton(RobotMap.xboxLTrig);
+		xboxRTrig = Robot.oi.driveController.getRawButton(RobotMap.xboxRTrig);
+		xboxLStick = Robot.oi.driveController.getRawButton(RobotMap.xboxLStick);
+		xboxRStick = Robot.oi.driveController.getRawButton(RobotMap.xboxRStick);
+		
+		if(xboxA) {
+			smoothFactor = 5;
+		}
+		if(xboxB) {
+			smoothFactor = 10;
+		}
+		if(xboxX) {
+			smoothFactor = 20;
+		}
+		if(xboxY) {
+			smoothFactor = 40;
+		}
 
 		if(tr < 0) {
 			lr = tr;
@@ -35,11 +57,17 @@ public class DriveWithJoysticks extends Command {
 		else {
 			lr = tl * -1;
 		}
+
 		if(Math.abs(rot) < 0.1) {
 			rot = 0;
 		}
-
-		Robot.driveBase.Drive(fb, lr, rot, isCurved, isSmoothed);
+		fb = 0;
+		rot = 0;
+		isCurved = false;
+		isSmoothed = false;
+		smoothFactor = 5;
+		Robot.driveBase.Drive(fb, 0, rot, isCurved, isSmoothed, smoothFactor);
+		Robot.intake.setIntake(lr);
 
 	}
 

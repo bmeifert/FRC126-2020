@@ -11,12 +11,12 @@ public class DriveForward extends Command {
 
     // Run before command starts 1st iteration
     protected void initialize() {
-        Robot.driveBase.Drive(0, 0, 0, false, false);
+        Robot.driveBase.Drive(0, 0, 0, false, false, 1);
     }
 
     // Called every tick (20ms)
     protected void execute() {
-        Robot.driveBase.Drive(0.5, 0, 0, false, false);
+        Robot.driveBase.Drive(0.5, 0, 0, false, false, 1);
     }
 
     // Returns true if command finished
@@ -26,11 +26,11 @@ public class DriveForward extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-        Robot.driveBase.Drive(0, 0, 0, false, false);
+        Robot.driveBase.Drive(0, 0, 0, false, false, 1);
     }
 
     // Called when another command tries to use this command's subsystem
     protected void interrupted() {
-        Robot.driveBase.Drive(0, 0, 0, false, false);
+        Robot.driveBase.Drive(0, 0, 0, false, false, 1);
     }
 }
