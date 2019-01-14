@@ -1,6 +1,7 @@
 		
 package org.usfirst.frc.team126.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -33,6 +34,7 @@ public class Robot extends TimedRobot {
 		driveBase = new MecanumDrivebase();
 		internalData = new InternalData();
 		intake = new Intake();
+		CameraServer.getInstance().startAutomaticCapture();
 	}
 	
 	@Override

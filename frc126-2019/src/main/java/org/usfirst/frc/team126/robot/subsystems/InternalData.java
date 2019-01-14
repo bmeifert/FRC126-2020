@@ -1,6 +1,8 @@
 package org.usfirst.frc.team126.robot.subsystems;
 import org.usfirst.frc.team126.robot.commands.DataPeriodic;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -23,6 +25,9 @@ public class InternalData extends Subsystem {
 	}
 	public static double getMatchTime() { // Get the time left in the match
 		return  Timer.getMatchTime();
+	}
+	public static double getVoltage() {
+		return RobotController.getBatteryVoltage();
 	}
 
 }

@@ -22,6 +22,7 @@ public class DataPeriodic extends Command {
 	@Override
 	protected void execute() {
 		SmartDashboard.putNumber("Match Time Left", InternalData.getMatchTime());
+		SmartDashboard.putNumber("Voltage", InternalData.getVoltage());
 		SmartDashboard.putBoolean("Teleop", InternalData.isTeleop());
 		SmartDashboard.putBoolean("Autonomous", InternalData.isAuto());
 		SmartDashboard.putBoolean("Enabled", InternalData.isEnabled());
