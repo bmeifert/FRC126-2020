@@ -5,6 +5,7 @@ import org.usfirst.frc.team126.robot.subsystems.InternalData;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+
 public class DataPeriodic extends Command {
 	public DataPeriodic() {
 		// Use requires() here to declare subsystem dependencies
@@ -26,6 +27,7 @@ public class DataPeriodic extends Command {
 		SmartDashboard.putBoolean("Teleop", InternalData.isTeleop());
 		SmartDashboard.putBoolean("Autonomous", InternalData.isAuto());
 		SmartDashboard.putBoolean("Enabled", InternalData.isEnabled());
+		Robot.vision.testPixy();
 	}
 
 	// Returns true if command finished

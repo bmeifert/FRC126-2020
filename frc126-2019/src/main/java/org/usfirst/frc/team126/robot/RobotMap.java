@@ -12,7 +12,7 @@ package org.usfirst.frc.team126.robot;
 		 \/_/\/_____/   \/___/
 
 	GO GET EM GAEL FORCE!!!
-	~ Brian M, Keith M, Faria S, Alyssa L, Alex T, Kyle C, Maddie M, and Sophia S
+	~ Keith M, Faria S, Alyssa L, Alex T, Kyle C, Maddie M, and Sophia S
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
