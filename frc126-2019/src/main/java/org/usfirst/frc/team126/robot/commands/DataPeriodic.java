@@ -27,7 +27,6 @@ public class DataPeriodic extends Command {
 		SmartDashboard.putBoolean("Teleop", InternalData.isTeleop());
 		SmartDashboard.putBoolean("Autonomous", InternalData.isAuto());
 		SmartDashboard.putBoolean("Enabled", InternalData.isEnabled());
-		Robot.vision.testPixy();
 	}
 
 	// Returns true if command finished

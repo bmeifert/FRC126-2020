@@ -2,12 +2,12 @@ package org.usfirst.frc.team126.robot.commands;
 
 import org.usfirst.frc.team126.robot.Robot;
 import edu.wpi.first.wpilibj.command.Command;
-import org.usfirst.frc.team126.robot.subsystems.Pixy;
+import org.usfirst.frc.team126.robot.subsystems.Vision;
 
 public class CameraData extends Command {
 	public CameraData() {
 		// Use requires() here to declare subsystem dependencies
-		requires(Robot.pixy);
+		requires(Robot.vision);
 	}
 
 	// Run before command starts 1st iteration
@@ -20,6 +20,7 @@ public class CameraData extends Command {
 	@SuppressWarnings("static-access")
 	@Override
 	protected void execute() {
+		Robot.vision.testPixy();
 	}
 
 	// Returns true if command finished

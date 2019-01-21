@@ -11,7 +11,6 @@ import org.usfirst.frc.team126.robot.subsystems.Intake;
 import org.usfirst.frc.team126.robot.subsystems.InternalData;
 import org.usfirst.frc.team126.robot.subsystems.MecanumDrivebase;
 import org.usfirst.frc.team126.robot.subsystems.Vision;
-import org.usfirst.frc.team126.robot.subsystems.Pixy;
 import org.usfirst.frc.team126.robot.RobotMap;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -22,7 +21,7 @@ public class Robot extends TimedRobot {
 	public static InternalData internalData;
 	public static OI oi;
 	public static Intake intake;
-	public static Pixy pixy;
+	public static Vision vision;
 
 	public static TalonSRX frontLeft = new TalonSRX(RobotMap.frontLeft); // Create devices
 	public static TalonSRX frontRight = new TalonSRX(RobotMap.frontRight);
@@ -30,7 +29,6 @@ public class Robot extends TimedRobot {
 	public static TalonSRX backRight = new TalonSRX(RobotMap.backRight);
 	public static Spark intakeMotor = new Spark(9);
 
-	public static Vision vision;
 
 	@SuppressWarnings("unchecked")
 	@Override

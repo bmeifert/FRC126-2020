@@ -47,6 +47,6 @@ public class Vision extends Subsystem {
             System.out.println("Pixy Width Value: " + i + "=" + packet1[i - 1].Width);
             System.out.println("Pixy Height Value: " + i + "=" + packet1[i - 1].Height);
         }
-        
+        SmartDashboard.putString("Pixy hello", "done");
 	}
 }

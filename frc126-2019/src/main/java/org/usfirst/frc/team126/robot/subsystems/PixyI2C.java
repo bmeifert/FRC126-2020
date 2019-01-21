@@ -81,8 +81,9 @@ public class PixyI2C {
 					throw pExc;
 				}
 				break;
-			} else
+			} else {
 				SmartDashboard.putNumber("syncword: ", syncWord);
+			}	
 		}
 		// Assigns our packet to a temp packet, then deletes data so that we
 		// dont return old data
