@@ -10,7 +10,7 @@ public class PixyI2C {
 	String name;
 	PixyPacket values;
 	I2C pixy;
-	Port port = Port.kOnboard;
+	//Port port = Port.kOnboard;
 	PixyPacket[] packets;
 	PixyException pExc;
 	String print;

@@ -13,7 +13,6 @@ public class CameraData extends Command {
 	// Run before command starts 1st iteration
 	@Override
 	protected void initialize() {
-			
 	}
 
 	// Called every tick (20ms)

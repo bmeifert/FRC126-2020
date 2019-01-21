@@ -13,7 +13,6 @@ public class Vision extends Subsystem {
 
     public PixyI2C Pixy;
     public PixyPacket[] packet1 = new PixyPacket[7];
-    public PixyPacket[] packet2 = new PixyPacket[7];
     String print;
 
     public Vision() {
@@ -25,8 +24,10 @@ public class Vision extends Subsystem {
     }
 
     public void testPixy() {
-		for (int i = 0; i < packet1.length; i++)
-			packet1[i] = null;
+		for (int i = 0; i < packet1.length; i++) {
+            packet1[i] = null;
+        }
+
 		SmartDashboard.putString("Pixy hello", "working");
 		for (int i = 1; i < 8; i++) {
 			try {
@@ -43,11 +44,10 @@ public class Vision extends Subsystem {
 			SmartDashboard.putNumber("Pixy Width Value: " + i, packet1[i - 1].Width);
 			SmartDashboard.putNumber("Pixy Height Value: " + i, packet1[i - 1].Height);
             SmartDashboard.putString("Pixy Error: " + i, "False");
-            System.out.println("Pixy X Value: " + i + "=" + packet1[i - 1].X);
-            System.out.println("Pixy Y Value: " + i + "=" + packet1[i - 1].Y);
-            System.out.println("Pixy Width Value: " + i + "=" + packet1[i - 1].Width);
-            System.out.println("Pixy Height Value: " + i + "=" + packet1[i - 1].Height);
+            System.out.println("Packet " + i + " = " + packet1[i - 1].toString());
+            
         }
+
         SmartDashboard.putString("Pixy hello", "done");
 	}
 }
