@@ -1,8 +1,5 @@
 package org.usfirst.frc.team126.robot.subsystems;
 
-import org.usfirst.frc.team126.robot.Robot;
-import org.usfirst.frc.team126.robot.RobotMap;
-
 public class PixyPacket {
 	public int Signature;
 	public int X;

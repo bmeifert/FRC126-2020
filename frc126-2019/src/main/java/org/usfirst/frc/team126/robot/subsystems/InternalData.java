@@ -1,7 +1,6 @@
 package org.usfirst.frc.team126.robot.subsystems;
-import org.usfirst.frc.team126.robot.commands.DataPeriodic;
 
-import edu.wpi.first.wpilibj.DriverStation;
+import org.usfirst.frc.team126.robot.commands.DataPeriodic;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
