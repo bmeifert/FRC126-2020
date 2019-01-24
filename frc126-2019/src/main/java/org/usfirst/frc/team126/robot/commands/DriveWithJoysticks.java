@@ -25,10 +25,10 @@ public class DriveWithJoysticks extends Command {
 	@SuppressWarnings("static-access")
 	@Override
 	protected void execute() {
-		fb = Robot.oi.driveController.getRawAxis(RobotMap.lStickY); // Forward and backward movement (Left stick Y)
-		tl = Robot.oi.driveController.getRawAxis(RobotMap.Ltrigger) * -1; // Left trigger (for strafe L)
-		tr = Robot.oi.driveController.getRawAxis(RobotMap.Rtrigger) * -1; // Right trigger (for strafe R)
-		rot = Robot.oi.driveController.getRawAxis(RobotMap.rStickX) * -1; // Rotation (Right stick X)
+		fb = Robot.oi.driveController.getRawAxis(RobotMap.lStickY) * -1; // Forward and backward movement (Left stick Y)
+		tl = Robot.oi.driveController.getRawAxis(RobotMap.Ltrigger); // Left trigger (for strafe L)
+		tr = Robot.oi.driveController.getRawAxis(RobotMap.Rtrigger); // Right trigger (for strafe R)
+		rot = Robot.oi.driveController.getRawAxis(RobotMap.rStickX); // Rotation (Right stick X)
 		xboxA = Robot.oi.driveController.getRawButton(RobotMap.xboxA);
 		xboxB = Robot.oi.driveController.getRawButton(RobotMap.xboxB);
 		xboxX = Robot.oi.driveController.getRawButton(RobotMap.xboxX);
@@ -51,17 +51,20 @@ public class DriveWithJoysticks extends Command {
 			smoothFactor = 40;
 		}
 
-		if(tr < 0) {
+		if(tr > 0) {
 			lr = tr;
 		}
 		else {
 			lr = tl * -1;
 		}
 
-		if(Math.abs(rot) < 0.1) {
+		if(Math.abs(rot) < 0.05) {
 			rot = 0;
 		}
-		Robot.driveBase.Drive(fb, 0, rot, isCurved, isSmoothed, smoothFactor);
+		if(Math.abs(fb) < 0.05) {
+			fb = 0;
+		}
+		Robot.driveBase.Drive(fb, rot, isCurved, isSmoothed, smoothFactor);
 		Robot.intake.setIntake(lr);
 
 	}

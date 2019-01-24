@@ -38,14 +38,14 @@ public class RobotMap {
 	public static int xboxRStick = 10; // Right stick button
 	
 	// Motor IDs
-	public static int frontLeft = 1;
-	public static int frontRight = 3;
-	public static int backLeft = 2;
-	public static int backRight = 4;
+	public static int front1 = 1;
+	public static int front2 = 3;
+	public static int back1 = 2;
+	public static int back2 = 4;
 	
 	// Inversions
-	public static int frontLeftInversion = -1;
-	public static int backLeftInversion = -1;
-	public static int frontRightInversion = 1;
-	public static int backRightInversion = 1;
+	public static int front1Inversion = 1;
+	public static int back1Inversion = 1;
+	public static int front2Inversion = -1;
+	public static int back2Inversion = -1;
 }
