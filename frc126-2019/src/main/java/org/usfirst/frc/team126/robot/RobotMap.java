@@ -44,10 +44,26 @@ public class RobotMap {
 	public static int back2 = 4;
 	
 	// Inversions
-	public static int front1Inversion = 1;
-	public static int back1Inversion = 1;
-	public static int front2Inversion = -1;
-	public static int back2Inversion = -1;
-	public static int front3Inversion = 1;
-	public static int back3Inversion = 1;
+	public static int front1Inversion;
+	public static int back1Inversion;
+	public static int front2Inversion;
+	public static int back2Inversion;
+	public static int front3Inversion;
+	public static int back3Inversion;
+
+	public static void setRobot(int robotID){
+
+		if(robotID == 0){
+			front1Inversion = 1;
+			back1Inversion = 1;
+			front2Inversion = -1;
+			back2Inversion = -1;
+			front3Inversion = 1;
+			back3Inversion = 1;
+		}
+		
+		else {
+			throw new NullPointerException("No robot defined");
+		}
+	}
 }

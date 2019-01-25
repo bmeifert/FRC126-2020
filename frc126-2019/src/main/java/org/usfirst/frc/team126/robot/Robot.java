@@ -37,6 +37,7 @@ public class Robot extends TimedRobot {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void robotInit() {
+		RobotMap.setRobot(0);
 		oi = new OI();
 		driveBase = new WestCoastDrive();
 		internalData = new InternalData();
