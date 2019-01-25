@@ -48,4 +48,6 @@ public class RobotMap {
 	public static int back1Inversion = 1;
 	public static int front2Inversion = -1;
 	public static int back2Inversion = -1;
+	public static int front3Inversion = 1;
+	public static int back3Inversion = 1;
 }

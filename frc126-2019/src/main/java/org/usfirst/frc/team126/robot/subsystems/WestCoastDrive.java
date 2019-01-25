@@ -18,6 +18,7 @@ public class WestCoastDrive extends Subsystem {
 	}
 
 	public void Drive(double fb, double rot, boolean isCurved, boolean isSmoothed, int smoothFactor) { // Smooth drive
+
 		if(isCurved) { // curve inputs for more prescision
 			if(fb > 0) {
 				fb = fb * fb; // if it's stupid but it works it's not stupid
@@ -53,9 +54,11 @@ public class WestCoastDrive extends Subsystem {
 			rightSpeed = rightMultiplier;
 		}
 
-		Robot.frontLeft.set(ControlMode.PercentOutput, leftSpeed * RobotMap.front1Inversion);
-		Robot.frontRight.set(ControlMode.PercentOutput, rightSpeed * RobotMap.front2Inversion);
-		Robot.backLeft.set(ControlMode.PercentOutput, leftSpeed * RobotMap.back1Inversion);
-		Robot.backRight.set(ControlMode.PercentOutput, rightSpeed * RobotMap.back2Inversion);
+		Robot.left1.set(ControlMode.PercentOutput, leftSpeed * RobotMap.front1Inversion);
+		Robot.right1.set(ControlMode.PercentOutput, rightSpeed * RobotMap.front2Inversion);
+		Robot.left2.set(ControlMode.PercentOutput, leftSpeed * RobotMap.back1Inversion);
+		Robot.right2.set(ControlMode.PercentOutput, rightSpeed * RobotMap.back2Inversion);
+		Robot.left3.set(ControlMode.PercentOutput, leftSpeed * RobotMap.back3Inversion);
+		Robot.right3.set(ControlMode.PercentOutput, rightSpeed * RobotMap.back3Inversion);
 	}
 }

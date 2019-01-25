@@ -23,10 +23,14 @@ public class Robot extends TimedRobot {
 	public static Intake intake;
 	public static Vision vision;
 
-	public static TalonSRX frontLeft = new TalonSRX(RobotMap.front1); // Create devices
-	public static TalonSRX frontRight = new TalonSRX(RobotMap.front2);
-	public static TalonSRX backLeft = new TalonSRX(RobotMap.back1);
-	public static TalonSRX backRight = new TalonSRX(RobotMap.back2);
+	public static TalonSRX left1 = new TalonSRX(RobotMap.front1); // Create devices
+	public static TalonSRX right1 = new TalonSRX(RobotMap.front2);
+	public static TalonSRX left2 = new TalonSRX(RobotMap.back1);
+	public static TalonSRX right2 = new TalonSRX(RobotMap.back2);
+	public static TalonSRX left3 = new TalonSRX(RobotMap.back1);
+	public static TalonSRX right3 = new TalonSRX(RobotMap.back2);
+
+
 	public static Spark intakeMotor = new Spark(9);
 
 
