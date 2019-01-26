@@ -29,16 +29,16 @@ public class DriveWithJoysticks extends Command {
 		tl = Robot.oi.driveController.getRawAxis(RobotMap.Ltrigger); // Left trigger (for strafe L)
 		tr = Robot.oi.driveController.getRawAxis(RobotMap.Rtrigger); // Right trigger (for strafe R)
 		rot = Robot.oi.driveController.getRawAxis(RobotMap.rStickX); // Rotation (Right stick X)
-		xboxA = Robot.oi.driveController.getRawButton(RobotMap.xboxA);
-		xboxB = Robot.oi.driveController.getRawButton(RobotMap.xboxB);
-		xboxX = Robot.oi.driveController.getRawButton(RobotMap.xboxX);
-		xboxY = Robot.oi.driveController.getRawButton(RobotMap.xboxY);
-		xboxLTrig = Robot.oi.driveController.getRawButton(RobotMap.xboxLTrig);
-		xboxRTrig = Robot.oi.driveController.getRawButton(RobotMap.xboxRTrig);
-		xboxLStick = Robot.oi.driveController.getRawButton(RobotMap.xboxLStick);
-		xboxRStick = Robot.oi.driveController.getRawButton(RobotMap.xboxRStick);
+		xboxA = Robot.oi.driveController.getRawButton(RobotMap.xboxA); // Xbox A button
+		xboxB = Robot.oi.driveController.getRawButton(RobotMap.xboxB); // Xbox B button
+		xboxX = Robot.oi.driveController.getRawButton(RobotMap.xboxX); // Xbox X button
+		xboxY = Robot.oi.driveController.getRawButton(RobotMap.xboxY); // Xbox Y button
+		xboxLTrig = Robot.oi.driveController.getRawButton(RobotMap.xboxLTrig); // Xbox L Shoulder button
+		xboxRTrig = Robot.oi.driveController.getRawButton(RobotMap.xboxRTrig); // Xbox R Shoulder button
+		xboxLStick = Robot.oi.driveController.getRawButton(RobotMap.xboxLStick); // Xbox L stick press down
+		xboxRStick = Robot.oi.driveController.getRawButton(RobotMap.xboxRStick); // Xbox R stick press down
 		
-		if(xboxA) {
+		if(xboxA) { // Set different drive spike smoothing factors (for testing)
 			smoothFactor = 5;
 		}
 		if(xboxB) {
@@ -58,14 +58,15 @@ public class DriveWithJoysticks extends Command {
 			lr = tl * -1;
 		}
 
-		if(Math.abs(rot) < 0.05) {
+		if(Math.abs(rot) < 0.05) { // Prevent rotation drifting
 			rot = 0;
 		}
 		if(Math.abs(fb) < 0.05) {
 			fb = 0;
 		}
-		Robot.driveBase.Drive(fb, rot, isCurved, isSmoothed, smoothFactor);
-		Robot.intake.setIntake(lr);
+		Robot.driveBase.Drive(fb, rot, isCurved, isSmoothed, smoothFactor); // Drive with set values
+
+		Robot.intake.setIntake(lr); // Set intake to triggers
 
 	}
 
