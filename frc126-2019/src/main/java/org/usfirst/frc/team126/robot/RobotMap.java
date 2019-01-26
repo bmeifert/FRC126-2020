@@ -42,6 +42,8 @@ public class RobotMap {
 	public static int front2 = 3;
 	public static int back1 = 2;
 	public static int back2 = 4;
+	public static int front3 = 11;
+	public static int back3 = 12;
 	
 	// Inversions
 	public static int front1Inversion;
@@ -61,7 +63,7 @@ public class RobotMap {
 			front3Inversion = 1;
 			back3Inversion = 1;
 		}
-		
+
 		else {
 			throw new NullPointerException("No robot defined");
 		}
