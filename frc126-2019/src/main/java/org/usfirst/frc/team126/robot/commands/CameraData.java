@@ -19,7 +19,7 @@ public class CameraData extends Command {
 	@SuppressWarnings("static-access")
 	@Override
 	protected void execute() {
-		Robot.vision.testPixy();
+		// Robot.vision.testPixy();
 	}
 
 	// Returns true if command finished
