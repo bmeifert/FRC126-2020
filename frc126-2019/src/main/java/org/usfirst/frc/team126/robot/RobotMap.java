@@ -12,7 +12,7 @@ package org.usfirst.frc.team126.robot;
 		 \/_/\/_____/   \/___/
 
 	GO GET EM GAEL FORCE!!!
-	~ Keith M, Faria S, Alyssa L, Alex T, Kyle C, Maddie M, and Sophia S
+	~ Keith M, Faria S, Alyssa L, Alex T, Kyle C, and Sophia S
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -45,7 +45,7 @@ public class RobotMap {
 	public static int front3 = 11;
 	public static int back3 = 12;
 	
-	// Inversions
+	//Motor Inversions
 	public static int front1Inversion;
 	public static int back1Inversion;
 	public static int front2Inversion;
@@ -53,9 +53,9 @@ public class RobotMap {
 	public static int front3Inversion;
 	public static int back3Inversion;
 
-	public static void setRobot(int robotID){
+	public static void setRobot(double robotID){
 
-		if(robotID == 0){
+		if(robotID == 0){ // 2019 compbot (not implemented)
 			front1Inversion = 1;
 			back1Inversion = 1;
 			front2Inversion = -1;
@@ -63,9 +63,26 @@ public class RobotMap {
 			front3Inversion = 1;
 			back3Inversion = 1;
 		}
-
+		else if(robotID == 1){ // 2019 practicebot (not implemented)
+			front1Inversion = 1;
+			back1Inversion = 1;
+			front2Inversion = -1;
+			back2Inversion = -1;
+			front3Inversion = 1;
+			back3Inversion = 1;
+		}
+		else if(robotID == 2){ // 2018 compbot
+			front1Inversion = 1;
+			back1Inversion = 1;
+			front2Inversion = -1;
+			back2Inversion = -1;
+			front3Inversion = 1;
+			back3Inversion = 1;
+		}
+		
 		else {
 			throw new NullPointerException("No robot defined");
 		}
+
 	}
 }

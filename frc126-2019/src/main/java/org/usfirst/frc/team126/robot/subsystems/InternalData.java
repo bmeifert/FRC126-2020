@@ -25,7 +25,7 @@ public class InternalData extends Subsystem {
 	public static double getMatchTime() { // Get the time left in the match
 		return  Timer.getMatchTime();
 	}
-	public static double getVoltage() {
+	public static double getVoltage() { // Get battery voltage
 		return RobotController.getBatteryVoltage();
 	}
 
