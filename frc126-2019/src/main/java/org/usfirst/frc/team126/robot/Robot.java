@@ -20,18 +20,18 @@ public class Robot extends TimedRobot {
 	public static WestCoastDrive driveBase;
 	public static InternalData internalData;
 	public static OI oi;
-	public static Intake intake;
+	//public static Intake intake;
 	public static Vision vision;
 
-	public static TalonSRX left1 = new TalonSRX(RobotMap.front1); // Create devices
-	public static TalonSRX right1 = new TalonSRX(RobotMap.front2);
-	public static TalonSRX left2 = new TalonSRX(RobotMap.back1);
-	public static TalonSRX right2 = new TalonSRX(RobotMap.back2);
-	public static TalonSRX left3 = new TalonSRX(RobotMap.back3);
-	public static TalonSRX right3 = new TalonSRX(RobotMap.back3);
+	//public static TalonSRX left1 = new TalonSRX(RobotMap.front1); // Create devices
+	//public static TalonSRX right1 = new TalonSRX(RobotMap.front2);
+	//public static TalonSRX left2 = new TalonSRX(RobotMap.back1);
+	//public static TalonSRX right2 = new TalonSRX(RobotMap.back2);
+	//public static TalonSRX left3 = new TalonSRX(RobotMap.back3);
+	//public static TalonSRX right3 = new TalonSRX(RobotMap.back3);
 
 
-	public static Spark intakeMotor = new Spark(9);
+	//public static Spark intakeMotor = new Spark(9);
 
 
 	@SuppressWarnings("unchecked")
@@ -39,11 +39,11 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		RobotMap.setRobot(0);
 		oi = new OI();
-		driveBase = new WestCoastDrive();
+		//driveBase = new WestCoastDrive();
 		internalData = new InternalData();
-		intake = new Intake();
+		//intake = new Intake();
 		vision = new Vision();
-		CameraServer.getInstance().startAutomaticCapture();
+		//CameraServer.getInstance().startAutomaticCapture();
 	}
 	
 	@Override

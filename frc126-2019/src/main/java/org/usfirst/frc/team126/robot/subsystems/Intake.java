@@ -9,10 +9,10 @@ public class Intake extends Subsystem {
 	}
 
 	public static void intakeOff() {
-		Robot.intakeMotor.set(0);
+		//Robot.intakeMotor.set(0);
 	}
 	public static void setIntake(double speed) {
-		Robot.intakeMotor.set(speed);
+		//Robot.intakeMotor.set(speed);
 	}
 
 }
