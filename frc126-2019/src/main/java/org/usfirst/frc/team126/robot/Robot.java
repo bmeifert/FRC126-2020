@@ -84,7 +84,7 @@ public class Robot extends TimedRobot {
 		if(autonomous != null){
 			autonomous.cancel();
 		}
-    }
+        }
 
 	@Override
 	public void teleopPeriodic() { // Runs periodically during teleop

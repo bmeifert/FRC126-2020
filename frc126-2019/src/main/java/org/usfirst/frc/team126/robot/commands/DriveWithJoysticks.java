@@ -67,7 +67,6 @@ public class DriveWithJoysticks extends Command {
 		Robot.driveBase.Drive(fb, rot, isCurved, isSmoothed, smoothFactor); // Drive with set values
 
 		Robot.intake.setIntake(lr); // Set intake to triggers
-
 	}
 
 	// Returns true if command finished

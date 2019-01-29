@@ -12,9 +12,9 @@ public class WestCoastDrive extends Subsystem {
 	double leftSpeed, rightSpeed;
 
 	public void initDefaultCommand() {
-		setDefaultCommand(new DriveWithJoysticks());
-		leftSpeed = 0;
-		rightSpeed = 0;
+		//setDefaultCommand(new DriveWithJoysticks());
+		//leftSpeed = 0;
+		//rightSpeed = 0;
 	}
 
 	public void Drive(double fb, double rot, boolean isCurved, boolean isSmoothed, int smoothFactor) { // Smooth drive
@@ -54,11 +54,11 @@ public class WestCoastDrive extends Subsystem {
 			rightSpeed = rightMultiplier;
 		}
 
-		Robot.left1.set(ControlMode.PercentOutput, leftSpeed * RobotMap.front1Inversion);
-		Robot.right1.set(ControlMode.PercentOutput, rightSpeed * RobotMap.front2Inversion);
-		Robot.left2.set(ControlMode.PercentOutput, leftSpeed * RobotMap.back1Inversion);
-		Robot.right2.set(ControlMode.PercentOutput, rightSpeed * RobotMap.back2Inversion);
-		Robot.left3.set(ControlMode.PercentOutput, leftSpeed * RobotMap.back3Inversion);
-		Robot.right3.set(ControlMode.PercentOutput, rightSpeed * RobotMap.back3Inversion);
+		//Robot.left1.set(ControlMode.PercentOutput, leftSpeed * RobotMap.front1Inversion);
+		//Robot.right1.set(ControlMode.PercentOutput, rightSpeed * RobotMap.front2Inversion);
+		//Robot.left2.set(ControlMode.PercentOutput, leftSpeed * RobotMap.back1Inversion);
+		//Robot.right2.set(ControlMode.PercentOutput, rightSpeed * RobotMap.back2Inversion);
+		//Robot.left3.set(ControlMode.PercentOutput, leftSpeed * RobotMap.back3Inversion);
+		//Robot.right3.set(ControlMode.PercentOutput, rightSpeed * RobotMap.back3Inversion);
 	}
 }
