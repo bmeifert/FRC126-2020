@@ -17,8 +17,6 @@ public class Robot extends TimedRobot {
 	public static TalonSRX right1 = new TalonSRX(RobotMap.front2);
 	public static TalonSRX left2 = new TalonSRX(RobotMap.back1);
 	public static TalonSRX right2 = new TalonSRX(RobotMap.back2);
-	public static TalonSRX left3 = new TalonSRX(RobotMap.back3);
-	public static TalonSRX right3 = new TalonSRX(RobotMap.back3);
 	public static Spark intakeMotor = new Spark(9);
 	public double robotID;
 

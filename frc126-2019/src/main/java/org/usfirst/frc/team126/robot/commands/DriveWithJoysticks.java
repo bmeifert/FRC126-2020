@@ -8,7 +8,7 @@ public class DriveWithJoysticks extends Command {
 	double fb, lr, rot, tl, tr;
 	int smoothFactor = 5;
 	boolean xboxLTrig, xboxRTrig, xboxA, xboxB, xboxX, xboxY, xboxLStick, xboxRStick;
-	boolean isCurved = true;
+	boolean isCurved = false;
 	boolean isSmoothed = true;
 	public DriveWithJoysticks() {
 		// Use requires() here to declare subsystem dependencies

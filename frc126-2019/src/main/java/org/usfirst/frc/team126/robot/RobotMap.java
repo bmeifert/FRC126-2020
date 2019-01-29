@@ -11,8 +11,11 @@ package org.usfirst.frc.team126.robot;
 	    \ \_\/\______/ \ \____/
 		 \/_/\/_____/   \/___/
 
-	GO GET EM GAEL FORCE!!!
-	~ Keith M, Faria S, Alyssa L, Alex T, Kyle C, and Sophia S
+	~ Brought to you by:
+	~ Keith M, Faria S, 
+	~ Alyssa L, Kyle C, 
+	~ Sophia S, and Alex T
+	~ GO GET EM GAEL FORCE!!!
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -42,16 +45,12 @@ public class RobotMap {
 	public static int front2 = 3;
 	public static int back1 = 2;
 	public static int back2 = 4;
-	public static int front3 = 11;
-	public static int back3 = 12;
 	
 	//Motor Inversions
 	public static int front1Inversion;
 	public static int back1Inversion;
 	public static int front2Inversion;
 	public static int back2Inversion;
-	public static int front3Inversion;
-	public static int back3Inversion;
 
 	public static void setRobot(double robotID){
 
@@ -60,24 +59,18 @@ public class RobotMap {
 			back1Inversion = 1;
 			front2Inversion = -1;
 			back2Inversion = -1;
-			front3Inversion = 1;
-			back3Inversion = 1;
 		}
 		else if(robotID == 1){ // 2019 practicebot (not implemented)
 			front1Inversion = 1;
 			back1Inversion = 1;
 			front2Inversion = -1;
 			back2Inversion = -1;
-			front3Inversion = 1;
-			back3Inversion = 1;
 		}
 		else if(robotID == 2){ // 2018 compbot
 			front1Inversion = 1;
 			back1Inversion = 1;
 			front2Inversion = -1;
 			back2Inversion = -1;
-			front3Inversion = 1;
-			back3Inversion = 1;
 		}
 		
 		else {
