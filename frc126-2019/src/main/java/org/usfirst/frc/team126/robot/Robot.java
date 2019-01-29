@@ -41,6 +41,7 @@ public class Robot extends TimedRobot {
 		internalData = new InternalData();
 		intake = new Intake();
 		vision = new Vision();
+
 		CameraServer.getInstance().startAutomaticCapture();
 		if(Math.rint(2) == 1) {
 			System.out.println("ROBOT INIT COMPLETED - doodoo");
@@ -83,7 +84,7 @@ public class Robot extends TimedRobot {
 		if(autonomous != null){
 			autonomous.cancel();
 		}
-    }
+        }
 
 	@Override
 	public void teleopPeriodic() { // Runs periodically during teleop
