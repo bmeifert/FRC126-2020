@@ -7,23 +7,13 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team126.robot.commands.AutoCenterToLeft;
-import org.usfirst.frc.team126.robot.subsystems.Intake;
-import org.usfirst.frc.team126.robot.subsystems.InternalData;
-import org.usfirst.frc.team126.robot.subsystems.WestCoastDrive; 
-import org.usfirst.frc.team126.robot.subsystems.Vision;
+import org.usfirst.frc.team126.robot.subsystems.*;
 import org.usfirst.frc.team126.robot.RobotMap;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class Robot extends TimedRobot {
 
-	public static Command autonomous; // Create subsystems
-	public static WestCoastDrive driveBase;
-	public static InternalData internalData;
-	public static BOI oi;
-	public static Intake intake;
-	public static Vision vision;
-
-	public static TalonSRX left1 = new TalonSRX(RobotMap.front1); // Create devices
+	public static TalonSRX left1 = new TalonSRX(RobotMap.front1); // Create the hardware that all the subsystems use
 	public static TalonSRX right1 = new TalonSRX(RobotMap.front2);
 	public static TalonSRX left2 = new TalonSRX(RobotMap.back1);
 	public static TalonSRX right2 = new TalonSRX(RobotMap.back2);
@@ -31,6 +21,15 @@ public class Robot extends TimedRobot {
 	public static TalonSRX right3 = new TalonSRX(RobotMap.back3);
 	public static Spark intakeMotor = new Spark(9);
 	public double robotID;
+
+	public static Command autonomous; // Create the subsystems that control the hardware
+	public static WestCoastDrive driveBase;
+	public static InternalData internalData;
+	public static BOI oi;
+	public static Intake intake;
+	public static Vision vision;
+	public static Lift lift;
+	public static Pneumatics pneumatics;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -41,7 +40,8 @@ public class Robot extends TimedRobot {
 		internalData = new InternalData();
 		intake = new Intake();
 		vision = new Vision();
-
+		lift = new Lift();
+		pneumatics = new Pneumatics();
 		CameraServer.getInstance().startAutomaticCapture();
 		if(Math.rint(2) == 1) {
 			System.out.println("ROBOT INIT COMPLETED - doodoo");
@@ -73,7 +73,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousPeriodic() { // Runs periodically during sandstorm
-		Scheduler.getInstance().run(); 
+		Scheduler.getInstance().run();
 		
 	}
 
