@@ -19,7 +19,8 @@ public class CameraData extends Command {
 	@SuppressWarnings("static-access")
 	@Override
 	protected void execute() {
-		Robot.vision.getPacketData();
+		Robot.vision.refreshPacketData();
+		System.out.println(Robot.vision.getPacketData(1, "v"));
 	}
 
 	// Returns true if command finished

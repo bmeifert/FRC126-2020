@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Vision extends Subsystem {
 
     public PixyI2C Pixy;
-    public PixyPacket[] packetData = new PixyPacket[8];
+	public PixyPacket[] packetData = new PixyPacket[8];
     String print;
 
     public Vision() {
@@ -23,7 +23,7 @@ public class Vision extends Subsystem {
 		}
     }
 
-    public void getPacketData() {
+    public void refreshPacketData() {
 		// Clear out the old data in the packets
 		for (int i = 0; i < packetData.length; i++) {
 			if (packetData[i] == null) {
@@ -89,5 +89,25 @@ public class Vision extends Subsystem {
 		}	
 
 		SmartDashboard.putString("Pixy getPacketData", "done");
+	}
+	public double getPacketData(int packetID, String dataID ) {
+		packetID += -1; // offset
+		if(dataID == "x") {
+			return packetData[packetID].X;
+		}
+		if(dataID == "y") {
+			return packetData[packetID].Y;
+		}
+		if(dataID == "v") {
+			if(packetData[packetID].isValid == true) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		}
+		else {
+			return -1;
+		}
 	}
 }

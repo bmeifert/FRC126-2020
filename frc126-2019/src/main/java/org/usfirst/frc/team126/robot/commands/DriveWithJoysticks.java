@@ -5,10 +5,10 @@ import org.usfirst.frc.team126.robot.RobotMap;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class DriveWithJoysticks extends Command {
-	double fb, lr, rot, tl, tr;
+	double fb, lr, rot, tl, tr, x, y, v;
 	int smoothFactor = 5;
 	boolean xboxLTrig, xboxRTrig, xboxA, xboxB, xboxX, xboxY, xboxLStick, xboxRStick;
-	boolean isCurved = false;
+	boolean isCurved = true;
 	boolean isSmoothed = true;
 	public DriveWithJoysticks() {
 		// Use requires() here to declare subsystem dependencies
@@ -64,9 +64,37 @@ public class DriveWithJoysticks extends Command {
 		if(Math.abs(fb) < 0.05) {
 			fb = 0;
 		}
-		Robot.driveBase.Drive(fb, rot, isCurved, isSmoothed, smoothFactor); // Drive with set values
+		if(xboxLTrig) {
+			x = Robot.vision.getPacketData(1, "x");
+			y = Robot.vision.getPacketData(1, "y");
+			v = Robot.vision.getPacketData(1, "v");
+			System.out.println("AUTODRIVE" + x + y + v);
+			if(v == 1) {
+				if(x > 165) {
+					Robot.driveBase.Drive(0, 0.05 + (x - 165) / 300, false, true, 5);
+				}
+				else if(x < 135) {
+					Robot.driveBase.Drive(0, -0.05 + (x - 135) / 300, false, true, 5);
+				}
+				else {
+					Robot.driveBase.Drive(0, 0, false, true, 5);
+				}
+				System.out.println("ASSIST TAKEOVER");
+			}
+			else {
+				System.out.println("ASSIST FAIL");
+				Robot.driveBase.Drive(0, 0, false, true, 5);
+			}
 
-		Robot.intake.setIntake(lr); // Set intake to triggers
+		}
+		else {
+			Robot.driveBase.Drive(fb, rot, isCurved, isSmoothed, smoothFactor); // Drive with set values
+			Robot.intake.setIntake(lr); // Set intake to triggers
+			System.out.println("Driving");
+		}
+
+
+
 	}
 
 	// Returns true if command finished
