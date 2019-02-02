@@ -41,36 +41,36 @@ public class RobotMap {
 	public static int xboxRStick = 10; // Right stick button
 	
 	// Motor IDs
-	public static int front1 = 1;
-	public static int front2 = 3;
-	public static int back1 = 2;
-	public static int back2 = 4;
+	public static int left1 = 4;
+	public static int left2 = 2;
+	public static int right1 = 1;
+	public static int right2 = 3;
 	
 	//Motor Inversions
-	public static int front1Inversion;
-	public static int back1Inversion;
-	public static int front2Inversion;
-	public static int back2Inversion;
+	public static int left1Inversion;
+	public static int right1Inversion;
+	public static int left2Inversion;
+	public static int right2Inversion;
 
 	public static void setRobot(double robotID){
 
-		if(robotID == 0){ // 2019 compbot (not implemented)
-			front1Inversion = 1;
-			back1Inversion = 1;
-			front2Inversion = -1;
-			back2Inversion = -1;
+		if(robotID == 0){ // 2019 buildbot
+			left1Inversion = -1;
+			right1Inversion = 1;
+			left2Inversion = -1;
+			right2Inversion = 1;
 		}
 		else if(robotID == 1){ // 2019 practicebot (not implemented)
-			front1Inversion = 1;
-			back1Inversion = 1;
-			front2Inversion = -1;
-			back2Inversion = -1;
+			left1Inversion = 1;
+			right1Inversion = 1;
+			left2Inversion = -1;
+			right2Inversion = -1;
 		}
-		else if(robotID == 2){ // 2018 compbot
-			front1Inversion = 1;
-			back1Inversion = 1;
-			front2Inversion = -1;
-			back2Inversion = -1;
+		else if(robotID == 2){ // 2018 compbot (deprecated)
+			left1Inversion = 1;
+			right1Inversion = 1;
+			left2Inversion = -1;
+			right2Inversion = -1;
 		}
 		
 		else {

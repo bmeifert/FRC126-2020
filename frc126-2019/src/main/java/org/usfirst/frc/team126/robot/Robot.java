@@ -14,10 +14,10 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class Robot extends TimedRobot {
 
-	public static TalonSRX left1 = new TalonSRX(RobotMap.front1); // Create the hardware that all the subsystems use
-	public static TalonSRX right1 = new TalonSRX(RobotMap.front2);
-	public static TalonSRX left2 = new TalonSRX(RobotMap.back1);
-	public static TalonSRX right2 = new TalonSRX(RobotMap.back2);
+	public static TalonSRX left1 = new TalonSRX(RobotMap.left1); // Create the hardware that all the subsystems use
+	public static TalonSRX right1 = new TalonSRX(RobotMap.right1);
+	public static TalonSRX left2 = new TalonSRX(RobotMap.left2);
+	public static TalonSRX right2 = new TalonSRX(RobotMap.right2);
 	public static Spark intakeMotor = new Spark(9);
 	public double robotID;
 
