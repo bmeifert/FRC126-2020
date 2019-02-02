@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class DataPeriodic extends Command {
+	int count=0;
+
 	public DataPeriodic() {
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.internalData);
