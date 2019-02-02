@@ -42,8 +42,8 @@ public class WestCoastDrive extends Subsystem {
 			smoothFactor = 50;
 		}
 
-		leftMultiplier = fb - rot;
-		rightMultiplier = fb + rot;
+		leftMultiplier = fb + rot;
+		rightMultiplier = fb - rot;
 
 		if(isSmoothed) {
 			leftSpeed = (leftSpeed * smoothFactor + leftMultiplier) / (smoothFactor + 1); // Smooth out spikes and sudden movements by averaging speeds

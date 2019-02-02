@@ -41,10 +41,10 @@ public class RobotMap {
 	public static int xboxRStick = 10; // Right stick button
 	
 	// Motor IDs
-	public static int left1 = 1;
-	public static int left2 = 3;
-	public static int right1 = 2;
-	public static int right2 = 4;
+	public static int left1 = 4;
+	public static int left2 = 2;
+	public static int right1 = 1;
+	public static int right2 = 3;
 	
 	//Motor Inversions
 	public static int left1Inversion;
@@ -55,9 +55,9 @@ public class RobotMap {
 	public static void setRobot(double robotID){
 
 		if(robotID == 0){ // 2019 buildbot
-			left1Inversion = 1;
+			left1Inversion = -1;
 			right1Inversion = 1;
-			left2Inversion = 1;
+			left2Inversion = -1;
 			right2Inversion = 1;
 		}
 		else if(robotID == 1){ // 2019 practicebot (not implemented)
