@@ -20,7 +20,7 @@ public class CameraData extends Command {
 	@Override
 	protected void execute() {
 		Robot.vision.refreshPacketData();
-		System.out.println(Robot.vision.getPacketData(1, "v"));
+		//System.out.println(Robot.vision.getPacketData(1, "v"));
 	}
 
 	// Returns true if command finished

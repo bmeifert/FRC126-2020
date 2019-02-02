@@ -3,6 +3,7 @@ package org.usfirst.frc.team126.robot;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,7 +29,10 @@ public class Robot extends TimedRobot {
 	public static Vision vision;
 	public static Lift lift;
 	public static Pneumatics pneumatics;
-
+	public static LidarLite distance;
+	public static DigitalInput limitSwitch;
+	public static DigitalInput limitSwitch2;
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void robotInit() { // Runs when the code first starts
@@ -40,7 +44,11 @@ public class Robot extends TimedRobot {
 		vision = new Vision();
 		lift = new Lift();
 		pneumatics = new Pneumatics();
-		CameraServer.getInstance().startAutomaticCapture();
+		distance = new LidarLite(new DigitalInput(5));
+		limitSwitch = new DigitalInput(7);
+		limitSwitch2 = new DigitalInput(8);
+
+		//CameraServer.getInstance().startAutomaticCapture();
 		if(Math.rint(2) == 1) {
 			System.out.println("ROBOT INIT COMPLETED - doodoo");
 		}
