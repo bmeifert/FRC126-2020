@@ -54,9 +54,9 @@ public class WestCoastDrive extends Subsystem {
 			rightSpeed = rightMultiplier;
 		}
 
-		Robot.left1.set(ControlMode.PercentOutput, leftSpeed * RobotMap.front1Inversion);
-		Robot.right1.set(ControlMode.PercentOutput, rightSpeed * RobotMap.front2Inversion);
-		Robot.left2.set(ControlMode.PercentOutput, leftSpeed * RobotMap.back1Inversion);
-		Robot.right2.set(ControlMode.PercentOutput, rightSpeed * RobotMap.back2Inversion);
+		Robot.left1.set(ControlMode.PercentOutput, leftSpeed * RobotMap.left1Inversion);
+		Robot.right1.set(ControlMode.PercentOutput, rightSpeed * RobotMap.right1Inversion);
+		Robot.left2.set(ControlMode.PercentOutput, leftSpeed * RobotMap.left2Inversion);
+		Robot.right2.set(ControlMode.PercentOutput, rightSpeed * RobotMap.right2Inversion);
 	}
 }
