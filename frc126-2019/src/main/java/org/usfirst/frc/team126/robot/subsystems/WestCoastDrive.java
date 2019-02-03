@@ -8,8 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class WestCoastDrive extends Subsystem {
 
-	double leftMultiplier, rightMultiplier;
-	double leftSpeed, rightSpeed;
+	double leftMultiplier, rightMultiplier, leftSpeed, rightSpeed;
 
 	public void initDefaultCommand() {
 		setDefaultCommand(new DriveWithJoysticks());

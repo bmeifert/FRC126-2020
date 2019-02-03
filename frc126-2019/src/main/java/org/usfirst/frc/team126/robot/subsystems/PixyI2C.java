@@ -33,19 +33,19 @@ public class PixyI2C {
 	public byte getByte() {
 		byte[] rawData = new byte[1];
 
-		SmartDashboard.putString("Pixy getPacketData", "getByte");
+		//SmartDashboard.putString("Pixy getPacketData", "getByte");
 
 		try {
-			SmartDashboard.putString("Pixy getPacketData", "readOnly");
+			//SmartDashboard.putString("Pixy getPacketData", "readOnly");
 			pixy.readOnly(rawData, 1);
 		} catch (RuntimeException e) {
-			SmartDashboard.putString(name + "Status", e.toString());
-			System.out.println("getByte RuntimeException " + e.toString());
+			//SmartDashboard.putString(name + "Status", e.toString());
+			//System.out.println("getByte RuntimeException " + e.toString());
 			return 0;
 		}
 		if (rawData.length < (1)) {
-			SmartDashboard.putString(name + "Status", "raw data length " + rawData.length);
-			System.out.println("getByte rawData.length " + rawData.length);
+			//SmartDashboard.putString(name + "Status", "raw data length " + rawData.length);
+			//System.out.println("getByte rawData.length " + rawData.length);
 			return 0;
 		}
 		//System.out.println("getByte returning " + String.format("0x%02X", rawData[0]));
@@ -58,7 +58,7 @@ public class PixyI2C {
 		int data;
 		byte b1, b2, zeroCount=0;
 				
-		SmartDashboard.putString("Pixy getPacketData", "findStart");
+		//SmartDashboard.putString("Pixy getPacketData", "findStart");
 
 		while (!frameStart && tries-- > 0) {
 			b1 = getByte();
@@ -105,7 +105,7 @@ public class PixyI2C {
 
 	public int readPacket(boolean firstPacket) {
 
-		SmartDashboard.putString("Pixy getPacketData", "readPacket (" + firstPacket + ")");
+		//SmartDashboard.putString("Pixy getPacketData", "readPacket (" + firstPacket + ")");
 
 		byte[] rawData = new byte[14];
 		int Checksum, Signature, keyWord, offset = 0, readSize = 14;
@@ -115,12 +115,12 @@ public class PixyI2C {
 		try {
 	    	pixy.readOnly(rawData,readSize);
 	    } catch (RuntimeException e) {
-	    	SmartDashboard.putString(name + "Status", e.toString());
+	    	//SmartDashboard.putString(name + "Status", e.toString());
 	    	System.out.println(name + "  " + e);
 	    	return -1;
 	    }
 	    if (rawData.length < readSize) {
-	    	SmartDashboard.putString(name + "Status", "raw data length " + rawData.length);
+	    	//SmartDashboard.putString(name + "Status", "raw data length " + rawData.length);
 	    	System.out.println("byte array length is broken length=" + rawData.length);
 	    	return -1;
 		}
@@ -172,14 +172,14 @@ public class PixyI2C {
 	public void readPackets() throws PixyException {
 		int ret=0,count=32;
 
-		SmartDashboard.putString("Pixy getPacketData", "readPackets");
+		//SmartDashboard.putString("Pixy getPacketData", "readPackets");
 
 		if (!findStart()) { return; }
 
 		ret = readPacket(true);
 
 		while (ret == 0 && count-- > 0) {
-			SmartDashboard.putString("Pixy getPacketData", "readPackets count " + count);
+			//SmartDashboard.putString("Pixy getPacketData", "readPackets count " + count);
 			ret=readPacket(false);
 		}
 	}

@@ -48,11 +48,14 @@ public class Vision extends Subsystem {
 		for (int i = 0; i < packetData.length; i++) {
 			if (!packetData[i].isValid) {
 				// If we hit an error, mark the packet as invalid
+
+				/*
 				SmartDashboard.putString("Pixy Error: " + (i+1), "True");
 				SmartDashboard.putNumber("Pixy X Value: " + (i+1), 99999999);
 				SmartDashboard.putNumber("Pixy Y Value: " + (i+1), 99999999);
 				SmartDashboard.putNumber("Pixy Width Value: " + (i+1), 99999999);
 				SmartDashboard.putNumber("Pixy Height Value: " + (i+1), 99999999);
+				*/
 			} else {
 				int x,y,h,w;
 				x=packetData[i].X;
@@ -61,12 +64,14 @@ public class Vision extends Subsystem {
 				h=packetData[i].Height;
 				String xmove,ymove,distance;
 
-				// If the read was good, mark the packet valid 
+				// If the read was good, mark the packet valid
+				/*
 	        	SmartDashboard.putString("Pixy Error: " + (i+1), "False");
 				SmartDashboard.putNumber("Pixy X Value: " + (i+1), x);
 				SmartDashboard.putNumber("Pixy Y Value: " + (i+1), y);
 				SmartDashboard.putNumber("Pixy Width Value: " + (i+1), w);
 				SmartDashboard.putNumber("Pixy Height Value: " + (i+1), h);
+				*/
 
 				if (x < 135) { 
 					xmove = "Move Left"; 
@@ -84,11 +89,11 @@ public class Vision extends Subsystem {
 					 ymove = "Y-Centered"; 
 				} 
 
-				System.out.println("Packet " + (i+1) + " " + xmove + " " + ymove + " = " + packetData[i].toString());
+				//System.out.println("Packet " + (i+1) + " " + xmove + " " + ymove + " = " + packetData[i].toString());
 			}
 		}	
 
-		SmartDashboard.putString("Pixy getPacketData", "done");
+		//SmartDashboard.putString("Pixy getPacketData", "done");
 	}
 	public double getPacketData(int packetID, String dataID ) {
 		packetID += -1; // offset
