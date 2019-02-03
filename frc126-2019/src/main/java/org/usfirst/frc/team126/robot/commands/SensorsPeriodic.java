@@ -6,8 +6,8 @@ import org.usfirst.frc.team126.robot.subsystems.LidarLite;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 
-public class DistanceMeasure extends Command {
-	public DistanceMeasure() {
+public class SensorsPeriodic extends Command {
+	public SensorsPeriodic() {
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.distance);
 	}
@@ -22,7 +22,7 @@ public class DistanceMeasure extends Command {
 	@Override
 	protected void execute() {
 		double ret = Robot.distance.getDistance();
-        SmartDashboard.putNumber("Distance Sensor: ", ret);
+        //SmartDashboard.putNumber("Distance Sensor: ", ret);
 		//if (count++ % 10 == 0) {
 		//	System.out.println("Sensor Reading " + String.format("%5.2f", ret));
         //}	
@@ -30,14 +30,14 @@ public class DistanceMeasure extends Command {
         boolean limitReached = false;
         if (Robot.limitSwitch.get()) {
             limitReached=true;
-        };    
-        SmartDashboard.putBoolean("Limit Switch: ", limitReached);   
+        }
+        //SmartDashboard.putBoolean("Limit Switch: ", limitReached);   
 
         limitReached = false;
         if (Robot.limitSwitch2.get()) {
             limitReached=true;
-        };
-        SmartDashboard.putBoolean("Limit Switch 2: ", limitReached);   
+        }
+        //SmartDashboard.putBoolean("Limit Switch 2: ", limitReached);   
     }
 
 	// Returns true if command finished

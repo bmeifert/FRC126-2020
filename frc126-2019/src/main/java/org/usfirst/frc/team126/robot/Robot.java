@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.usfirst.frc.team126.robot.commands.AutoCenterToLeft;
 import org.usfirst.frc.team126.robot.subsystems.*;
 import org.usfirst.frc.team126.robot.RobotMap;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -38,7 +37,8 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() { // Runs when the code first starts
 		SmartDashboard.putNumber("Robot ID", 0);
-		oi = new BOI();
+
+		oi = new BOI(); // Init subsystems
 		driveBase = new WestCoastDrive();
 		internalData = new InternalData();
 		intake = new Intake();
@@ -48,14 +48,9 @@ public class Robot extends TimedRobot {
 		distance = new LidarLite(new DigitalInput(5));
 		limitSwitch = new DigitalInput(7);
 		limitSwitch2 = new DigitalInput(8);
-
 		CameraServer.getInstance().startAutomaticCapture();
-		if(Math.rint(2) == 1) {
-			System.out.println("ROBOT INIT COMPLETED - doodoo");
-		}
-		else {
-			System.out.println("ROBOT INIT COMPLETED - meatball");
-		}
+		
+		System.out.println("ROBOT INIT");
 	}
 	
 	@Override
@@ -64,6 +59,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() { // Runs when robot is first disabled
+		System.out.println("ROBOT DISABLED");
 	}
 
 	@Override
@@ -76,6 +72,7 @@ public class Robot extends TimedRobot {
 		robotID = SmartDashboard.getNumber("Robot ID", 0);
 		RobotMap.setRobot(robotID);
 		//autonomous = (Command) new AutoCenterToLeft();
+		System.out.println("ROBOT ENABLED - SANDSTORM");
 	}
 
 	@Override
@@ -91,7 +88,8 @@ public class Robot extends TimedRobot {
 		if(autonomous != null){
 			autonomous.cancel();
 		}
-        }
+		System.out.println("ROBOT ENABLED - OPERATOR");
+    }
 
 	@Override
 	public void teleopPeriodic() { // Runs periodically during teleop
