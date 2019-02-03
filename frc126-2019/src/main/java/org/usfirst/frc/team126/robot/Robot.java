@@ -32,6 +32,7 @@ public class Robot extends TimedRobot {
 	public static LidarLite distance;
 	public static DigitalInput limitSwitch;
 	public static DigitalInput limitSwitch2;
+
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -48,7 +49,7 @@ public class Robot extends TimedRobot {
 		limitSwitch = new DigitalInput(7);
 		limitSwitch2 = new DigitalInput(8);
 
-		//CameraServer.getInstance().startAutomaticCapture();
+		CameraServer.getInstance().startAutomaticCapture();
 		if(Math.rint(2) == 1) {
 			System.out.println("ROBOT INIT COMPLETED - doodoo");
 		}
@@ -74,7 +75,7 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() { // Runs when sandstorm starts
 		robotID = SmartDashboard.getNumber("Robot ID", 0);
 		RobotMap.setRobot(robotID);
-		autonomous = (Command) new AutoCenterToLeft();
+		//autonomous = (Command) new AutoCenterToLeft();
 	}
 
 	@Override
