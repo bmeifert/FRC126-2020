@@ -4,13 +4,13 @@ import org.usfirst.frc.team126.robot.Robot;
 import org.usfirst.frc.team126.robot.RobotMap;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class DriveWithJoysticks extends Command {
+public class OperatorControl extends Command {
 	double fb, lr, rot, tl, tr, x, y, v, maxSpeed;
 	int smoothFactor = 5;
 	boolean xboxLTrig, xboxRTrig, xboxA, xboxB, xboxX, xboxY, xboxLStick, xboxRStick;
 	boolean isCurved = true;
 	boolean isSmoothed = true;
-	public DriveWithJoysticks() {
+	public OperatorControl() {
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.driveBase);
 	}

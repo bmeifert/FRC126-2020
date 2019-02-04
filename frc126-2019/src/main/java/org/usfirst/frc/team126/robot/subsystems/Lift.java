@@ -19,16 +19,21 @@ public class Lift extends Subsystem {
 	public static liftStates lState = null;
 	public static limitStates limitState = null;
 	public static double encoderVal = 0;
+	public static double liftSpeed = 0;
 
 	public void initDefaultCommand() {
+		
 	}
-	public static void resetLift() {
+
+	public static void resetLift() { // Set everything to default. Will require us to re-zero the lift.
 		lState = liftStates.notzeroed;
 		targetPos = liftPos.zero;
 		currentPos = liftPos.free;
 		limitState = limitStates.ok;
-
+		liftSpeed = 0;
+		encoderVal = 0;
 	}
+
 	public static void setTargetPos(liftPos lPos) {
 		if(lState == liftStates.ready) {
 			targetPos = lPos;
@@ -43,7 +48,7 @@ public class Lift extends Subsystem {
 
 	}
 	public static void moveLift(double newPos) {
-		if(Robot.limitSwitch.get() == false) {
+		if(Robot.limitSwitch.get() == false) { // The first thing we should always do is check if we're at a limit
 			limitState = limitStates.bottomLimit;
 		}
 		else if(Robot.limitSwitch2.get() == false) {

@@ -2,7 +2,7 @@ package org.usfirst.frc.team126.robot.subsystems;
 
 import org.usfirst.frc.team126.robot.Robot;
 import org.usfirst.frc.team126.robot.RobotMap;
-import org.usfirst.frc.team126.robot.commands.DriveWithJoysticks;
+import org.usfirst.frc.team126.robot.commands.OperatorControl;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -11,7 +11,7 @@ public class WestCoastDrive extends Subsystem {
 	double leftMultiplier, rightMultiplier, leftSpeed, rightSpeed;
 
 	public void initDefaultCommand() {
-		setDefaultCommand(new DriveWithJoysticks());
+		setDefaultCommand(new OperatorControl());
 		leftSpeed = 0;
 		rightSpeed = 0;
 	}
