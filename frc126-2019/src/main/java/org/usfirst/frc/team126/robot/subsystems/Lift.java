@@ -9,7 +9,7 @@ public class Lift extends Subsystem {
 		first, second, third, zero, free
 	}
 	public static enum liftStates {
-		notzeroed, ready, moving, estop
+		notzeroed, ready, moving, estop, zeroing
 	}
 	public static enum limitStates {
 		bottomLimit, topLimit, ok
@@ -22,7 +22,7 @@ public class Lift extends Subsystem {
 	public static double liftSpeed = 0;
 
 	public void initDefaultCommand() {
-		
+
 	}
 
 	public static void resetLift() { // Set everything to default. Will require us to re-zero the lift.
@@ -57,5 +57,28 @@ public class Lift extends Subsystem {
 		else {
 			limitState = limitStates.ok;
 		}
+	}
+	public static void setLiftSpeed(double targetSpeed) {
+		if(limitState == limitStates.bottomLimit && targetSpeed < 0) { // Prevent movement below bottom limit
+			targetSpeed = 0;
+		}
+		else if(limitState == limitStates.topLimit && targetSpeed > 0) { // Prevent movement above top limit
+			targetSpeed = 0;
+		}
+		else if(lState != liftStates.moving) {
+			if(lState == liftStates.zeroing) { // If we're zeroing the lift, limit it to 20% speed so it doesn't break anything.
+				if(targetSpeed > 0.2) {
+					targetSpeed = 0.2;
+				}
+				else if(targetSpeed < -0.2) {
+					targetSpeed = -0.2;
+				}
+			}
+			else { // If it's saying we should move but we're not in that state something is going wrong.
+				targetSpeed = 0;
+			}
+			
+		}
+		// TODO: Set arm motor speed to targetSpeed
 	}
 }
