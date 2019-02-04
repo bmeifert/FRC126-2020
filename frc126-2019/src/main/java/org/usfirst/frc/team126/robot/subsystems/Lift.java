@@ -81,4 +81,11 @@ public class Lift extends Subsystem {
 		}
 		// TODO: Set arm motor speed to targetSpeed
 	}
+	public static double getCurve(double distanceToPosition) {
+		double setSpeed = 0.1 + distanceToPosition / 5000;
+		if(setSpeed > 1) {
+			setSpeed = 1;
+		}
+		return setSpeed;
+	}
 }
