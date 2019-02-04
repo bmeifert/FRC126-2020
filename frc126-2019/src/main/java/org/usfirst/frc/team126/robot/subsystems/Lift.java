@@ -1,7 +1,7 @@
 package org.usfirst.frc.team126.robot.subsystems;
 
+import java.util.HashMap;
 import org.usfirst.frc.team126.robot.Robot;
-
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class Lift extends Subsystem {
@@ -14,6 +14,9 @@ public class Lift extends Subsystem {
 	public static enum limitStates {
 		bottomLimit, topLimit, ok
 	}
+
+	public static HashMap<liftPos, Double> encoderMap = new HashMap<liftPos, Double>();
+
 	public static liftPos targetPos = null;
 	public static liftPos currentPos = null;
 	public static liftStates lState = null;
@@ -32,6 +35,13 @@ public class Lift extends Subsystem {
 		limitState = limitStates.ok;
 		liftSpeed = 0;
 		encoderVal = 0;
+
+		encoderMap.clear(); // Create mappings with encoder positions
+		encoderMap.put(liftPos.first, (double) 50000);
+		encoderMap.put(liftPos.second, (double) 100000);
+		encoderMap.put(liftPos.third, (double) 150000);
+
+		System.out.println("INIT LIFT WITH POS "+ encoderMap.get(liftPos.first)+ " " + encoderMap.get(liftPos.second)+ " " + encoderMap.get(liftPos.third)+ " DONE" );
 	}
 
 	public static void setTargetPos(liftPos lPos) {
@@ -57,6 +67,11 @@ public class Lift extends Subsystem {
 		else {
 			limitState = limitStates.ok;
 		}
+
+		if(currentPos != targetPos) {
+
+		}
+
 	}
 	public static void setLiftSpeed(double targetSpeed) {
 		if(limitState == limitStates.bottomLimit && targetSpeed < 0) { // Prevent movement below bottom limit

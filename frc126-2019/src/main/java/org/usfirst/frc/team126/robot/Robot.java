@@ -70,7 +70,13 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() { // Runs when sandstorm starts
 		robotID = SmartDashboard.getNumber("Robot ID", 0);
-		RobotMap.setRobot(robotID);
+		try {
+			RobotMap.setRobot(robotID);
+		}
+		catch(NullPointerException e){
+			RobotMap.setRobot(0);
+			System.out.println("ROBOT ID OUT OF RANGE - 0 DEFAULT");
+		}
 		//autonomous = (Command) new AutoCenterToLeft();
 		System.out.println("ROBOT ENABLED - SANDSTORM");
 	}
@@ -84,7 +90,13 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() { // Runs when sandstorm ends
 		robotID = SmartDashboard.getNumber("Robot ID", 0);
-		RobotMap.setRobot(robotID);
+		try {
+			RobotMap.setRobot(robotID);
+		}
+		catch(NullPointerException e){
+			RobotMap.setRobot(0);
+			System.out.println("ROBOT ID OUT OF RANGE - 0 DEFAULT");
+		}
 		if(autonomous != null){
 			autonomous.cancel();
 		}

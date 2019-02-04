@@ -52,25 +52,33 @@ public class RobotMap {
 	public static int left2Inversion;
 	public static int right2Inversion;
 
+	public static double firstStopPosition;
+	public static double secondStopPosition;
+	public static double thirdStopPosition;
+
+
+
 	public static void setRobot(double robotID){
 
-		if(robotID == 0){ // 2019 buildbot
+		if(robotID == 0){ // 2019 compbot
 			left1Inversion = -1;
 			right1Inversion = 1;
 			left2Inversion = -1;
 			right2Inversion = 1;
+			
+			firstStopPosition = 50000;
+			secondStopPosition = 100000;
+			thirdStopPosition = 150000;
 		}
-		else if(robotID == 1){ // 2019 practicebot (not implemented)
-			left1Inversion = 1;
+		else if(robotID == 1){ // 2019 practicebot
+			left1Inversion = -1;
 			right1Inversion = 1;
 			left2Inversion = -1;
-			right2Inversion = -1;
-		}
-		else if(robotID == 2){ // 2018 compbot (deprecated)
-			left1Inversion = 1;
-			right1Inversion = 1;
-			left2Inversion = -1;
-			right2Inversion = -1;
+			right2Inversion = 1;
+
+			firstStopPosition = 50000;
+			secondStopPosition = 100000;
+			thirdStopPosition = 150000;
 		}
 		
 		else {
