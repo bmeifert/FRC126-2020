@@ -30,6 +30,7 @@ public class Lift extends Subsystem {
 	}
 
 	public static void resetLift() { // Set everything to default. Will require us to re-zero the lift.
+
 		lState = liftStates.notzeroed;
 		targetPos = liftPos.zero;
 		currentPos = liftPos.free;
@@ -45,10 +46,16 @@ public class Lift extends Subsystem {
 		System.out.println("INIT LIFT WITH POS "+ encoderMap.get(liftPos.first)+ " " + encoderMap.get(liftPos.second)+ " " + encoderMap.get(liftPos.third)+ " DONE" );
 	}
 
-	public static void setTargetPos(liftPos lPos) {
+	public static void setTargetPos(liftPos lPos) { // USE THIS to set arm target
 		if(lState == liftStates.ready) {
 			targetPos = lPos;
-			lState = liftStates.moving;
+			if(lPos == liftPos.free) {
+				// PASS
+			}
+			else {
+				lState = liftStates.moving;
+			}
+
 		}
 		else if(lState == liftStates.estop || lState == liftStates.notzeroed){ // if the lift is having a major issue (not zeroed or emergency stopped)
 			System.out.println("LIFT MOVE FAILED -- LIFT CRITICAL ERROR");
@@ -58,12 +65,12 @@ public class Lift extends Subsystem {
 		}
 
 	}
-	public static void moveLift(double newPos) {
+	public static void moveLift() { // **MUST** BE CALLED _EVERY_ ITERATION - i cannot stress this enough - schedule it to run *always* 
 
 		if(Robot.limitSwitch.get() == false) { // The first thing we should always do is check if we're at a limit
 			limitState = limitStates.bottomLimit;
 		}
-		else if(Robot.limitSwitch2.get() == false) {
+		else if(Robot.limitSwitch2.get() == false) { // TODO we might want to consider additional action when we're at the top
 			limitState = limitStates.topLimit;
 		}
 		else {
@@ -96,9 +103,16 @@ public class Lift extends Subsystem {
 		}
 
 	}
-	public static void setLiftSpeed(double targetSpeed) {
+
+	public static void setLiftSpeed(double targetSpeed) { // NEVER call this function - it should only be called by moveLift
+
 		if(limitState == limitStates.bottomLimit && targetSpeed < 0) { // Prevent movement below bottom limit
 			targetSpeed = 0;
+			if(targetPos == liftPos.zero) { // If we're at the bottom limit we're zeroed
+				targetPos = liftPos.free;
+				currentPos = liftPos.free;
+				lState = liftStates.ready;
+			}
 		}
 		else if(limitState == limitStates.topLimit && targetSpeed > 0) { // Prevent movement above top limit
 			targetSpeed = 0;
@@ -113,6 +127,9 @@ public class Lift extends Subsystem {
 					targetSpeed = -0.2;
 				}
 			}
+			else if(lState == liftStates.notzeroed) { // We're trying to move while we aren't zeroed. This isn't good!
+				targetSpeed = 0;
+			}
 			else if(lState == liftStates.ready && currentPos == liftPos.free) {
 				// PASS
 				// If the operator is controlling the arm then pass through
@@ -126,7 +143,8 @@ public class Lift extends Subsystem {
 
 		// TODO: Set arm motor speed to targetSpeed
 	}
-	public static double getCurve(double distanceToPosition) {
+
+	public static double getCurve(double distanceToPosition) { // Curve inputs so we don't abruptly stop - we should only be doing that if we hit a limit switch
 		double setSpeed = 0.1 + distanceToPosition / 5000;
 		if(setSpeed > 1) {
 			setSpeed = 1;
