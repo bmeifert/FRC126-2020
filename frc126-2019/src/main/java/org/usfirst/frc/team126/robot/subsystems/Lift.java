@@ -23,6 +23,7 @@ public class Lift extends Subsystem {
 	public static limitStates limitState = null;
 	public static double encoderVal = 0;
 	public static double liftSpeed = 0;
+	public static double liftMultiplier = 0;
 
 	public void initDefaultCommand() {
 
@@ -58,6 +59,7 @@ public class Lift extends Subsystem {
 
 	}
 	public static void moveLift(double newPos) {
+
 		if(Robot.limitSwitch.get() == false) { // The first thing we should always do is check if we're at a limit
 			limitState = limitStates.bottomLimit;
 		}
@@ -65,11 +67,32 @@ public class Lift extends Subsystem {
 			limitState = limitStates.topLimit;
 		}
 		else {
-			limitState = limitStates.ok;
+			limitState = limitStates.ok; // If we're not at a limit than the limit state is OK
+		}
+		// TODO encoderVal = latest encoder value
+
+		if(targetPos == liftPos.zero) { // Handle arm movement for auto, fastest we should go down is -0.2 so we don't break anything
+			setLiftSpeed(-0.2);
+		}
+		if(targetPos == liftPos.free) { // Take arm out of auto for operator control
 		}
 
-		if(currentPos != targetPos) {
+		else if(currentPos != targetPos) {
+			double distanceToTarget = Math.abs(encoderMap.get(targetPos) - encoderVal);
+			if(encoderVal > encoderMap.get(targetPos) + 2000) { // 2000 = margin of error to move up
+				liftMultiplier = 1;
+				setLiftSpeed(getCurve(distanceToTarget * liftMultiplier));
+			}
+			else if(encoderVal < encoderMap.get(targetPos) - 2000) { // 2000 = margin of error to move down
+				liftMultiplier = -1;
+				setLiftSpeed(getCurve(distanceToTarget * liftMultiplier));
 
+			}
+			else { // within margin of error, set current pos to target and stop the lift
+				currentPos = targetPos;
+				liftMultiplier = 0;
+				setLiftSpeed(0);
+			}
 		}
 
 	}
@@ -80,7 +103,8 @@ public class Lift extends Subsystem {
 		else if(limitState == limitStates.topLimit && targetSpeed > 0) { // Prevent movement above top limit
 			targetSpeed = 0;
 		}
-		else if(lState != liftStates.moving) {
+		else if(lState != liftStates.moving) { // Our state is not moving, but we might still be ok
+
 			if(lState == liftStates.zeroing) { // If we're zeroing the lift, limit it to 20% speed so it doesn't break anything.
 				if(targetSpeed > 0.2) {
 					targetSpeed = 0.2;
@@ -89,11 +113,17 @@ public class Lift extends Subsystem {
 					targetSpeed = -0.2;
 				}
 			}
+			else if(lState == liftStates.ready && currentPos == liftPos.free) {
+				// PASS
+				// If the operator is controlling the arm then pass through
+			}
 			else { // If it's saying we should move but we're not in that state something is going wrong.
 				targetSpeed = 0;
 			}
 			
-		}
+		} // If none of the above functions are met, the arm is good for normal movement.
+
+
 		// TODO: Set arm motor speed to targetSpeed
 	}
 	public static double getCurve(double distanceToPosition) {
