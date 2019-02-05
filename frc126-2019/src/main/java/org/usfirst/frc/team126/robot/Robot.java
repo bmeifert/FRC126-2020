@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
 	public static LidarLite distance;
 	public static DigitalInput limitSwitch;
 	public static DigitalInput limitSwitch2;
+	public static Log log;
 
 	
 	@SuppressWarnings("unchecked")
@@ -39,6 +40,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Robot ID", 0);
 
 		oi = new BOI(); // Init subsystems
+		log = new Log();
 		driveBase = new WestCoastDrive();
 		internalData = new InternalData();
 		intake = new Intake();

@@ -9,7 +9,7 @@ public class Lift extends Subsystem {
 		first, second, third, zero, free
 	}
 	public static enum liftStates {
-		notzeroed, ready, moving, estop, zeroing
+		notzeroed, ready, moving, zeroing
 	}
 	public static enum limitStates {
 		bottomLimit, topLimit, ok
@@ -46,26 +46,35 @@ public class Lift extends Subsystem {
 		System.out.println("INIT LIFT WITH POS "+ encoderMap.get(liftPos.first)+ " " + encoderMap.get(liftPos.second)+ " " + encoderMap.get(liftPos.third)+ " DONE" );
 	}
 
-	public static void setTargetPos(liftPos lPos) { // USE THIS to set arm target
+	public static void setTargetPos(liftPos lPos, boolean doForceInterrupt) { // USE THIS to set lift target
 		if(lState == liftStates.ready) {
 			targetPos = lPos;
-			if(lPos == liftPos.free) {
-				// PASS
+			if(lPos == liftPos.free) { // When target, state, and current are set to free, you can pass the speed value to MoveLift
+				currentPos = liftPos.free;
 			}
 			else {
-				lState = liftStates.moving;
+				lState = liftStates.moving; // Unless the lift is free, set it to moving so other functions don't interrupt it
 			}
 
 		}
-		else if(lState == liftStates.estop || lState == liftStates.notzeroed){ // if the lift is having a major issue (not zeroed or emergency stopped)
-			System.out.println("LIFT MOVE FAILED -- LIFT CRITICAL ERROR");
+		else if(lState == liftStates.notzeroed){ // if the lift is not zeroed than we aren't moving at all
+			System.out.println("LIFT MOVE FAILED -- LIFT NOT ZEROED");
+		}
+		else if(doForceInterrupt == true) { // this is generally not the brightest idea unless the driver is directly controlling lift functions
+			targetPos = lPos;
+			if(lPos == liftPos.free) { // When target, state, and current are set to free, you can pass the speed value to MoveLift
+				currentPos = liftPos.free;
+			}
+			else {
+				lState = liftStates.moving; // Unless the lift is free, set it to moving so other functions don't interrupt it
+			}
 		}
 		else { // if the lift is in any other state, e.g. already moving to another position
 			System.out.println("LIFT TARGET FAILED -- LIFT BUSY"); 
 		}
 
 	}
-	public static void moveLift() { // **MUST** BE CALLED _EVERY_ ITERATION - i cannot stress this enough - schedule it to run *always* 
+	public static void moveLift(double optionalSpeed) { // **MUST** BE CALLED _EVERY_ ITERATION - i cannot stress this enough - schedule it to run *always* 
 
 		if(Robot.limitSwitch.get() == false) { // The first thing we should always do is check if we're at a limit
 			limitState = limitStates.bottomLimit;
@@ -78,12 +87,12 @@ public class Lift extends Subsystem {
 		}
 		// TODO encoderVal = latest encoder value
 
-		if(targetPos == liftPos.zero) { // Handle arm movement for auto, fastest we should go down is -0.2 so we don't break anything
+		if(targetPos == liftPos.zero) { // Handle lift movement for auto, fastest we should go down is -0.2 so we don't break anything
 			setLiftSpeed(-0.2);
 		}
-		if(targetPos == liftPos.free) { // Take arm out of auto for operator control
+		if(targetPos == liftPos.free) { // Take lift out of auto for operator control -- NOTE: This is semi-dangerous
+			setLiftSpeed(optionalSpeed);
 		}
-
 		else if(currentPos != targetPos) {
 			double distanceToTarget = Math.abs(encoderMap.get(targetPos) - encoderVal);
 			if(encoderVal > encoderMap.get(targetPos) + 2000) { // 2000 = margin of error to move up
@@ -127,21 +136,23 @@ public class Lift extends Subsystem {
 					targetSpeed = -0.2;
 				}
 			}
-			else if(lState == liftStates.notzeroed) { // We're trying to move while we aren't zeroed. This isn't good!
+			else if(lState == liftStates.notzeroed) { // There are multiple failsafes for this for a good reason
 				targetSpeed = 0;
+				Robot.log.print(3, "Lift,", "Attempted to move whilst not zeroed");
 			}
 			else if(lState == liftStates.ready && currentPos == liftPos.free) {
 				// PASS
-				// If the operator is controlling the arm then pass through
+				// If the operator is controlling the lift then pass through
 			}
-			else { // If it's saying we should move but we're not in that state something is going wrong.
+			else { // If it's saying we should move but we're not in an appropriate state disable just to make sure.
 				targetSpeed = 0;
+				Robot.log.print(3, "Lift,", "Attempted to move in an inappropriate state");
 			}
 			
-		} // If none of the above functions are met, the arm is good for normal movement.
+		} // If none of the above functions are met, the lift is good for normal movement.
 
 
-		// TODO: Set arm motor speed to targetSpeed
+		// TODO: Set lift motor speed to targetSpeed
 	}
 
 	public static double getCurve(double distanceToPosition) { // Curve inputs so we don't abruptly stop - we should only be doing that if we hit a limit switch
