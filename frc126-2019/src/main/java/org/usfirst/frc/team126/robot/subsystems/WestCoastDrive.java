@@ -9,11 +9,20 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 public class WestCoastDrive extends Subsystem {
 
 	double leftMultiplier, rightMultiplier, leftSpeed, rightSpeed;
+	double fakeEncoderVal = 0;;
 
 	public void initDefaultCommand() {
 		setDefaultCommand(new OperatorControl());
 		leftSpeed = 0;
 		rightSpeed = 0;
+		fakeEncoderVal = 50;
+	}
+
+	public double getFakeEncoderVal() {
+		return fakeEncoderVal;
+	}
+	public void resetFakeEncoder() {
+		fakeEncoderVal = 0;
 	}
 
 	public void Drive(double fb, double rot, boolean isCurved, boolean isSmoothed, int smoothFactor) { // Smooth drive
@@ -57,5 +66,7 @@ public class WestCoastDrive extends Subsystem {
 		Robot.right1.set(ControlMode.PercentOutput, rightSpeed * RobotMap.right1Inversion);
 		Robot.left2.set(ControlMode.PercentOutput, leftSpeed * RobotMap.left2Inversion);
 		Robot.right2.set(ControlMode.PercentOutput, rightSpeed * RobotMap.right2Inversion);
+
+		fakeEncoderVal += (leftSpeed + rightSpeed) / 2;
 	}
 }

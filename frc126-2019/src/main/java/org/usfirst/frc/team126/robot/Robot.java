@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
 		limitSwitch2 = new DigitalInput(8);
 		CameraServer.getInstance().startAutomaticCapture();
 		
-		System.out.println("ROBOT INIT");
+		Robot.log.print(0, "Robot", "=== ROBOT INIT COMPLETED ===");
 	}
 	
 	@Override
@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() { // Runs when robot is first disabled
-		System.out.println("ROBOT DISABLED");
+		Robot.log.print(0, "Robot", "ROBOT DISABLED");
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
 			System.out.println("ROBOT ID OUT OF RANGE - 0 DEFAULT");
 		}
 		//autonomous = (Command) new AutoCenterToLeft();
-		System.out.println("ROBOT ENABLED - SANDSTORM");
+		Robot.log.print(0, "Robot", "ROBOT ENABLED - SANDSTORM");
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class Robot extends TimedRobot {
 		if(autonomous != null){
 			autonomous.cancel();
 		}
-		System.out.println("ROBOT ENABLED - OPERATOR");
+		Robot.log.print(0, "Robot", "ROBOT ENABLED - OPERATOR");
     }
 
 	@Override
