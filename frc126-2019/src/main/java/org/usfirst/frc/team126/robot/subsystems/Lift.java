@@ -25,6 +25,7 @@ public class Lift extends Subsystem {
 	public static double liftSpeed = 0;
 	public static double liftMultiplier = 0;
 	public static double previousLiftSpeed = 0;
+	public static double periodicDebugCounter = 0;
 
 	public void initDefaultCommand() {
 
@@ -134,10 +135,12 @@ public class Lift extends Subsystem {
 				currentPos = liftPos.free;
 				lState = liftStates.ready;
 				Robot.driveBase.resetFakeEncoder();
+				previousLiftSpeed = 0;
 			}
 		}
 		else if(limitState == limitStates.topLimit && targetSpeed > 0) { // Prevent movement above top limit
 			targetSpeed = 0;
+			previousLiftSpeed = 0; // Setting PreviousSpeed to zero prevents lift from jumping once it leaves the limit
 		}
 		else if(lState != liftStates.moving) { // Our state is not moving, but we might still be ok
 
@@ -170,7 +173,12 @@ public class Lift extends Subsystem {
 			targetSpeed = 0;
 		}
 
-		Robot.log.print(0, "Lift", "LIFT STATE: "+lState+" TARGET POS: " +targetPos+" CURRENT POS: "+currentPos+" ENCODER: "+encoderVal);
+		periodicDebugCounter++;
+		
+		if(periodicDebugCounter > 50) {
+			Robot.log.print(0, "Lift", "LIFT STATE: "+lState+" TARGET POS: " +targetPos+" CURRENT POS: "+currentPos+" ENCODER: "+encoderVal);
+		}
+
 		if(limitState == limitStates.ok) {
 			targetSpeed = (previousLiftSpeed * 9 + targetSpeed) / 10;
 			previousLiftSpeed = targetSpeed;
