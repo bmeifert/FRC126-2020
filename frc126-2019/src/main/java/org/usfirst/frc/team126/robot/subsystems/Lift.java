@@ -174,9 +174,10 @@ public class Lift extends Subsystem {
 		}
 
 		periodicDebugCounter++;
-		
+
 		if(periodicDebugCounter > 50) {
 			Robot.log.print(0, "Lift", "LIFT STATE: "+lState+" TARGET POS: " +targetPos+" CURRENT POS: "+currentPos+" ENCODER: "+encoderVal);
+			periodicDebugCounter = 0;
 		}
 
 		if(limitState == limitStates.ok) {
