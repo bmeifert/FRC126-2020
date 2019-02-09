@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
 	public static LidarLite distance;
 	public static DigitalInput limitSwitch;
 	public static DigitalInput limitSwitch2;
+	public static Log log;
 
 	
 	@SuppressWarnings("unchecked")
@@ -39,6 +40,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Robot ID", 0);
 
 		oi = new BOI(); // Init subsystems
+		log = new Log();
 		driveBase = new WestCoastDrive();
 		internalData = new InternalData();
 		intake = new Intake();
@@ -50,7 +52,7 @@ public class Robot extends TimedRobot {
 		limitSwitch2 = new DigitalInput(8);
 		CameraServer.getInstance().startAutomaticCapture();
 		
-		System.out.println("ROBOT INIT");
+		Robot.log.print(0, "Robot", "=== ROBOT INIT COMPLETED ===");
 	}
 	
 	@Override
@@ -59,7 +61,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() { // Runs when robot is first disabled
-		System.out.println("ROBOT DISABLED");
+		Robot.log.print(0, "Robot", "ROBOT DISABLED");
 	}
 
 	@Override
@@ -70,9 +72,15 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() { // Runs when sandstorm starts
 		robotID = SmartDashboard.getNumber("Robot ID", 0);
-		RobotMap.setRobot(robotID);
+		try {
+			RobotMap.setRobot(robotID);
+		}
+		catch(NullPointerException e){
+			RobotMap.setRobot(0);
+			System.out.println("ROBOT ID OUT OF RANGE - 0 DEFAULT");
+		}
 		//autonomous = (Command) new AutoCenterToLeft();
-		System.out.println("ROBOT ENABLED - SANDSTORM");
+		Robot.log.print(0, "Robot", "ROBOT ENABLED - SANDSTORM");
 	}
 
 	@Override
@@ -84,11 +92,17 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() { // Runs when sandstorm ends
 		robotID = SmartDashboard.getNumber("Robot ID", 0);
-		RobotMap.setRobot(robotID);
+		try {
+			RobotMap.setRobot(robotID);
+		}
+		catch(NullPointerException e){
+			RobotMap.setRobot(0);
+			System.out.println("ROBOT ID OUT OF RANGE - 0 DEFAULT");
+		}
 		if(autonomous != null){
 			autonomous.cancel();
 		}
-		System.out.println("ROBOT ENABLED - OPERATOR");
+		Robot.log.print(0, "Robot", "ROBOT ENABLED - OPERATOR");
     }
 
 	@Override

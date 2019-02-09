@@ -2,15 +2,15 @@ package org.usfirst.frc.team126.robot.commands;
 
 import org.usfirst.frc.team126.robot.Robot;
 import org.usfirst.frc.team126.robot.RobotMap;
+import org.usfirst.frc.team126.robot.subsystems.Lift.liftPos;
 import edu.wpi.first.wpilibj.command.Command;
-
-public class DriveWithJoysticks extends Command {
+public class OperatorControl extends Command {
 	double fb, lr, rot, tl, tr, x, y, v, maxSpeed;
 	int smoothFactor = 5;
 	boolean xboxLTrig, xboxRTrig, xboxA, xboxB, xboxX, xboxY, xboxLStick, xboxRStick;
 	boolean isCurved = true;
 	boolean isSmoothed = true;
-	public DriveWithJoysticks() {
+	public OperatorControl() {
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.driveBase);
 	}
@@ -18,7 +18,8 @@ public class DriveWithJoysticks extends Command {
 	// Run before command starts 1st iteration
 	@Override
 	protected void initialize() {
-			
+		Robot.lift.resetLift();
+		Robot.lift.setTargetPos(liftPos.free, true);
 	}
 
 	// Called every tick (20ms)
@@ -37,18 +38,18 @@ public class DriveWithJoysticks extends Command {
 		xboxRTrig = Robot.oi.driveController.getRawButton(RobotMap.xboxRTrig); // Xbox R Shoulder button
 		xboxLStick = Robot.oi.driveController.getRawButton(RobotMap.xboxLStick); // Xbox L stick press down
 		xboxRStick = Robot.oi.driveController.getRawButton(RobotMap.xboxRStick); // Xbox R stick press down
-		
+
 		if(xboxA) { // Set different drive spike smoothing factors (for testing)
-			smoothFactor = 5;
+			Robot.lift.setTargetPos(liftPos.free, true);
 		}
 		if(xboxB) {
-			smoothFactor = 10;
+			Robot.lift.setTargetPos(liftPos.zero, false);
 		}
 		if(xboxX) {
-			smoothFactor = 20;
+			Robot.lift.setTargetPos(liftPos.first, false);
 		}
 		if(xboxY) {
-			smoothFactor = 40;
+			Robot.lift.setTargetPos(liftPos.second, false);
 		}
 
 		if(tr > 0) {
@@ -83,7 +84,7 @@ public class DriveWithJoysticks extends Command {
 			}
 			else {
 				System.out.println("ASSIST FAIL");
-				Robot.driveBase.Drive(0, 0, false, true, 5);
+				//Robot.driveBase.Drive(0, 0, false, true, 5);
 			}
 
 		}
@@ -103,13 +104,15 @@ public class DriveWithJoysticks extends Command {
 					}
 				}
 				*/
-				Robot.driveBase.Drive(fb, rot, isCurved, isSmoothed, smoothFactor);
+				//Robot.driveBase.Drive(fb, rot, isCurved, isSmoothed, smoothFactor);
 			}
 			else {
-				Robot.driveBase.Drive(fb, rot, isCurved, isSmoothed, smoothFactor); // Drive with set values
+				//Robot.driveBase.Drive(fb, rot, isCurved, isSmoothed, smoothFactor); // Drive with set values
 			}
 
 			Robot.intake.setIntake(lr); // Set intake to triggers
+			
+			Robot.lift.moveLift(fb);
 			//System.out.println("Driving");
 		}
 
