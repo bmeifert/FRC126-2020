@@ -27,13 +27,13 @@ public class Vision extends Subsystem {
 		// Clear out the old data in the packets
 		for (int i = 0; i < packetData.length; i++) {
 			if (packetData[i] == null) {
-				System.out.println("Packetdata[" + (i) + "] == NULL");
+				//System.out.println("Packetdata[" + (i) + "] == NULL");
 			} else {
 				packetData[i].isValid=false;
 			}	
 		}
 
-		SmartDashboard.putString("Pixy getPacketData", "Retrieving Data");
+		//SmartDashboard.putString("Pixy getPacketData", "Retrieving Data");
 
 		// Try and read the packets from the Pixy 
 		try {

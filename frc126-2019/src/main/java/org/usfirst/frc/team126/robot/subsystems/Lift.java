@@ -1,7 +1,12 @@
 package org.usfirst.frc.team126.robot.subsystems;
 
 import java.util.HashMap;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import org.usfirst.frc.team126.robot.Robot;
+import org.usfirst.frc.team126.robot.RobotMap;
+
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class Lift extends Subsystem {
@@ -185,7 +190,11 @@ public class Lift extends Subsystem {
 			previousLiftSpeed = targetSpeed;
 		}
 
-		Robot.driveBase.Drive(targetSpeed, 0, false, false, 0);
+		//Robot.driveBase.Drive(targetSpeed, 0, false, false, 0); debug drive
+		Robot.lift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift1Inversion);
+		Robot.lift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift2Inversion);
+		Robot.lift3.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift3Inversion);
+		Robot.lift4.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift4Inversion);
 	}
 
 	public static double getCurve(double distanceToPosition) { // Curve inputs so we don't abruptly stop - we should only be doing that if we hit a limit switch

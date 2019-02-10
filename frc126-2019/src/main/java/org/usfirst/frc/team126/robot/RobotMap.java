@@ -12,9 +12,7 @@ package org.usfirst.frc.team126.robot;
 		 \/_/\/_____/   \/___/
 
 	~ Brought to you by:
-	~ Keith M, Faria S, 
-	~ Alyssa L, Kyle C, 
-	~ Sophia S, and Alex T
+	~ Keith M, Kyle C, and Alyssa L
 	~ GO GET EM GAEL FORCE!!!
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -45,12 +43,25 @@ public class RobotMap {
 	public static int left2 = 2;
 	public static int right1 = 1;
 	public static int right2 = 3;
+	public static int liftMotor1 = 5;
+	public static int liftMotor2 = 6;
+	public static int liftMotor3 = 7;
+	public static int liftMotor4 = 8;
+	public static int wristMotor = 9;
+	public static int intakeMotor = 10;
+
 	
 	//Motor Inversions
 	public static int left1Inversion;
 	public static int right1Inversion;
 	public static int left2Inversion;
 	public static int right2Inversion;
+	public static int lift1Inversion;
+	public static int lift2Inversion;
+	public static int lift3Inversion;
+	public static int lift4Inversion;
+	public static int wristInversion;
+	public static int intakeInversion;
 
 	public static double firstStopPosition;
 	public static double secondStopPosition;
@@ -59,31 +70,55 @@ public class RobotMap {
 
 
 	public static void setRobot(double robotID){
-
 		if(robotID == 0){ // 2019 compbot
 			left1Inversion = -1;
 			right1Inversion = 1;
 			left2Inversion = -1;
 			right2Inversion = 1;
+			lift1Inversion = 1;
+			lift2Inversion = 1;
+			lift3Inversion = 1;
+			lift4Inversion = 1;
+			intakeInversion = 1;
+			wristInversion = 1;
 			
-			firstStopPosition = 50000;
-			secondStopPosition = 100000;
-			thirdStopPosition = 150000;
+			firstStopPosition = 5000;
+			secondStopPosition = 10000;
+			thirdStopPosition = 15000;
 		}
 		else if(robotID == 1){ // 2019 practicebot
 			left1Inversion = -1;
 			right1Inversion = 1;
 			left2Inversion = -1;
 			right2Inversion = 1;
+			lift1Inversion = 1;
+			lift2Inversion = 1;
+			lift3Inversion = 1;
+			lift4Inversion = 1;
+			intakeInversion = 1;
+			wristInversion = 1;
+			
+			firstStopPosition = 5000;
+			secondStopPosition = 10000;
+			thirdStopPosition = 15000;
+		}
+		else { // fallback (should be same as compbot)
+			left1Inversion = -1;
+			right1Inversion = 1;
+			left2Inversion = -1;
+			right2Inversion = 1;
+			lift1Inversion = 1;
+			lift2Inversion = 1;
+			lift3Inversion = 1;
+			lift4Inversion = 1;
+			intakeInversion = 1;
+			wristInversion = 1;
+			
+			firstStopPosition = 5000;
+			secondStopPosition = 10000;
+			thirdStopPosition = 15000;
+		}
 
-			firstStopPosition = 50000;
-			secondStopPosition = 100000;
-			thirdStopPosition = 150000;
-		}
-		
-		else {
-			throw new NullPointerException("No robot defined");
-		}
 
 	}
 }

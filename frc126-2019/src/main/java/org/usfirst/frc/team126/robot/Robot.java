@@ -1,7 +1,6 @@
 package org.usfirst.frc.team126.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Command;
@@ -17,13 +16,20 @@ public class Robot extends TimedRobot {
 	public static TalonSRX right1 = new TalonSRX(RobotMap.right1);
 	public static TalonSRX left2 = new TalonSRX(RobotMap.left2);
 	public static TalonSRX right2 = new TalonSRX(RobotMap.right2);
-	public static Spark intakeMotor = new Spark(9);
+	public static TalonSRX lift1 = new TalonSRX(RobotMap.liftMotor1); // Create the hardware that all the subsystems use
+	public static TalonSRX lift2 = new TalonSRX(RobotMap.liftMotor2);
+	public static TalonSRX lift3 = new TalonSRX(RobotMap.liftMotor3);
+	public static TalonSRX lift4 = new TalonSRX(RobotMap.liftMotor4);
+	public static TalonSRX intakeMotor = new TalonSRX(RobotMap.intakeMotor);
+	public static TalonSRX wristMotor = new TalonSRX(RobotMap.wristMotor);
+
+
 	public double robotID;
 
 	public static Command autonomous; // Create the subsystems that control the hardware
 	public static WestCoastDrive driveBase;
 	public static InternalData internalData;
-	public static BOI oi;
+	public static Controllers oi;
 	public static Intake intake;
 	public static Vision vision;
 	public static Lift lift;
@@ -39,7 +45,7 @@ public class Robot extends TimedRobot {
 	public void robotInit() { // Runs when the code first starts
 		SmartDashboard.putNumber("Robot ID", 0);
 
-		oi = new BOI(); // Init subsystems
+		oi = new Controllers(); // Init subsystems
 		log = new Log();
 		driveBase = new WestCoastDrive();
 		internalData = new InternalData();
