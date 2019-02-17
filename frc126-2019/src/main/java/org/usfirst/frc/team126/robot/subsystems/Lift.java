@@ -31,6 +31,8 @@ public class Lift extends Subsystem {
 	public static double liftMultiplier = 0;
 	public static double previousLiftSpeed = 0;
 	public static double periodicDebugCounter = 0;
+	public static double targetEncoder = 0;
+	public static boolean antiSlide;
 
 	public void initDefaultCommand() {
 
@@ -102,7 +104,7 @@ public class Lift extends Subsystem {
 		encoderVal = Robot.driveBase.getFakeEncoderVal();
 
 		if(targetPos == liftPos.zero) { // Handle lift movement for auto, fastest we should go down is -0.2 so we don't break anything
-			setLiftSpeed(-0.2);
+			setLiftSpeed(-0.1);
 		}
 		else if(targetPos == liftPos.free) { // Take lift out of auto for operator control -- NOTE: This is semi-dangerous
 			setLiftSpeed(optionalSpeed);
@@ -153,8 +155,8 @@ public class Lift extends Subsystem {
 				if(targetSpeed > 0) {
 					targetSpeed = 0;
 				}
-				else if(targetSpeed < -0.2) {
-					targetSpeed = -0.2;
+				else if(targetSpeed < -0.1) {
+					targetSpeed = -0.1;
 				}
 			}
 			/*
@@ -190,7 +192,19 @@ public class Lift extends Subsystem {
 			previousLiftSpeed = targetSpeed;
 		}
 
-		//Robot.driveBase.Drive(targetSpeed, 0, false, false, 0); debug drive
+		if(Math.abs(targetSpeed) < 0.05 && lState != liftStates.zeroing && lState != liftStates.notzeroed && targetPos != liftPos.zero) { // If we're drifting down and not zeroing - IT'S BAD
+			if(antiSlide = false) {
+				antiSlide = true;
+				targetEncoder = encoderVal; // stop this gravity madness
+			}
+			if(encoderVal < targetEncoder) { // fight the gravity - defeat the gravity
+				targetSpeed = 0.2;
+			}
+		}
+		else {
+			antiSlide = false; // No longer necessary
+		}
+
 		//Robot.lift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift1Inversion);
 		//Robot.lift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift2Inversion);
 		//Robot.lift3.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift3Inversion);
