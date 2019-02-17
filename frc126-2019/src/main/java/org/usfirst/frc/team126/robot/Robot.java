@@ -38,6 +38,7 @@ public class Robot extends TimedRobot {
 	public static DigitalInput limitSwitch;
 	public static DigitalInput limitSwitch2;
 	public static Log log;
+	public static LiftPotentiometer liftPot;
 
 	
 	@SuppressWarnings("unchecked")
@@ -57,7 +58,7 @@ public class Robot extends TimedRobot {
 		limitSwitch = new DigitalInput(7);
 		limitSwitch2 = new DigitalInput(8);
 		CameraServer.getInstance().startAutomaticCapture();
-		
+		liftPot.initPot();
 		Robot.log.print(0, "Robot", "=== ROBOT INIT COMPLETED ===");
 	}
 	
@@ -114,6 +115,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() { // Runs periodically during teleop
 		Scheduler.getInstance().run();
+		Robot.log.print(0, "Debug", Double.toString(liftPot.getPot()));
 	}
 
 	@Override
