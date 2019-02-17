@@ -111,12 +111,18 @@ public class OperatorControl extends Command {
 		*/
 		if(xboxX) {
 			Robot.intake.setIntake(1, true);
-		}
-		if(xboxY) {
+		} else if(xboxY) {
 			Robot.intake.setIntake(-1, true);
-		}
-		else {
+		} else {
 			Robot.intake.setIntake(0, false);
+		}
+
+		if(xboxA) {
+			Robot.wrist.actuateWrist(0.6);
+		} else if(xboxB) {
+			Robot.wrist.actuateWrist(-0.35);
+		} else {
+			Robot.wrist.actuateWrist(0);
 		}
 
 		if(tr > 0) {
