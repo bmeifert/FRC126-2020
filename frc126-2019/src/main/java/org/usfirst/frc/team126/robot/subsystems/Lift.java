@@ -191,10 +191,10 @@ public class Lift extends Subsystem {
 		}
 
 		//Robot.driveBase.Drive(targetSpeed, 0, false, false, 0); debug drive
-		Robot.lift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift1Inversion);
-		Robot.lift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift2Inversion);
-		Robot.lift3.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift3Inversion);
-		Robot.lift4.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift4Inversion);
+		//Robot.lift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift1Inversion);
+		//Robot.lift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift2Inversion);
+		//Robot.lift3.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift3Inversion);
+		//Robot.lift4.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift4Inversion);
 	}
 
 	public static double getCurve(double distanceToPosition) { // Curve inputs so we don't abruptly stop - we should only be doing that if we hit a limit switch
