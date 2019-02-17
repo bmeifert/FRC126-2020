@@ -16,10 +16,10 @@ public class Robot extends TimedRobot {
 	public static TalonSRX right1 = new TalonSRX(RobotMap.right1);
 	public static TalonSRX left2 = new TalonSRX(RobotMap.left2);
 	public static TalonSRX right2 = new TalonSRX(RobotMap.right2);
-	public static TalonSRX lift1 = new TalonSRX(RobotMap.liftMotor1); // Create the hardware that all the subsystems use
-	public static TalonSRX lift2 = new TalonSRX(RobotMap.liftMotor2);
-	public static TalonSRX lift3 = new TalonSRX(RobotMap.liftMotor3);
-	public static TalonSRX lift4 = new TalonSRX(RobotMap.liftMotor4);
+	public static TalonSRX leftLift1 = new TalonSRX(RobotMap.leftLift1); // Create the hardware that all the subsystems use
+	public static TalonSRX leftLift2 = new TalonSRX(RobotMap.leftLift2);
+	public static TalonSRX rightLift1 = new TalonSRX(RobotMap.rightLift1);
+	public static TalonSRX rightLift2 = new TalonSRX(RobotMap.rightLift2);
 	public static TalonSRX intakeMotor = new TalonSRX(RobotMap.intakeMotor);
 	public static TalonSRX wristMotor = new TalonSRX(RobotMap.wristMotor);
 

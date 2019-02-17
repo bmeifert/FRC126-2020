@@ -95,7 +95,7 @@ public class OperatorControl extends Command {
 		if(Math.abs(tr2) < 0.05) {
 			tr2 = 0;
 		}
-
+		/*
 		if(xboxA2) { // Set different lift values (for testing)
 			Robot.lift.setTargetPos(liftPos.free, true);
 		}
@@ -107,6 +107,16 @@ public class OperatorControl extends Command {
 		}
 		if(xboxY2) {
 			Robot.lift.setTargetPos(liftPos.second, false);
+		}
+		*/
+		if(xboxX) {
+			Robot.intake.setIntake(1, true);
+		}
+		if(xboxY) {
+			Robot.intake.setIntake(-1, true);
+		}
+		else {
+			Robot.intake.setIntake(0, false);
 		}
 
 		if(tr > 0) {
@@ -142,8 +152,7 @@ public class OperatorControl extends Command {
 		else {
 			Robot.driveBase.Drive(ly, rx, isCurved, isSmoothed, smoothFactor); // Drive with set values
 		}
-		Robot.intake.setIntake(tr2, true); // Set intake to triggers (must be called every iteration)	
-		Robot.lift.moveLift(ly2); // Move lift (must be called every iteration)
+		Robot.driveBase.moveLift(turnco); // Move lift (must be called every iteration)
 	}
 
 	// Returns true if command finished

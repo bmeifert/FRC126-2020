@@ -69,4 +69,10 @@ public class WestCoastDrive extends Subsystem {
 
 		fakeEncoderVal += (leftSpeed + rightSpeed) / 2;
 	}
+	public void moveLift(double rightSpeed) {
+		Robot.leftLift1.set(ControlMode.PercentOutput, rightSpeed * RobotMap.leftLift1Inversion * 0.25);
+		Robot.leftLift2.set(ControlMode.PercentOutput, rightSpeed * RobotMap.leftLift2Inversion * 0.25);
+		Robot.rightLift1.set(ControlMode.PercentOutput, rightSpeed * RobotMap.rightLift1Inversion * 0.25);
+		Robot.rightLift2.set(ControlMode.PercentOutput, rightSpeed * RobotMap.rightLift2Inversion * 0.25);
+	}
 }
