@@ -33,6 +33,7 @@ public class Robot extends TimedRobot {
 	public static Intake intake;
 	public static Vision vision;
 	public static Lift lift;
+	public static Wrist wrist;
 	public static Pneumatics pneumatics;
 	public static LidarLite distance;
 	public static DigitalInput limitSwitch;

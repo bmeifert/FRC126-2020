@@ -21,12 +21,14 @@ public class Wrist extends Subsystem {
 		else {
 			moveState = limitStates.down;
 		}
-		if(Robot.wristMotor.getOutputCurrent() > 10) { // 10 amp break for wrist motor
+		if(Robot.wristMotor.getOutputCurrent() > 25) { // break for wrist motor
 			if(moveState == limitStates.up) {
 				limitState = limitStates.top;
+				Robot.log.print(1, "Wrist", "TOP LIMIT");
 			}
 			else {
 				limitState = limitStates.bottom;
+				Robot.log.print(1, "Wrist", "TOP LIMIT");
 			}
 		}
 		else {
