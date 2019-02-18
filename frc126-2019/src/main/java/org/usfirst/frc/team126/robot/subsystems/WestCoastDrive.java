@@ -9,13 +9,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 public class WestCoastDrive extends Subsystem {
 
 	double leftMultiplier, rightMultiplier, leftSpeed, rightSpeed;
-	double fakeEncoderVal = 0;;
-
 	public void initDefaultCommand() {
 		setDefaultCommand(new OperatorControl());
 		leftSpeed = 0;
 		rightSpeed = 0;
-		fakeEncoderVal = 50;
 	}
 
 	public void Drive(double fb, double rot, boolean isCurved, boolean isSmoothed, int smoothFactor) { // Smooth drive
@@ -39,12 +36,12 @@ public class WestCoastDrive extends Subsystem {
 			smoothFactor = 1;
 		}
 
-		if(smoothFactor > 50) {
-			smoothFactor = 50;
+		if(smoothFactor > 10) {
+			smoothFactor = 10;
 		}
 
-		leftMultiplier = fb + rot;
-		rightMultiplier = fb - rot;
+		leftMultiplier = fb + (rot / 1.5);
+		rightMultiplier = fb - (rot / 1.5);
 
 		if(isSmoothed) {
 			leftSpeed = (leftSpeed * smoothFactor + leftMultiplier) / (smoothFactor + 1); // Smooth out spikes and sudden movements by averaging speeds
