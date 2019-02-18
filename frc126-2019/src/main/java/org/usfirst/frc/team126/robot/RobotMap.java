@@ -85,9 +85,9 @@ public class RobotMap {
 			wristInversion = 1;
 			hatchInversion = 1;
 			
-			firstStopPosition = 5000;
-			secondStopPosition = 10000;
-			thirdStopPosition = 15000;
+			firstStopPosition = 0;
+			secondStopPosition = 0;
+			thirdStopPosition = 0;
 		}
 	}
 }

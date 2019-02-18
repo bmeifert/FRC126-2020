@@ -2,12 +2,13 @@ package org.usfirst.frc.team126.robot.commands;
 
 import org.usfirst.frc.team126.robot.Robot;
 import org.usfirst.frc.team126.robot.RobotMap;
+import org.usfirst.frc.team126.robot.subsystems.Lift;
 import org.usfirst.frc.team126.robot.subsystems.Lift.liftPos;
 import edu.wpi.first.wpilibj.command.Command;
 public class OperatorControl extends Command {
 	double lx, ly, rx, ry, tl, tr; // Control values for drive controller
 	double lx2, ly2, rx2, ry2, tl2, tr2; // Control values for operator controller
-	double camX, camY, camV, maxSpeed, turnco; // Misc control values
+	double camX, camY, camV, maxSpeed, trigs1, trigs2; // Misc control values
 	boolean xboxLTrig, xboxRTrig, xboxA, xboxB, xboxX, xboxY, xboxLStick, xboxRStick; // Button values for drive controller
 	boolean xboxLTrig2, xboxRTrig2, xboxA2, xboxB2, xboxX2, xboxY2, xboxLStick2, xboxRStick2; // Button values for operator controller
 
@@ -48,7 +49,7 @@ public class OperatorControl extends Command {
 		lx2 = Robot.oi.operatorController.getRawAxis(RobotMap.lStickX);
 		tl2 = Robot.oi.operatorController.getRawAxis(RobotMap.Ltrigger);
 		tr2 = Robot.oi.operatorController.getRawAxis(RobotMap.Rtrigger);
-		ry2 = Robot.oi.operatorController.getRawAxis(RobotMap.rStickY);
+		ry2 = Robot.oi.operatorController.getRawAxis(RobotMap.rStickY) * -1; // Y's have to be inverted
 		rx2 = Robot.oi.operatorController.getRawAxis(RobotMap.rStickX);
 		xboxA2 = Robot.oi.operatorController.getRawButton(RobotMap.xboxA);
 		xboxB2 = Robot.oi.operatorController.getRawButton(RobotMap.xboxB);
@@ -109,29 +110,31 @@ public class OperatorControl extends Command {
 			Robot.lift.setTargetPos(liftPos.second, false);
 		}
 		*/
-		if(xboxX) {
-			Robot.intake.setIntake(1, true);
-		} else if(xboxY) {
-			Robot.intake.setIntake(-1, true);
-		} else {
-			Robot.intake.setIntake(0, false);
-		}
-
-		if(xboxA) {
-			Robot.wrist.actuateWrist(0.6);
-		} else if(xboxB) {
-			Robot.wrist.actuateWrist(-0.35);
+		if(xboxA2) {
+			Robot.wrist.actuateWrist(0.8);
+		} else if(xboxB2) {
+			Robot.wrist.actuateWrist(-0.4);
 		} else {
 			Robot.wrist.actuateWrist(0);
 		}
+		if(xboxX2) {
+			Robot.lift.setTargetPos(Lift.liftPos.zero, true);
+		} else if(xboxY2) {
+			Robot.lift.setTargetPos(Lift.liftPos.zero, true);
+		}
 
 		if(tr > 0) {
-			turnco = tr;
+			trigs1 = tr;
 		}
 		else {
-			turnco = tl * -1;
+			trigs1 = tl * -1;
 		}
-
+		if(tr2 > 0) {
+			trigs2 = tr2;
+		}
+		else {
+			trigs2 = tl2 * -1;
+		}
 
 		if(xboxLTrig) {
 			camX = Robot.vision.getPacketData(1, "x");
@@ -156,9 +159,10 @@ public class OperatorControl extends Command {
 
 		}
 		else {
-			Robot.driveBase.Drive(ly, rx, isCurved, isSmoothed, smoothFactor); // Drive with set values
+			Robot.driveBase.Drive(ly * 0.5, rx * 0.5, isCurved, isSmoothed, smoothFactor); // Drive with set values
 		}
-		Robot.driveBase.moveLift(turnco); // Move lift (must be called every iteration)
+		Robot.lift.moveLift(ly2); // Move lift (must be called every iteration)
+		Robot.intake.setIntake(trigs2, true);
 	}
 
 	// Returns true if command finished

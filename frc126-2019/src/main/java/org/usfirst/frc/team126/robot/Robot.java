@@ -36,10 +36,10 @@ public class Robot extends TimedRobot {
 	public static Wrist wrist;
 	public static Pneumatics pneumatics;
 	public static LidarLite distance;
-	public static DigitalInput limitSwitch;
-	public static DigitalInput limitSwitch2;
+	public static DigitalInput liftBottomLimit;
+	public static DigitalInput liftTopLimit;
 	public static Log log;
-	public static LiftPotentiometer liftPot;
+	public static Pots pots;
 
 	
 	@SuppressWarnings("unchecked")
@@ -56,10 +56,11 @@ public class Robot extends TimedRobot {
 		lift = new Lift();
 		pneumatics = new Pneumatics();
 		distance = new LidarLite(new DigitalInput(5));
-		limitSwitch = new DigitalInput(7);
-		limitSwitch2 = new DigitalInput(8);
+		liftBottomLimit = new DigitalInput(0);
+		liftTopLimit = new DigitalInput(8);
 		CameraServer.getInstance().startAutomaticCapture();
-		liftPot.initPot();
+		pots.initPot();
+		wrist.initWrist();
 		Robot.log.print(0, "Robot", "=== ROBOT INIT COMPLETED ===");
 	}
 	
@@ -116,7 +117,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() { // Runs periodically during teleop
 		Scheduler.getInstance().run();
-		Robot.log.print(0, "Debug", Double.toString(liftPot.getPot()));
 	}
 
 	@Override

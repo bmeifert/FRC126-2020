@@ -18,13 +18,6 @@ public class WestCoastDrive extends Subsystem {
 		fakeEncoderVal = 50;
 	}
 
-	public double getFakeEncoderVal() {
-		return fakeEncoderVal;
-	}
-	public void resetFakeEncoder() {
-		fakeEncoderVal = 0;
-	}
-
 	public void Drive(double fb, double rot, boolean isCurved, boolean isSmoothed, int smoothFactor) { // Smooth drive
 
 		if(isCurved) { // curve inputs for more prescision
@@ -66,13 +59,5 @@ public class WestCoastDrive extends Subsystem {
 		Robot.right1.set(ControlMode.PercentOutput, rightSpeed * RobotMap.right1Inversion);
 		Robot.left2.set(ControlMode.PercentOutput, leftSpeed * RobotMap.left2Inversion);
 		Robot.right2.set(ControlMode.PercentOutput, rightSpeed * RobotMap.right2Inversion);
-
-		fakeEncoderVal += (leftSpeed + rightSpeed) / 2;
-	}
-	public void moveLift(double rightSpeed) {
-		Robot.leftLift1.set(ControlMode.PercentOutput, rightSpeed * RobotMap.leftLift1Inversion * 0.25);
-		Robot.leftLift2.set(ControlMode.PercentOutput, rightSpeed * RobotMap.leftLift2Inversion * 0.25);
-		Robot.rightLift1.set(ControlMode.PercentOutput, rightSpeed * RobotMap.rightLift1Inversion * 0.25);
-		Robot.rightLift2.set(ControlMode.PercentOutput, rightSpeed * RobotMap.rightLift2Inversion * 0.25);
 	}
 }

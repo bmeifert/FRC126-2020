@@ -48,9 +48,9 @@ public class Lift extends Subsystem {
 		encoderVal = 0;
 
 		encoderMap.clear(); // Create mappings with encoder positions
-		encoderMap.put(liftPos.first, (double) 40);
-		encoderMap.put(liftPos.second, (double) 80);
-		encoderMap.put(liftPos.third, (double) 120);
+		encoderMap.put(liftPos.first, RobotMap.firstStopPosition);
+		encoderMap.put(liftPos.second, RobotMap.secondStopPosition);
+		encoderMap.put(liftPos.third, RobotMap.thirdStopPosition);
 
 		System.out.println("INIT LIFT WITH POS "+ encoderMap.get(liftPos.first)+ " " + encoderMap.get(liftPos.second)+ " " + encoderMap.get(liftPos.third)+ " DONE" );
 	}
@@ -91,25 +91,28 @@ public class Lift extends Subsystem {
 	}
 	public static void moveLift(double optionalSpeed) { // **MUST** BE CALLED _EVERY_ ITERATION - i cannot stress this enough - schedule it to run *always* 
 
-		if(Robot.limitSwitch.get() == false) { // The first thing we should always do is check if we're at a limit
+		if(Robot.liftBottomLimit.get() == false) { // The first thing we should always do is check if we're at a limit
 			limitState = limitStates.bottomLimit;
 		}
-		else if(Robot.limitSwitch2.get() == false) { // TODO we might want to consider additional action when we're at the top
+		else if(Robot.liftTopLimit.get() == false) { // TODO we might want to consider additional action when we're at the top
 			limitState = limitStates.topLimit;
 		}
 		else {
 			limitState = limitStates.ok; // If we're not at a limit than the limit state is OK
 		}
 		// TODO encoderVal = latest encoder value
-		encoderVal = Robot.driveBase.getFakeEncoderVal();
+		encoderVal = 0; // TODO CHANGE THIS ONCE WE HAVE A REAL POTENTIOMETER ON THE BOT
 
-		if(targetPos == liftPos.zero) { // Handle lift movement for auto, fastest we should go down is -0.2 so we don't break anything
-			setLiftSpeed(-0.1);
+		if(targetPos == liftPos.zero) { // Handle lift movement for auto, fastest we should go down is -0.05 so we don't break anything
+			setLiftSpeed(-0.05);
 		}
 		else if(targetPos == liftPos.free) { // Take lift out of auto for operator control -- NOTE: This is semi-dangerous
+			if(Math.abs(optionalSpeed) < 0.05) { // Prevent motor drifting
+				optionalSpeed = 0.15;
+			}
 			setLiftSpeed(optionalSpeed);
 		}
-		else if(currentPos != targetPos) {
+		else if(currentPos != targetPos && targetPos == liftPos.first || targetPos == liftPos.second || targetPos == liftPos.third) {
 			double distanceToTarget = Math.abs(encoderMap.get(targetPos) - encoderVal);
 			if(encoderVal < encoderMap.get(targetPos) - 10) { // 2000 = margin of error to move up
 				liftMultiplier = 1;
@@ -137,12 +140,11 @@ public class Lift extends Subsystem {
 
 		if(limitState == limitStates.bottomLimit && targetSpeed < 0) { // Prevent movement below bottom limit
 			targetSpeed = 0;
+			previousLiftSpeed = 0;
 			if(targetPos == liftPos.zero) { // If we're at the bottom limit we're zeroed
 				targetPos = liftPos.free;
 				currentPos = liftPos.free;
 				lState = liftStates.ready;
-				Robot.driveBase.resetFakeEncoder();
-				previousLiftSpeed = 0;
 			}
 		}
 		else if(limitState == limitStates.topLimit && targetSpeed > 0) { // Prevent movement above top limit
@@ -155,8 +157,8 @@ public class Lift extends Subsystem {
 				if(targetSpeed > 0) {
 					targetSpeed = 0;
 				}
-				else if(targetSpeed < -0.1) {
-					targetSpeed = -0.1;
+				else if(targetSpeed < 0) {
+					targetSpeed = 0;
 				}
 			}
 			/*
@@ -175,10 +177,6 @@ public class Lift extends Subsystem {
 			
 		} // If none of the above functions are met, the lift is good for normal movement.
 
-		// TODO: Set lift motor speed to targetSpeed
-		if(Math.abs(targetSpeed) < 0.1) {
-			targetSpeed = 0;
-		}
 
 		periodicDebugCounter++;
 
@@ -192,6 +190,7 @@ public class Lift extends Subsystem {
 			previousLiftSpeed = targetSpeed;
 		}
 
+		/*
 		if(Math.abs(targetSpeed) < 0.05 && lState != liftStates.zeroing && lState != liftStates.notzeroed && targetPos != liftPos.zero) { // If we're drifting down and not zeroing - IT'S BAD
 			if(antiSlide = false) {
 				antiSlide = true;
@@ -204,11 +203,16 @@ public class Lift extends Subsystem {
 		else {
 			antiSlide = false; // No longer necessary
 		}
-
-		//Robot.lift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift1Inversion);
-		//Robot.lift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift2Inversion);
-		//Robot.lift3.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift3Inversion);
-		//Robot.lift4.set(ControlMode.PercentOutput, targetSpeed * RobotMap.lift4Inversion);
+		*/
+		if(targetSpeed > 0.5) {
+			targetSpeed = 0.5;
+		} else if(targetSpeed < -0.05) {
+			targetSpeed = -0.05;
+		}
+		Robot.leftLift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.leftLift1Inversion);
+		Robot.leftLift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.leftLift2Inversion);
+		Robot.rightLift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.rightLift1Inversion);
+		Robot.rightLift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.rightLift2Inversion);
 	}
 
 	public static double getCurve(double distanceToPosition) { // Curve inputs so we don't abruptly stop - we should only be doing that if we hit a limit switch

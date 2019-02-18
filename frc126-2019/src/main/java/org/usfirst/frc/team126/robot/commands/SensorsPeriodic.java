@@ -26,7 +26,7 @@ public class SensorsPeriodic extends Command {
 		//if (count++ % 10 == 0) {
 		//	System.out.println("Sensor Reading " + String.format("%5.2f", ret));
         //}	
-        
+        /*
         boolean limitReached = false;
         if (Robot.limitSwitch.get()) {
             limitReached=true;
@@ -36,7 +36,11 @@ public class SensorsPeriodic extends Command {
         limitReached = false;
         if (Robot.limitSwitch2.get()) {
             limitReached=true;
-        }
+		}
+		*/
+		if (Robot.liftBottomLimit.get() == false) {
+            System.out.println("LOWER LIMIT");
+		}
         //SmartDashboard.putBoolean("Limit Switch 2: ", limitReached);   
     }
 
