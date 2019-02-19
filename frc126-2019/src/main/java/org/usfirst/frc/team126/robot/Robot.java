@@ -60,6 +60,7 @@ public class Robot extends TimedRobot {
 		liftTopLimit = new DigitalInput(1);
 		CameraServer.getInstance().startAutomaticCapture();
 		wrist.initWrist();
+		Robot.lift.resetLift();
 		Robot.log.print(0, "Robot", "=== ROBOT INIT COMPLETED ===");
 	}
 	

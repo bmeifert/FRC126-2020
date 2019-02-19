@@ -16,7 +16,12 @@ public class WestCoastDrive extends Subsystem {
 	}
 
 	public void Drive(double fb, double rot, boolean isCurved, boolean isSmoothed, int smoothFactor) { // Smooth drive
-
+		if(Math.abs(fb) < 0.1) {
+			fb = 0;
+		}
+		if(Math.abs(rot) < 0.1) {
+			rot = 0;
+		}
 		if(isCurved) { // curve inputs for more prescision
 			if(fb > 0) {
 				fb = fb * fb; // if it's stupid but it works it's not stupid

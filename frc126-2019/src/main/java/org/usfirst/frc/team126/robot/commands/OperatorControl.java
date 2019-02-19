@@ -13,7 +13,7 @@ public class OperatorControl extends Command {
 	boolean xboxLTrig, xboxRTrig, xboxA, xboxB, xboxX, xboxY, xboxLStick, xboxRStick; // Button values for drive controller
 	boolean xboxLTrig2, xboxRTrig2, xboxA2, xboxB2, xboxX2, xboxY2, xboxLStick2, xboxRStick2; // Button values for operator controller
 
-	boolean isCurved = true;
+	boolean isCurved = false;
 	boolean isSmoothed = false;
 	int smoothFactor = 1;
 	public OperatorControl() {
@@ -24,7 +24,6 @@ public class OperatorControl extends Command {
 	// Run before command starts 1st iteration
 	@Override
 	protected void initialize() {
-		Robot.lift.resetLift();
 		Robot.lift.setTargetPos(liftPos.free, true);
 	}
 
