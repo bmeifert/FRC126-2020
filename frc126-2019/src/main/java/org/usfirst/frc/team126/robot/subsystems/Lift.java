@@ -7,7 +7,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import org.usfirst.frc.team126.robot.Robot;
 import org.usfirst.frc.team126.robot.RobotMap;
 
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 
 public class Lift extends Subsystem {
 	public static enum liftPos { 
@@ -33,6 +36,11 @@ public class Lift extends Subsystem {
 	public static double periodicDebugCounter = 0;
 	public static double targetEncoder = 0;
 	public static boolean antiSlide;
+	public static Potentiometer liftPot;
+	public static AnalogInput ai = new AnalogInput(0);
+	static boolean antiDrift = false;
+	static double driftVal = 0;
+	static boolean forceAntiDriftOff = false;
 
 	public void initDefaultCommand() {
 
@@ -47,6 +55,13 @@ public class Lift extends Subsystem {
 		liftSpeed = 0;
 		encoderVal = 0;
 
+		try {
+			liftPot = new AnalogPotentiometer(ai, 100, RobotMap.potOffset);
+		} catch(Exception e){
+			Robot.log.print(2, "Lift", "LIFT POTENTIOMETER INIT FAILED");
+			liftPot = null;
+		}
+
 		encoderMap.clear(); // Create mappings with encoder positions
 		encoderMap.put(liftPos.first, RobotMap.firstStopPosition);
 		encoderMap.put(liftPos.second, RobotMap.secondStopPosition);
@@ -60,25 +75,21 @@ public class Lift extends Subsystem {
 			lState = liftStates.zeroing;
 			targetPos = liftPos.zero;
 			currentPos = liftPos.free;
-		}
-		else if(lState == liftStates.ready) {
+		} else if(lState == liftStates.ready) {
 			targetPos = lPos;
 			if(lPos == liftPos.free) { // When target, state, and current are set to free, you can pass the speed value to MoveLift
 				currentPos = liftPos.free;
 				lState = liftStates.ready;
-			}
-			else {
+			} else {
 				lState = liftStates.moving; // Unless the lift is free, set it to moving so other functions don't interrupt it
 			}
-
-		}
-		else if(lState == liftStates.notzeroed){ // if the lift is not zeroed than we aren't moving at all
+		} else if(lState == liftStates.notzeroed){ // if the lift is not zeroed than we aren't moving at all
 			Robot.log.print(1, "Lift", "LIFT MOVE FAILED -- LIFT NOT ZEROED");
-		}
-		else if(doForceInterrupt == true) { // this is generally not the brightest idea unless the driver is directly controlling lift functions
+		} else if(doForceInterrupt == true) { // this is generally not the brightest idea unless the driver is directly controlling lift functions
 			targetPos = lPos;
 			if(lPos == liftPos.free) { // When target, state, and current are set to free, you can pass the speed value to MoveLift
 				currentPos = liftPos.free;
+				lState = liftStates.ready;
 			}
 			else {
 				lState = liftStates.moving; // Unless the lift is free, set it to moving so other functions don't interrupt it
@@ -101,32 +112,36 @@ public class Lift extends Subsystem {
 			limitState = limitStates.ok; // If we're not at a limit than the limit state is OK
 		}
 		// TODO encoderVal = latest encoder value
-		encoderVal = 0; // TODO CHANGE THIS ONCE WE HAVE A REAL POTENTIOMETER ON THE BOT
-
+		if(liftPot != null) {
+			encoderVal = 100 - liftPot.get();
+		} else {
+			encoderVal = 0;
+		}
+		if(encoderVal > RobotMap.liftTopLimit) {
+			limitState = limitStates.topLimit;
+		}
 		if(targetPos == liftPos.zero) { // Handle lift movement for auto, fastest we should go down is -0.05 so we don't break anything
 			setLiftSpeed(-0.05);
-		}
-		else if(targetPos == liftPos.free) { // Take lift out of auto for operator control -- NOTE: This is semi-dangerous
-			if(Math.abs(optionalSpeed) < 0.05) { // Prevent motor drifting
-				optionalSpeed = 0.15;
+			forceAntiDriftOff = true;
+		} else if(targetPos == liftPos.free) { // Take lift out of auto for operator control -- NOTE: This is semi-dangerous
+			if(optionalSpeed < 0) {
+				optionalSpeed = 0.05 + optionalSpeed * 0.15;
+				forceAntiDriftOff = true;
 			}
 			setLiftSpeed(optionalSpeed);
-		}
-		else if(currentPos != targetPos && targetPos == liftPos.first || targetPos == liftPos.second || targetPos == liftPos.third) {
+		} else if(currentPos != targetPos && targetPos != liftPos.zero) {
 			double distanceToTarget = Math.abs(encoderMap.get(targetPos) - encoderVal);
-			if(encoderVal < encoderMap.get(targetPos) - 10) { // 2000 = margin of error to move up
-				liftMultiplier = 1;
+			if(encoderVal < encoderMap.get(targetPos) - 0.1) { // 1/100 = margin of error to move up
+				liftMultiplier = 0.5;
 				setLiftSpeed(liftMultiplier);
 				//setLiftSpeed(getCurve(distanceToTarget * liftMultiplier));
-			}
-			else if(encoderVal > encoderMap.get(targetPos) + 10) { // 2000 = margin of error to move down
-				liftMultiplier = -1;
+			} else if(encoderVal > encoderMap.get(targetPos) + 0.1) { // 1/100 = margin of error to move down
+				liftMultiplier = -0.05;
 				setLiftSpeed(liftMultiplier);
 				//setLiftSpeed(getCurve(distanceToTarget * liftMultiplier));
 
-			}
-			else { // within margin of error, set current pos to target and stop the lift
-				currentPos = targetPos;
+			} else { // within margin of error, set current pos to target and stop the lift
+				currentPos = liftPos.free;
 				targetPos = liftPos.free;
 				lState = liftStates.ready;
 				liftMultiplier = 0;
@@ -146,80 +161,64 @@ public class Lift extends Subsystem {
 				currentPos = liftPos.free;
 				lState = liftStates.ready;
 			}
-		}
-		else if(limitState == limitStates.topLimit && targetSpeed > 0) { // Prevent movement above top limit
-			targetSpeed = 0;
-			previousLiftSpeed = 0; // Setting PreviousSpeed to zero prevents lift from jumping once it leaves the limit
-		}
-		else if(lState != liftStates.moving) { // Our state is not moving, but we might still be ok
+		} else if(limitState == limitStates.topLimit && targetSpeed > 0) { // Prevent movement above top limit
+			if(targetSpeed > 0.2) {
+				targetSpeed = 0.2;
+				previousLiftSpeed = 0.2; // Setting PreviousSpeed to zero prevents lift from jumping once it leaves the limit
+			}
 
+		}
+
+		if(lState != liftStates.moving) { // Our state is not moving, but we might still be ok
 			if(lState == liftStates.zeroing) { // If we're zeroing the lift, limit it to 20% speed so it doesn't break anything.
 				if(targetSpeed > 0) {
 					targetSpeed = 0;
 				}
-				else if(targetSpeed < 0) {
-					targetSpeed = 0;
+				else if(targetSpeed < -0.01) {
+					targetSpeed = -0.01;
 				}
-			}
-			/*
-			else if(lState == liftStates.notzeroed) { // There are multiple failsafes for this for a good reason
-				targetSpeed = 0;
-				Robot.log.print(3, "Lift,", "Attempted to move whilst not zeroed");
-			}
-			*/
-			else if(lState == liftStates.ready && currentPos == liftPos.free) {
+			} else if(lState == liftStates.ready && currentPos == liftPos.free) {
 				// PASS
 				// If the operator is controlling the lift then pass through
-			}
-			else { // If it's saying we should move but we're not in an appropriate state disable just to make sure.
+			} else { // If it's saying we should move but we're not in an appropriate state disable just to make sure.
 				targetSpeed = 0;
 			}
 			
 		} // If none of the above functions are met, the lift is good for normal movement.
 
-
-		periodicDebugCounter++;
-
-		if(periodicDebugCounter > 50) {
-			Robot.log.print(0, "Lift", "LIFT STATE: "+lState+" TARGET POS: " +targetPos+" CURRENT POS: "+currentPos+" ENCODER: "+encoderVal);
-			periodicDebugCounter = 0;
-		}
-
-		if(limitState == limitStates.ok) {
-			targetSpeed = (previousLiftSpeed * 9 + targetSpeed) / 10;
+		if(limitState == limitStates.ok && targetPos != liftPos.zero) {
+			targetSpeed = (previousLiftSpeed * 4 + targetSpeed) / 5;
 			previousLiftSpeed = targetSpeed;
 		}
 
-		/*
-		if(Math.abs(targetSpeed) < 0.05 && lState != liftStates.zeroing && lState != liftStates.notzeroed && targetPos != liftPos.zero) { // If we're drifting down and not zeroing - IT'S BAD
-			if(antiSlide = false) {
-				antiSlide = true;
-				targetEncoder = encoderVal; // stop this gravity madness
-			}
-			if(encoderVal < targetEncoder) { // fight the gravity - defeat the gravity
-				targetSpeed = 0.2;
-			}
-		}
-		else {
-			antiSlide = false; // No longer necessary
-		}
-		*/
-		if(targetSpeed > 0.5) {
-			targetSpeed = 0.5;
+		if(targetSpeed > 0.8) {
+			targetSpeed = 0.8;
 		} else if(targetSpeed < -0.05) {
 			targetSpeed = -0.05;
 		}
+
+		periodicDebugCounter++;
+		if(periodicDebugCounter > 50) {
+			Robot.log.print(0, "Lift", "LIFT STATE: "+lState+" TARGET POS: " +targetPos+" CURRENT POS: "+currentPos+" ENCODER: "+encoderVal+" MOTOR SPEED " + targetSpeed);
+			periodicDebugCounter = 0;
+		}
+		if(targetSpeed > 0 && targetSpeed < 0.1 && limitState != limitStates.bottomLimit) {
+			if(antiDrift == false) {
+				antiDrift = true;
+				driftVal = encoderVal;
+			} else {
+				if(encoderVal < driftVal && limitState != limitStates.bottomLimit && forceAntiDriftOff == false) {
+					targetSpeed = 0.3;
+				} else {
+					targetSpeed = 0.2;
+				}
+			}
+		}
+		forceAntiDriftOff = false;
 		Robot.leftLift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.leftLift1Inversion);
 		Robot.leftLift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.leftLift2Inversion);
 		Robot.rightLift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.rightLift1Inversion);
 		Robot.rightLift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.rightLift2Inversion);
 	}
 
-	public static double getCurve(double distanceToPosition) { // Curve inputs so we don't abruptly stop - we should only be doing that if we hit a limit switch
-		double setSpeed = 0.1 + distanceToPosition / 200;
-		if(setSpeed > 1) {
-			setSpeed = 1;
-		}
-		return setSpeed;
-	}
 }

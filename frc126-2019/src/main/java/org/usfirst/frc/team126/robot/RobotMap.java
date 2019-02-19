@@ -47,9 +47,8 @@ public class RobotMap {
 	public static int leftLift2 = 4;
 	public static int rightLift1 = 8;
 	public static int rightLift2 = 9;
-	public static int wristMotor = 6;
+	public static int wristMotor = 13;
 	public static int intakeMotor = 5;
-	public static int grabberMotor = 7;
 
 	
 	//Motor Inversions
@@ -64,16 +63,26 @@ public class RobotMap {
 	public static int wristInversion;
 	public static int intakeInversion;
 	public static int hatchInversion;
+	public static int wristEncoderInversion;
+	public static int wristMax;
 
 	public static double firstStopPosition;
 	public static double secondStopPosition;
 	public static double thirdStopPosition;
+	public static double foldWristPos;
+	public static double flatWristPos;
+	public static double upWristPos;
+	public static double downWristPos;
+	public static double potOffset;
+	public static double wristIdle;
+	public static double liftTopLimit;
 
 
 
 	public static void setRobot(double robotID){
 		if(robotID == 0){ // 2019 compbot
-			left1Inversion = -1;
+
+			left1Inversion = -1; // Motor inversions
 			right1Inversion = 1;
 			left2Inversion = -1;
 			right2Inversion = 1;
@@ -84,10 +93,19 @@ public class RobotMap {
 			intakeInversion = 1;
 			wristInversion = 1;
 			hatchInversion = 1;
-			
-			firstStopPosition = 0;
-			secondStopPosition = 0;
-			thirdStopPosition = 0;
+			wristEncoderInversion = -1;
+
+			wristIdle = 0.05;
+			liftTopLimit = 60;
+			wristMax = 15500;
+			foldWristPos = 250; // Wrist stops
+			flatWristPos = 11500;
+			upWristPos = 9500;
+			downWristPos = 15000;
+			firstStopPosition = 9; // Lift stops
+			secondStopPosition = 33;
+			thirdStopPosition = 59;
+			potOffset = 6.4; // Lift potentiometer offset
 		}
 	}
 }

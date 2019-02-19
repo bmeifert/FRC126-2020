@@ -39,14 +39,14 @@ public class Robot extends TimedRobot {
 	public static DigitalInput liftBottomLimit;
 	public static DigitalInput liftTopLimit;
 	public static Log log;
-	public static Pots pots;
+	public static double currentDraw;
+	public static double prevDraw = 0;
 
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void robotInit() { // Runs when the code first starts
-		SmartDashboard.putNumber("Robot ID", 0);
-
+		RobotMap.setRobot(0); // ===== ROBOT ID: 0-COMPBOT, 1-PRACTICEBOT ===== //
 		oi = new Controllers(); // Init subsystems
 		log = new Log();
 		driveBase = new WestCoastDrive();
@@ -57,15 +57,28 @@ public class Robot extends TimedRobot {
 		pneumatics = new Pneumatics();
 		distance = new LidarLite(new DigitalInput(5));
 		liftBottomLimit = new DigitalInput(0);
-		liftTopLimit = new DigitalInput(8);
+		liftTopLimit = new DigitalInput(1);
 		CameraServer.getInstance().startAutomaticCapture();
-		pots.initPot();
 		wrist.initWrist();
 		Robot.log.print(0, "Robot", "=== ROBOT INIT COMPLETED ===");
 	}
 	
 	@Override
 	public void robotPeriodic() { // Runs periodically regardless of robot state
+
+		SmartDashboard.putNumber("Match Time Left", InternalData.getMatchTime()); // Provide the drivers all the cool data
+		SmartDashboard.putNumber("Voltage", InternalData.getVoltage());
+		SmartDashboard.putBoolean("Enabled", InternalData.isEnabled());
+
+		currentDraw = Robot.left1.getOutputCurrent() + Robot.left2.getOutputCurrent() + // Find current amperage
+		Robot.right1.getOutputCurrent() + Robot.right2.getOutputCurrent() + 
+		Robot.leftLift1.getOutputCurrent() + Robot.leftLift2.getOutputCurrent() +
+		Robot.rightLift1.getOutputCurrent() + Robot.rightLift2.getOutputCurrent() +
+		Robot.wristMotor.getOutputCurrent() + Robot.intakeMotor.getOutputCurrent();
+		prevDraw = (prevDraw * 99 + currentDraw) / 100; // Find smoothed average amperage
+
+		SmartDashboard.putNumber("Current", currentDraw);
+		SmartDashboard.putNumber("Battery Load", prevDraw);
 	}
 
 	@Override
@@ -80,15 +93,7 @@ public class Robot extends TimedRobot {
 	
 	@Override
 	public void autonomousInit() { // Runs when sandstorm starts
-		robotID = SmartDashboard.getNumber("Robot ID", 0);
-		try {
-			RobotMap.setRobot(robotID);
-		}
-		catch(NullPointerException e){
-			RobotMap.setRobot(0);
-			System.out.println("ROBOT ID OUT OF RANGE - 0 DEFAULT");
-		}
-		//autonomous = (Command) new AutoCenterToLeft();
+		wrist.initWrist();
 		Robot.log.print(0, "Robot", "ROBOT ENABLED - SANDSTORM");
 	}
 
@@ -100,14 +105,6 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() { // Runs when sandstorm ends
-		robotID = SmartDashboard.getNumber("Robot ID", 0);
-		try {
-			RobotMap.setRobot(robotID);
-		}
-		catch(NullPointerException e){
-			RobotMap.setRobot(0);
-			System.out.println("ROBOT ID OUT OF RANGE - 0 DEFAULT");
-		}
 		if(autonomous != null){
 			autonomous.cancel();
 		}
@@ -117,6 +114,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() { // Runs periodically during teleop
 		Scheduler.getInstance().run();
+
 	}
 
 	@Override

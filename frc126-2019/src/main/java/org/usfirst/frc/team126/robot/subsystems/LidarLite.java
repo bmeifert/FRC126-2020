@@ -31,7 +31,6 @@ public LidarLite (DigitalSource source) {
 }
 
 public void initDefaultCommand() {
-    setDefaultCommand(new SensorsPeriodic());
 }
 
 /**

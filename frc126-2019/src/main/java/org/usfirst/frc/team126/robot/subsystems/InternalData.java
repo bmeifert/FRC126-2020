@@ -1,6 +1,5 @@
 package org.usfirst.frc.team126.robot.subsystems;
 
-import org.usfirst.frc.team126.robot.commands.DataPeriodic;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
@@ -9,7 +8,6 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class InternalData extends Subsystem {
 
 	public void initDefaultCommand() {
-		setDefaultCommand(new DataPeriodic());
 	}
 
 	// Match stats
