@@ -1,10 +1,6 @@
 package org.usfirst.frc.team126.robot.subsystems;
 
-import org.usfirst.frc.team126.robot.Robot;
-import org.usfirst.frc.team126.robot.RobotMap;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.I2C.Port;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PixyI2C {
 	String name;
@@ -55,7 +51,6 @@ public class PixyI2C {
 	public boolean findStart() {
 		boolean frameStart=false, firstSync=false;
 		int tries=512;
-		int data;
 		byte b1, b2, zeroCount=0;
 				
 		//SmartDashboard.putString("Pixy getPacketData", "findStart");

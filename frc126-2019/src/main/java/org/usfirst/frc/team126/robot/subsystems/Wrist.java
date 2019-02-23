@@ -71,11 +71,11 @@ public class Wrist extends Subsystem {
 		if(Robot.wristMotor.getOutputCurrent() > 20) { // break for wrist motor
 			if(moveState == limitStates.up) {
 				limitState = limitStates.top;
-				Robot.log.print(1, "Wrist", "TOP LIMIT");
+				Log.print(1, "Wrist", "TOP LIMIT");
 			}
 			else {
 				limitState = limitStates.bottom;
-				Robot.log.print(1, "Wrist", "BOTTOM LIMIT");
+				Log.print(1, "Wrist", "BOTTOM LIMIT");
 			}
 		}
 		else {

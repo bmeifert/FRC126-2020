@@ -24,7 +24,7 @@ public class OperatorControl extends Command {
 	// Run before command starts 1st iteration
 	@Override
 	protected void initialize() {
-		Robot.lift.setTargetPos(liftPos.free, true);
+		Lift.setTargetPos(liftPos.free, true);
 	}
 
 	// Called every tick (20ms)
@@ -138,14 +138,12 @@ public class OperatorControl extends Command {
 
 		if(tr > 0) {
 			trigs1 = tr;
-		}
-		else {
+		} else {
 			trigs1 = tl * -1;
 		}
 		if(tr2 > 0) {
 			trigs2 = tr2;
-		}
-		else {
+		} else {
 			trigs2 = tl2 * -1;
 		}
 		if(xboxLTrig2) {
@@ -162,22 +160,18 @@ public class OperatorControl extends Command {
 			if(camV == 1) {
 				if(camX > 165) {
 					Robot.driveBase.Drive(0, 0.05 + (camX - 165) / 300, false, true, 5);
-				}
-				else if(camX < 135) {
+				} else if(camX < 135) {
 					Robot.driveBase.Drive(0, -0.05 + (camX - 135) / 300, false, true, 5);
-				}
-				else {
+				} else {
 					Robot.driveBase.Drive(0, 0, false, true, 5);
 				}
 				Robot.log.print(0, "OperatorControl", "ASSIST TAKEOVER");
-			}
-			else {
+			} else {
 				Robot.log.print(1, "OperatorControl", "ASSIST FAIL");
 				Robot.driveBase.Drive(0, 0, false, true, 5);
 			}
 
-		}
-		else {
+		} else {
 			Robot.driveBase.Drive(ly * 0.8, rx * 0.8, isCurved, isSmoothed, smoothFactor); // Drive with set values
 		}
 		Robot.lift.moveLift(ly2); // Move lift (must be called every iteration)
