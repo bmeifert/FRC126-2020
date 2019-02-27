@@ -16,6 +16,7 @@ public class WestCoastDrive extends Subsystem {
 	}
 
 	public void Drive(double fb, double rot, boolean isCurved, boolean isSmoothed, int smoothFactor) { // Smooth drive
+		isSmoothed = false;
 		if(Math.abs(fb) < 0.1) {
 			fb = 0;
 		}
@@ -61,5 +62,6 @@ public class WestCoastDrive extends Subsystem {
 		Robot.right1.set(ControlMode.PercentOutput, rightSpeed * RobotMap.right1Inversion);
 		Robot.left2.set(ControlMode.PercentOutput, leftSpeed * RobotMap.left2Inversion);
 		Robot.right2.set(ControlMode.PercentOutput, rightSpeed * RobotMap.right2Inversion);
+
 	}
 }

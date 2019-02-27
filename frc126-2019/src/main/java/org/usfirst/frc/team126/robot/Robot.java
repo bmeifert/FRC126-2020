@@ -43,7 +43,6 @@ public class Robot extends TimedRobot {
 	public static double prevDraw = 0;
 
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public void robotInit() { // Runs when the code first starts
 		RobotMap.setRobot(0); // ===== ROBOT ID: 0-COMPBOT, 1-PRACTICEBOT ===== //
@@ -59,9 +58,9 @@ public class Robot extends TimedRobot {
 		liftBottomLimit = new DigitalInput(0);
 		liftTopLimit = new DigitalInput(1);
 		CameraServer.getInstance().startAutomaticCapture();
-		wrist.initWrist();
-		Robot.lift.resetLift();
-		Robot.log.print(0, "Robot", "=== ROBOT INIT COMPLETED ===");
+		Wrist.initWrist();
+		Lift.resetLift();
+		Log.print(0, "Robot", "=== ROBOT INIT COMPLETED ===");
 	}
 	
 	@Override
@@ -84,7 +83,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() { // Runs when robot is first disabled
-		Robot.log.print(0, "Robot", "ROBOT DISABLED");
+		Log.print(0, "Robot", "ROBOT DISABLED");
 	}
 
 	@Override
@@ -94,8 +93,8 @@ public class Robot extends TimedRobot {
 	
 	@Override
 	public void autonomousInit() { // Runs when sandstorm starts
-		wrist.initWrist();
-		Robot.log.print(0, "Robot", "ROBOT ENABLED - SANDSTORM");
+		Wrist.initWrist();
+		Log.print(0, "Robot", "ROBOT ENABLED - SANDSTORM");
 	}
 
 	@Override
@@ -109,7 +108,7 @@ public class Robot extends TimedRobot {
 		if(autonomous != null){
 			autonomous.cancel();
 		}
-		Robot.log.print(0, "Robot", "ROBOT ENABLED - OPERATOR");
+		Log.print(0, "Robot", "ROBOT ENABLED - OPERATOR");
     }
 
 	@Override

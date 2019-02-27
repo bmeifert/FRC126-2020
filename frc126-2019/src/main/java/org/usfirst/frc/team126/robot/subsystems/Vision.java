@@ -62,7 +62,7 @@ public class Vision extends Subsystem {
 				y=packetData[i].Y;
 				w=packetData[i].Width;
 				h=packetData[i].Height;
-				String xmove,ymove,distance;
+				String xmove,ymove;
 
 				// If the read was good, mark the packet valid
 				/*

@@ -1,6 +1,7 @@
 package org.usfirst.frc.team126.robot.subsystems;
 
 import java.util.HashMap;
+import org.usfirst.frc.team126.robot.subsystems.Log;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
@@ -58,7 +59,7 @@ public class Lift extends Subsystem {
 		try {
 			liftPot = new AnalogPotentiometer(ai, 100, RobotMap.potOffset);
 		} catch(Exception e){
-			Robot.log.print(2, "Lift", "LIFT POTENTIOMETER INIT FAILED");
+			Log.print(2, "Lift", "LIFT POTENTIOMETER INIT FAILED");
 			liftPot = null;
 		}
 
@@ -84,19 +85,17 @@ public class Lift extends Subsystem {
 				lState = liftStates.moving; // Unless the lift is free, set it to moving so other functions don't interrupt it
 			}
 		} else if(lState == liftStates.notzeroed){ // if the lift is not zeroed than we aren't moving at all
-			Robot.log.print(1, "Lift", "LIFT MOVE FAILED -- LIFT NOT ZEROED");
+			Log.print(1, "Lift", "LIFT MOVE FAILED -- LIFT NOT ZEROED");
 		} else if(doForceInterrupt == true) { // this is generally not the brightest idea unless the driver is directly controlling lift functions
 			targetPos = lPos;
 			if(lPos == liftPos.free) { // When target, state, and current are set to free, you can pass the speed value to MoveLift
 				currentPos = liftPos.free;
 				lState = liftStates.ready;
-			}
-			else {
+			} else {
 				lState = liftStates.moving; // Unless the lift is free, set it to moving so other functions don't interrupt it
 			}
-		}
-		else { // if the lift is in any other state, e.g. already moving to another position
-			Robot.log.print(1, "Lift", "LIFT TARGET FAILED -- LIFT BUSY"); 
+		} else { // if the lift is in any other state, e.g. already moving to another position
+			Log.print(1, "Lift", "LIFT TARGET FAILED -- LIFT BUSY"); 
 		}
 
 	}
@@ -130,7 +129,6 @@ public class Lift extends Subsystem {
 			}
 			setLiftSpeed(optionalSpeed);
 		} else if(currentPos != targetPos && targetPos != liftPos.zero) {
-			double distanceToTarget = Math.abs(encoderMap.get(targetPos) - encoderVal);
 			if(encoderVal < encoderMap.get(targetPos) - 0.1) { // 1/100 = margin of error to move up
 				liftMultiplier = 0.5;
 				setLiftSpeed(liftMultiplier);
@@ -199,7 +197,7 @@ public class Lift extends Subsystem {
 
 		periodicDebugCounter++;
 		if(periodicDebugCounter > 50) {
-			Robot.log.print(0, "Lift", "LIFT STATE: "+lState+" TARGET POS: " +targetPos+" CURRENT POS: "+currentPos+" ENCODER: "+encoderVal+" MOTOR SPEED " + targetSpeed);
+			Log.print(0, "Lift", "LIFT STATE: "+lState+" TARGET POS: " +targetPos+" CURRENT POS: "+currentPos+" ENCODER: "+encoderVal+" MOTOR SPEED " + targetSpeed);
 			periodicDebugCounter = 0;
 		}
 		if(targetSpeed > 0 && targetSpeed < 0.1 && limitState != limitStates.bottomLimit) {
@@ -215,10 +213,10 @@ public class Lift extends Subsystem {
 			}
 		}
 		forceAntiDriftOff = false;
-		Robot.leftLift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.leftLift1Inversion);
-		Robot.leftLift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.leftLift2Inversion);
-		Robot.rightLift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.rightLift1Inversion);
-		Robot.rightLift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.rightLift2Inversion);
+		//Robot.leftLift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.leftLift1Inversion);
+		//Robot.leftLift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.leftLift2Inversion);
+		//Robot.rightLift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.rightLift1Inversion);
+		//Robot.rightLift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.rightLift2Inversion);
 	}
 
 }

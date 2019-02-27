@@ -19,8 +19,7 @@ public class Intake extends Subsystem {
 			Robot.intakeMotor.set(ControlMode.PercentOutput, speed);
 			intakeSpeed = speed;
 			
-		}
-		else {
+		} else {
 			Robot.intakeMotor.set(ControlMode.PercentOutput, speed);
 			intakeSpeed = speed;
 		}

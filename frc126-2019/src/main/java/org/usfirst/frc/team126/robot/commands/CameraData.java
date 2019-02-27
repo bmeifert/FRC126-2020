@@ -2,7 +2,6 @@ package org.usfirst.frc.team126.robot.commands;
 
 import org.usfirst.frc.team126.robot.Robot;
 import edu.wpi.first.wpilibj.command.Command;
-import org.usfirst.frc.team126.robot.subsystems.Vision;
 
 public class CameraData extends Command {
 	public CameraData() {
