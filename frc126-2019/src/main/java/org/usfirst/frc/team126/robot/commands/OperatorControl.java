@@ -172,12 +172,12 @@ public class OperatorControl extends Command {
 			}
 
 		} else {
-			Robot.driveBase.Drive(ly * 0.8, rx * 0.8, isCurved, isSmoothed, smoothFactor); // Drive with set values
+			Robot.driveBase.Drive(ly * 0.4, rx * 0.4, isCurved, isSmoothed, smoothFactor); // Drive with set values
 		}
 		Robot.lift.moveLift(ly2); // Move lift (must be called every iteration)
 		Robot.intake.setIntake(trigs2, true);
 
-		if(Math.abs(ry2) > 0.05) {
+		if(Math.abs(ry2) > 0.1) {
 			Robot.wrist.setTargetPos(Wrist.wristPos.free);
 		}
 		if(ry2 > 0) {
