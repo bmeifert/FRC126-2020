@@ -31,12 +31,14 @@ public class Lift extends Subsystem {
 	public static liftStates lState = null;
 	public static limitStates limitState = null;
 	public static double encoderVal = 0;
+	public static double rawEncoder = 0;
 	public static double liftSpeed = 0;
 	public static double liftMultiplier = 0;
 	public static double previousLiftSpeed = 0;
 	public static double periodicDebugCounter = 0;
 	public static double targetEncoder = 0;
 	public static boolean antiSlide;
+	public static double encoderOffset;
 	public static Potentiometer liftPot;
 	public static AnalogInput ai = new AnalogInput(0);
 	static boolean antiDrift = false;
@@ -57,7 +59,7 @@ public class Lift extends Subsystem {
 		encoderVal = 0;
 
 		try {
-			liftPot = new AnalogPotentiometer(ai, 100, RobotMap.potOffset);
+			liftPot = new AnalogPotentiometer(ai, 100, 0);
 		} catch(Exception e){
 			Log.print(2, "Lift", "LIFT POTENTIOMETER INIT FAILED");
 			liftPot = null;
@@ -112,9 +114,11 @@ public class Lift extends Subsystem {
 		}
 		// TODO encoderVal = latest encoder value
 		if(liftPot != null) {
-			encoderVal = 100 - liftPot.get();
+			rawEncoder = 100 - liftPot.get();
+			encoderVal = 100 - liftPot.get() - encoderOffset;
 		} else {
 			encoderVal = 0;
+			rawEncoder = 0;
 		}
 		if(encoderVal > RobotMap.liftTopLimit) {
 			limitState = limitStates.topLimit;
@@ -158,6 +162,7 @@ public class Lift extends Subsystem {
 				targetPos = liftPos.free;
 				currentPos = liftPos.free;
 				lState = liftStates.ready;
+				encoderOffset = rawEncoder;
 			}
 		} else if(limitState == limitStates.topLimit && targetSpeed > 0) { // Prevent movement above top limit
 			if(targetSpeed > 0.2) {
@@ -213,10 +218,10 @@ public class Lift extends Subsystem {
 			}
 		}
 		forceAntiDriftOff = false;
-		//Robot.leftLift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.leftLift1Inversion);
-		//Robot.leftLift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.leftLift2Inversion);
-		//Robot.rightLift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.rightLift1Inversion);
-		//Robot.rightLift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.rightLift2Inversion);
+		Robot.leftLift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.leftLift1Inversion);
+		Robot.leftLift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.leftLift2Inversion);
+		Robot.rightLift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.rightLift1Inversion);
+		Robot.rightLift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.rightLift2Inversion);
 	}
 
 }
