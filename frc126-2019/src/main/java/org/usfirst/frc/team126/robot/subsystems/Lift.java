@@ -163,6 +163,9 @@ public class Lift extends Subsystem {
 				currentPos = liftPos.free;
 				lState = liftStates.ready;
 				encoderOffset = rawEncoder;
+				if(encoderOffset > 15) {
+					Log.print(3, "Lift", "POTENTIOMETER DRIFT OFFSET TOO HIGH - MECHANICAL RE-ZERO ASAP | OFFSET: "+encoderOffset+" MAX: ~25");
+				}
 			}
 		} else if(limitState == limitStates.topLimit && targetSpeed > 0) { // Prevent movement above top limit
 			if(targetSpeed > 0.2) {
@@ -201,8 +204,8 @@ public class Lift extends Subsystem {
 		}
 
 		periodicDebugCounter++;
-		if(periodicDebugCounter > 50) {
-			Log.print(0, "Lift", "LIFT STATE: "+lState+" TARGET POS: " +targetPos+" CURRENT POS: "+currentPos+" ENCODER: "+encoderVal+" MOTOR SPEED " + targetSpeed);
+		if(periodicDebugCounter > 100) {
+			Log.print(0, "Lift", "State: "+lState+" Tpos: " +targetPos+" Cpos: "+currentPos+" Pot: "+encoderVal+" Speed:" + targetSpeed);
 			periodicDebugCounter = 0;
 		}
 		if(targetSpeed > 0 && targetSpeed < 0.1 && limitState != limitStates.bottomLimit) {

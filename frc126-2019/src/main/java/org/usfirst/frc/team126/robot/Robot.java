@@ -83,7 +83,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() { // Runs when robot is first disabled
-		Log.print(0, "Robot", "ROBOT DISABLED");
+		Log.print(1, "Robot", "ROBOT DISABLED");
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() { // Runs when sandstorm starts
 		Wrist.initWrist();
-		Log.print(0, "Robot", "ROBOT ENABLED - SANDSTORM");
+		Log.print(1, "Robot", "ROBOT ENABLED - SANDSTORM");
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public class Robot extends TimedRobot {
 		if(autonomous != null){
 			autonomous.cancel();
 		}
-		Log.print(0, "Robot", "ROBOT ENABLED - OPERATOR");
+		Log.print(1, "Robot", "ROBOT ENABLED - OPERATOR");
     }
 
 	@Override

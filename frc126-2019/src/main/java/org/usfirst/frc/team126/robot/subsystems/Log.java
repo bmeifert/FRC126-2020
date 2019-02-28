@@ -15,14 +15,18 @@ public class Log extends Subsystem {
 		String catheader;
 		if(category == 0) {
 			catheader = "  [INFO] ";
-		}
-		else if(category == 1) {
+		} else if(category == 1) {
 			catheader = " >[WARN] ";
-		}
-		else {
+		} else if(category == 2){
 			catheader = ">>[CRIT] ";
+		} else {
+			catheader = ">>[EMER]";
+			System.out.println(">>=================");
 		}
 		System.out.println(catheader + header + ": " + content);
+		if(category == 3) {
+			System.out.println(">>=================");
+		}
 	}
 
 }
