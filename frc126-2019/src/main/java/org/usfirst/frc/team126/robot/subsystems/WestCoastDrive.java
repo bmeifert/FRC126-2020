@@ -8,7 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class WestCoastDrive extends Subsystem {
 
-	double leftMultiplier, rightMultiplier, leftSpeed, rightSpeed;
+	double leftMultiplier, rightMultiplier, leftSpeed, rightSpeed, fbSlowDown, rotSlowDown;
 	public void initDefaultCommand() {
 		setDefaultCommand(new OperatorControl());
 		leftSpeed = 0;
@@ -16,14 +16,22 @@ public class WestCoastDrive extends Subsystem {
 	}
 
 	public void Drive(double fb, double rot) { // Smooth drive
-		if(Math.abs(fb) < 0.1) {
-			fb = 0;
+
+		if(Lift.encoderVal > RobotMap.startLiftSlowDown) { // Stabilize robot when lift is high
+			fbSlowDown = 1 - Lift.encoderVal / RobotMap.liftSlowDownFactor;
+			if(fbSlowDown < 0.3) {
+				fbSlowDown = 0.3;
+			}
+			rotSlowDown = 1 - (Lift.encoderVal / RobotMap.liftSlowDownFactor) / 2;
+			if(rotSlowDown < 0.5) {
+				rotSlowDown = 0.5;
+			}
+			fb *= fbSlowDown;
+			rot *= rotSlowDown;
 		}
-		if(Math.abs(rot) < 0.1) {
-			rot = 0;
-		}
-		leftMultiplier = fb + (rot / 1.5);
-		rightMultiplier = fb - (rot / 1.5);
+
+		leftMultiplier = fb + (rot / 2);
+		rightMultiplier = fb - (rot / 2);
 		leftSpeed = leftMultiplier;
 		rightSpeed = rightMultiplier;
 

@@ -158,14 +158,16 @@ public class Lift extends Subsystem {
 		if(limitState == limitStates.bottomLimit && targetSpeed < 0) { // Prevent movement below bottom limit
 			targetSpeed = 0;
 			previousLiftSpeed = 0;
+			encoderOffset = rawEncoder;
+			if(encoderOffset > 15) {
+				Log.print(3, "Lift", "POTENTIOMETER DRIFT OFFSET TOO HIGH - MECHANICAL RE-ZERO ASAP | OFFSET: "+encoderOffset+", MAX: ~25");
+			} else if(encoderOffset < 4) {
+				Log.print(3, "Lift", "POTENTIOMETER DRIFT OFFSET TOO LOW - MECHANICAL RE-ZERO ASAP | OFFSET: "+encoderOffset+", MIN: ~2");
+			}
 			if(targetPos == liftPos.zero) { // If we're at the bottom limit we're zeroed
 				targetPos = liftPos.free;
 				currentPos = liftPos.free;
 				lState = liftStates.ready;
-				encoderOffset = rawEncoder;
-				if(encoderOffset > 15) {
-					Log.print(3, "Lift", "POTENTIOMETER DRIFT OFFSET TOO HIGH - MECHANICAL RE-ZERO ASAP | OFFSET: "+encoderOffset+" MAX: ~25");
-				}
 			}
 		} else if(limitState == limitStates.topLimit && targetSpeed > 0) { // Prevent movement above top limit
 			if(targetSpeed > 0.2) {
@@ -197,15 +199,15 @@ public class Lift extends Subsystem {
 			previousLiftSpeed = targetSpeed;
 		}
 
-		if(targetSpeed > 0.8) {
-			targetSpeed = 0.8;
+		if(targetSpeed > 0.6) {
+			targetSpeed = 0.4;
 		} else if(targetSpeed < -0.05) {
 			targetSpeed = -0.05;
 		}
 
 		periodicDebugCounter++;
 		if(periodicDebugCounter > 100) {
-			Log.print(0, "Lift", "State: "+lState+" Tpos: " +targetPos+" Cpos: "+currentPos+" Pot: "+encoderVal+" Speed:" + targetSpeed);
+			Log.print(0, "Lift", "State: "+lState+" Tpos: " +targetPos+" Cpos: "+currentPos+" CPot: "+encoderVal+" RPot:"+rawEncoder+" Speed:" + targetSpeed);
 			periodicDebugCounter = 0;
 		}
 		if(targetSpeed > 0 && targetSpeed < 0.1 && limitState != limitStates.bottomLimit) {
@@ -214,9 +216,9 @@ public class Lift extends Subsystem {
 				driftVal = encoderVal;
 			} else {
 				if(encoderVal < driftVal && limitState != limitStates.bottomLimit && forceAntiDriftOff == false) {
-					targetSpeed = 0.3;
+					targetSpeed = RobotMap.LiftActiveComp;
 				} else {
-					targetSpeed = 0.2;
+					targetSpeed = RobotMap.LiftPassiveComp;
 				}
 			}
 		}

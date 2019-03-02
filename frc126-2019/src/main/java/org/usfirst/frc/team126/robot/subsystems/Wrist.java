@@ -102,6 +102,7 @@ public class Wrist extends Subsystem {
 				speed = 0;
 			}
 		}
+		/*
 		if(currentPos != targetPos && targetPos != wristPos.free) {
 			if(encoderMap.get(targetPos) > currentPot + 100) {
 				autoInvert = -1;
@@ -117,6 +118,8 @@ public class Wrist extends Subsystem {
 		} else if(targetPos == wristPos.free){
 			currentPos = wristPos.free;
 		}
+		*/
+		currentPos = wristPos.free;
 		if(Math.abs(speed) < 0.05) {
 			speed = RobotMap.wristIdle;
 		}

@@ -168,7 +168,7 @@ public class OperatorControl extends Command {
 			}
 
 		} else {
-			Robot.driveBase.Drive(ly * 0.4, rx * 0.4); // Drive with set values
+			Robot.driveBase.Drive(ly, rx); // Drive with set values
 		}
 		Robot.lift.moveLift(ly2); // Move lift (must be called every iteration)
 		Robot.intake.setIntake(trigs2, true);
