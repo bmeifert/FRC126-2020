@@ -121,7 +121,8 @@ public class Wrist extends Subsystem {
 		*/
 		currentPos = wristPos.free;
 		if(Math.abs(speed) < 0.05) {
-			speed = RobotMap.wristIdle;
+			//speed = RobotMap.wristIdle;
+			speed = 0;
 		}
 		if(targetPos == wristPos.fold && Robot.liftBottomLimit.get() == true) {
 			targetPos = wristPos.free;

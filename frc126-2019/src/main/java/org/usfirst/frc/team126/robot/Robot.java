@@ -79,6 +79,22 @@ public class Robot extends TimedRobot {
 
 		SmartDashboard.putNumber("Current", currentDraw);
 		SmartDashboard.putNumber("Battery Load", prevDraw);
+		SmartDashboard.putNumber("Linear LPOS", Lift.encoderVal);
+		if(Lift.encoderVal > RobotMap.firstStopPosition - 2 && Lift.encoderVal < RobotMap.firstStopPosition + 2) {
+			SmartDashboard.putBoolean("1st LPOS", true);
+		} else {
+			SmartDashboard.putBoolean("1st LPOS", false);
+		}
+		if(Lift.encoderVal > RobotMap.secondStopPosition - 2 && Lift.encoderVal < RobotMap.secondStopPosition + 2) {
+			SmartDashboard.putBoolean("2nd LPOS", true);
+		} else {
+			SmartDashboard.putBoolean("2nd LPOS", false);
+		}
+		if(Lift.encoderVal > RobotMap.thirdStopPosition - 2 && Lift.encoderVal < RobotMap.thirdStopPosition + 2) {
+			SmartDashboard.putBoolean("3rd LPOS", true);
+		} else {
+			SmartDashboard.putBoolean("3rd LPOS", false);
+		}
 	}
 
 	@Override

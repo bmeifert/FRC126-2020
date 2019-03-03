@@ -80,6 +80,7 @@ public class RobotMap {
 	public static double LiftActiveComp;
 	public static double startLiftSlowDown;
 	public static double liftSlowDownFactor;
+	public static double liftMax;
 
 
 
@@ -113,7 +114,8 @@ public class RobotMap {
 			LiftPassiveComp = 0.1;
 			LiftActiveComp = 0.3;
 			startLiftSlowDown = 20;
-			liftSlowDownFactor = 5;
+			liftSlowDownFactor = 4;
+			liftMax = 80;
 		} else if(robotID == 1){ // 2019 pracbot
 
 			left1Inversion = -1; // Motor inversions
@@ -143,7 +145,8 @@ public class RobotMap {
 			LiftPassiveComp = 0.1;
 			LiftActiveComp = 0.3;
 			startLiftSlowDown = 20;
-			liftSlowDownFactor = 5;
+			liftSlowDownFactor = 4;
+			liftMax = 80;
 		}
 	}
 }

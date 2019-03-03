@@ -51,8 +51,8 @@ public class Lift extends Subsystem {
 
 	public static void resetLift() { // Set everything to default. Will require us to re-zero the lift.
 
-		lState = liftStates.notzeroed;
-		targetPos = liftPos.free;
+		lState = liftStates.zeroing;
+		targetPos = liftPos.zero;
 		currentPos = liftPos.free;
 		limitState = limitStates.ok;
 		liftSpeed = 0;
@@ -170,9 +170,9 @@ public class Lift extends Subsystem {
 				lState = liftStates.ready;
 			}
 		} else if(limitState == limitStates.topLimit && targetSpeed > 0) { // Prevent movement above top limit
-			if(targetSpeed > 0.2) {
-				targetSpeed = 0.2;
-				previousLiftSpeed = 0.2; // Setting PreviousSpeed to zero prevents lift from jumping once it leaves the limit
+			if(targetSpeed > RobotMap.LiftPassiveComp) {
+				targetSpeed = RobotMap.LiftPassiveComp;
+				previousLiftSpeed = RobotMap.LiftPassiveComp; // Setting PreviousSpeed to zero prevents lift from jumping once it leaves the limit
 			}
 
 		}
@@ -207,13 +207,22 @@ public class Lift extends Subsystem {
 
 		periodicDebugCounter++;
 		if(periodicDebugCounter > 100) {
-			Log.print(0, "Lift", "State: "+lState+" Tpos: " +targetPos+" Cpos: "+currentPos+" CPot: "+encoderVal+" RPot:"+rawEncoder+" Speed:" + targetSpeed);
+			//Log.print(0, "Lift", "State: "+lState+" Tpos: " +targetPos+" Cpos: "+currentPos+" CPot: "+encoderVal+" RPot:"+rawEncoder+" Speed:" + targetSpeed);
 			periodicDebugCounter = 0;
 		}
 		if(targetSpeed > 0 && targetSpeed < 0.1 && limitState != limitStates.bottomLimit) {
 			if(antiDrift == false) {
 				antiDrift = true;
 				driftVal = encoderVal;
+				if(encoderVal > RobotMap.firstStopPosition - 3 && encoderVal < RobotMap.firstStopPosition + 3) {
+					driftVal = RobotMap.firstStopPosition;
+				}
+				if(encoderVal > RobotMap.secondStopPosition - 3 && encoderVal < RobotMap.secondStopPosition + 3) {
+					driftVal = RobotMap.secondStopPosition;
+				}
+				if(encoderVal > RobotMap.thirdStopPosition - 3 && encoderVal < RobotMap.thirdStopPosition + 3) {
+					driftVal = RobotMap.secondStopPosition;
+				}
 			} else {
 				if(encoderVal < driftVal && limitState != limitStates.bottomLimit && forceAntiDriftOff == false) {
 					targetSpeed = RobotMap.LiftActiveComp;
