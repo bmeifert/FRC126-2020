@@ -182,8 +182,8 @@ public class Lift extends Subsystem {
 				if(targetSpeed > 0) {
 					targetSpeed = 0;
 				}
-				else if(targetSpeed < -0.01) {
-					targetSpeed = -0.01;
+				else if(targetSpeed < -0.05) {
+					targetSpeed = -0.05;
 				}
 			} else if(lState == liftStates.ready && currentPos == liftPos.free) {
 				// PASS
@@ -200,11 +200,13 @@ public class Lift extends Subsystem {
 		}
 
 		if(targetSpeed > 0.6) {
-			targetSpeed = 0.4;
+			targetSpeed = 0.6;
 		} else if(targetSpeed < -0.05) {
 			targetSpeed = -0.05;
 		}
-
+		if(encoderVal > RobotMap.liftMax && targetSpeed > RobotMap.LiftActiveComp) {
+			targetSpeed = RobotMap.LiftActiveComp;
+		}
 		periodicDebugCounter++;
 		if(periodicDebugCounter > 100) {
 			//Log.print(0, "Lift", "State: "+lState+" Tpos: " +targetPos+" Cpos: "+currentPos+" CPot: "+encoderVal+" RPot:"+rawEncoder+" Speed:" + targetSpeed);

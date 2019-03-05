@@ -109,13 +109,13 @@ public class RobotMap {
 			downWristPos = 15000;
 			firstStopPosition = 9; // Lift stops
 			secondStopPosition = 33;
-			thirdStopPosition = 59;
+			thirdStopPosition = 55;
 			potOffset = 8; // Lift potentiometer offset (LEGACY)
 			LiftPassiveComp = 0.1;
 			LiftActiveComp = 0.3;
 			startLiftSlowDown = 20;
-			liftSlowDownFactor = 4;
-			liftMax = 80;
+			liftSlowDownFactor = 3;
+			liftMax = 55;
 		} else if(robotID == 1){ // 2019 pracbot
 
 			left1Inversion = -1; // Motor inversions
@@ -139,14 +139,14 @@ public class RobotMap {
 			upWristPos = 9500;
 			downWristPos = 15000;
 			firstStopPosition = 9; // Lift stops
-			secondStopPosition = 33;
-			thirdStopPosition = 59;
+			secondStopPosition = 35;
+			thirdStopPosition = 50;
 			potOffset = 8; // Lift potentiometer offset (LEGACY)
 			LiftPassiveComp = 0.1;
 			LiftActiveComp = 0.3;
 			startLiftSlowDown = 20;
-			liftSlowDownFactor = 4;
-			liftMax = 80;
+			liftSlowDownFactor = 3;
+			liftMax = 55;
 		}
 	}
 }

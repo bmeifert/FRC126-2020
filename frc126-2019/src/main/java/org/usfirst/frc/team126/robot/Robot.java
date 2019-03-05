@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
 	
 	@Override
 	public void robotInit() { // Runs when the code first starts
-		RobotMap.setRobot(0); // ===== ROBOT ID: 0-COMPBOT, 1-PRACTICEBOT ===== //
+		RobotMap.setRobot(1); // ===== ROBOT ID: 0-COMPBOT, 1-PRACTICEBOT ===== //
 		oi = new Controllers(); // Init subsystems
 		log = new Log();
 		driveBase = new WestCoastDrive();
@@ -95,6 +95,7 @@ public class Robot extends TimedRobot {
 		} else {
 			SmartDashboard.putBoolean("3rd LPOS", false);
 		}
+		SmartDashboard.putNumber("Lift Pot Offset", Lift.encoderOffset);
 	}
 
 	@Override
