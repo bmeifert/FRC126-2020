@@ -96,6 +96,17 @@ public class Robot extends TimedRobot {
 			SmartDashboard.putBoolean("3rd LPOS", false);
 		}
 		SmartDashboard.putNumber("Lift Pot Offset", Lift.encoderOffset);
+		SmartDashboard.putNumber("RAW Lift Pot", Lift.rawEncoder);
+		if(Lift.rawEncoder < 10) {
+			SmartDashboard.putBoolean("Lift Critical LOWER", true);
+		} else {
+			SmartDashboard.putBoolean("Lift Critical LOWER", false);			
+		}
+		if(Lift.rawEncoder > 90) {
+			SmartDashboard.putBoolean("Lift Critical UPPER", true);
+		} else {
+			SmartDashboard.putBoolean("Lift Critical UPPER", false);			
+		}
 	}
 
 	@Override
