@@ -37,6 +37,7 @@ public class Lift extends Subsystem {
 	public static double previousLiftSpeed = 0;
 	public static double periodicDebugCounter = 0;
 	public static double targetEncoder = 0;
+	public static double currentTopLimit = 100;
 	public static boolean antiSlide;
 	public static double encoderOffset;
 	public static Potentiometer liftPot;
@@ -105,9 +106,11 @@ public class Lift extends Subsystem {
 
 		if(Robot.liftBottomLimit.get() == false) { // The first thing we should always do is check if we're at a limit
 			limitState = limitStates.bottomLimit;
+			currentTopLimit = 100;
 		}
 		else if(Robot.liftTopLimit.get() == false) { // TODO we might want to consider additional action when we're at the top
 			limitState = limitStates.topLimit;
+			currentTopLimit = encoderVal;
 		}
 		else {
 			limitState = limitStates.ok; // If we're not at a limit than the limit state is OK
@@ -119,9 +122,6 @@ public class Lift extends Subsystem {
 		} else {
 			encoderVal = 0;
 			rawEncoder = 0;
-		}
-		if(encoderVal > RobotMap.liftTopLimit) {
-			limitState = limitStates.topLimit;
 		}
 		if(targetPos == liftPos.zero) { // Handle lift movement for auto, fastest we should go down is -0.05 so we don't break anything
 			setLiftSpeed(-0.05);
@@ -232,6 +232,9 @@ public class Lift extends Subsystem {
 					targetSpeed = RobotMap.LiftPassiveComp;
 				}
 			}
+		}
+		if(encoderVal > currentTopLimit && targetSpeed > 0.4) {
+			targetSpeed = 0.4;
 		}
 		forceAntiDriftOff = false;
 		Robot.leftLift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.leftLift1Inversion);
