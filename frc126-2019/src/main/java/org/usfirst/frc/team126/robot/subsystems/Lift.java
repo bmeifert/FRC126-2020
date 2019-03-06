@@ -233,7 +233,7 @@ public class Lift extends Subsystem {
 				}
 			}
 		}
-		if(encoderVal > currentTopLimit && targetSpeed > 0.4) {
+		if(encoderVal > currentTopLimit - 10 && targetSpeed > 0.4) { // Dynamic top limit
 			targetSpeed = 0.4;
 		}
 		forceAntiDriftOff = false;
