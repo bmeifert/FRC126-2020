@@ -122,6 +122,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() { // Runs when sandstorm starts
 		Wrist.initWrist();
+		Wrist.zeroUpMatch();
 		Log.print(1, "Robot", "ROBOT ENABLED - SANDSTORM");
 	}
 

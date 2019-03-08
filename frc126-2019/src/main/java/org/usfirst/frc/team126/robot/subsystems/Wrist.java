@@ -49,6 +49,9 @@ public class Wrist extends Subsystem {
 		Robot.wristMotor.set(ControlMode.PercentOutput, 0.3);
 		isZeroing = true;
 	}
+	public static void zeroUpMatch() {
+		Robot.wristMotor.setSelectedSensorPosition(0,0,100);
+	}
 	public static void zeroPos() {
 		Robot.wristMotor.setSelectedSensorPosition(RobotMap.wristEncoderInversion * RobotMap.wristMax,0,100);
 		Robot.wristMotor.set(ControlMode.PercentOutput, -0.3);
