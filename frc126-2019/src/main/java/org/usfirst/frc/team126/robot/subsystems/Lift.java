@@ -216,15 +216,6 @@ public class Lift extends Subsystem {
 			if(antiDrift == false) {
 				antiDrift = true;
 				driftVal = encoderVal;
-				if(encoderVal > RobotMap.firstStopPosition - 3 && encoderVal < RobotMap.firstStopPosition + 3) {
-					driftVal = RobotMap.firstStopPosition;
-				}
-				if(encoderVal > RobotMap.secondStopPosition - 3 && encoderVal < RobotMap.secondStopPosition + 3) {
-					driftVal = RobotMap.secondStopPosition;
-				}
-				if(encoderVal > RobotMap.thirdStopPosition - 3 && encoderVal < RobotMap.thirdStopPosition + 3) {
-					driftVal = RobotMap.secondStopPosition;
-				}
 			} else {
 				if(encoderVal < driftVal && limitState != limitStates.bottomLimit && forceAntiDriftOff == false) {
 					targetSpeed = RobotMap.LiftActiveComp;

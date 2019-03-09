@@ -28,8 +28,8 @@ public class WestCoastDrive extends Subsystem {
 				fbSlowDown = 0.3;
 			}
 			rotSlowDown = 1 - ((Lift.encoderVal + RobotMap.startLiftSlowDown) / RobotMap.liftSlowDownFactor);
-			if(rotSlowDown < 0.7) {
-				rotSlowDown = 0.7;
+			if(rotSlowDown < 0.5) {
+				rotSlowDown = 0.5;
 			}
 			fb *= fbSlowDown;
 			rot *= rotSlowDown;

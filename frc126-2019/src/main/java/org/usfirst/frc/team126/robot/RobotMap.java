@@ -138,7 +138,7 @@ public class RobotMap {
 			flatWristPos = 11500;
 			upWristPos = 9500;
 			downWristPos = 15000;
-			firstStopPosition = 9; // Lift stops
+			firstStopPosition = 10; // Lift stops
 			secondStopPosition = 35;
 			thirdStopPosition = 50;
 			potOffset = 8; // Lift potentiometer offset (LEGACY)

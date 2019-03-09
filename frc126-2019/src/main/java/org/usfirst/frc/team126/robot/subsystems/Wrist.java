@@ -85,7 +85,7 @@ public class Wrist extends Subsystem {
 			limitState = limitStates.ok;
 		}
 		currentPot = Robot.wristMotor.getSelectedSensorPosition() * RobotMap.wristEncoderInversion;
-
+		/*
 		if(currentPot < 200) {
 			if(speed > 0) {
 				speed = 0;
@@ -95,6 +95,7 @@ public class Wrist extends Subsystem {
 				speed = 0;
 			}
 		}
+		*/
 		if(limitState == limitStates.bottom) {
 			if(speed < 0) {
 				speed = 0;
