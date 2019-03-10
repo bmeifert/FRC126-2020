@@ -31,8 +31,19 @@ public class WestCoastDrive extends Subsystem {
 			if(rotSlowDown < 0.5) {
 				rotSlowDown = 0.5;
 			}
-			fb *= fbSlowDown;
-			rot *= rotSlowDown;
+
+			if(fb > fbSlowDown) {
+				fb = fbSlowDown;
+			} else if(fb < -1 * fbSlowDown) {
+				fb = fbSlowDown * -1;
+			}
+			if(rot > rotSlowDown) {
+				rot = rotSlowDown;
+			} else if(rot < -1 * rotSlowDown) {
+				rot = rotSlowDown * -1;
+			}
+			//fb *= fbSlowDown;
+			//rot *= rotSlowDown;
 		}
 
 		leftMultiplier = fb + (rot);
