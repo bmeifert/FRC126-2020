@@ -133,16 +133,18 @@ public class Lift extends Subsystem {
 			}
 			setLiftSpeed(optionalSpeed);
 		} else if(currentPos != targetPos && targetPos != liftPos.zero) {
-			if(encoderVal < encoderMap.get(targetPos) - 1) { // 1/100 = margin of error to move up
+			if(encoderVal < encoderMap.get(targetPos) - 2) { // 2/100 = margin of error to move up
 				liftMultiplier = 0.5;
 				setLiftSpeed(liftMultiplier);
 				//setLiftSpeed(getCurve(distanceToTarget * liftMultiplier));
-			} else if(encoderVal > encoderMap.get(targetPos) + 1) { // 1/100 = margin of error to move down
+			} else if(encoderVal > encoderMap.get(targetPos) + 2) { // 2/100 = margin of error to move down
 				liftMultiplier = -0.05;
 				setLiftSpeed(liftMultiplier);
 				//setLiftSpeed(getCurve(distanceToTarget * liftMultiplier));
 
 			} else { // within margin of error, set current pos to target and stop the lift
+				driftVal = encoderMap.get(targetPos);
+				antiDrift = true;
 				currentPos = liftPos.free;
 				targetPos = liftPos.free;
 				lState = liftStates.ready;
@@ -187,6 +189,7 @@ public class Lift extends Subsystem {
 				}
 			} else if(lState == liftStates.ready && currentPos == liftPos.free) {
 				// PASS
+				targetSpeed *= 0.6; // don't send it flying up kid
 				// If the operator is controlling the lift then pass through
 			} else { // If it's saying we should move but we're not in an appropriate state disable just to make sure.
 				targetSpeed = 0;
