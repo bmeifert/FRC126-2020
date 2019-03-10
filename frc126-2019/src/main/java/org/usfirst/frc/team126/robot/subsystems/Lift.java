@@ -133,11 +133,11 @@ public class Lift extends Subsystem {
 			}
 			setLiftSpeed(optionalSpeed);
 		} else if(currentPos != targetPos && targetPos != liftPos.zero) {
-			if(encoderVal < encoderMap.get(targetPos) - 0.1) { // 1/100 = margin of error to move up
+			if(encoderVal < encoderMap.get(targetPos) - 1) { // 1/100 = margin of error to move up
 				liftMultiplier = 0.5;
 				setLiftSpeed(liftMultiplier);
 				//setLiftSpeed(getCurve(distanceToTarget * liftMultiplier));
-			} else if(encoderVal > encoderMap.get(targetPos) + 0.1) { // 1/100 = margin of error to move down
+			} else if(encoderVal > encoderMap.get(targetPos) + 1) { // 1/100 = margin of error to move down
 				liftMultiplier = -0.05;
 				setLiftSpeed(liftMultiplier);
 				//setLiftSpeed(getCurve(distanceToTarget * liftMultiplier));

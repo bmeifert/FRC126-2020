@@ -111,11 +111,11 @@ public class OperatorControl extends Command {
 		if(xboxX2) {
 			Robot.lift.setTargetPos(Lift.liftPos.zero, true);
 		} else if(xboxA2) {
-			//Robot.lift.setTargetPos(Lift.liftPos.first, true);
+			Robot.lift.setTargetPos(Lift.liftPos.first, true);
 		} else if(xboxB2) {
-			//Robot.lift.setTargetPos(Lift.liftPos.second, true);
+			Robot.lift.setTargetPos(Lift.liftPos.second, true);
 		} else if(xboxY2) {
-			//Robot.lift.setTargetPos(Lift.liftPos.third, true);
+			Robot.lift.setTargetPos(Lift.liftPos.third, true);
 		}
 
 		if(xboxLStick) {
