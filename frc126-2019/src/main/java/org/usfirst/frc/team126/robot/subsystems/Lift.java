@@ -147,7 +147,7 @@ public class Lift extends Subsystem {
 				targetPos = liftPos.free;
 				lState = liftStates.ready;
 				liftMultiplier = 0;
-				setLiftSpeed(0);
+				setLiftSpeed(RobotMap.LiftPassiveComp);
 			}
 		}
 
