@@ -1,5 +1,8 @@
 package org.usfirst.frc.team126.robot;
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoSink;
+import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -41,11 +44,15 @@ public class Robot extends TimedRobot {
 	public static Log log;
 	public static double currentDraw;
 	public static double prevDraw = 0;
+	public static UsbCamera locam;
+	public static UsbCamera hicam;
+	public static VideoSink server;
+
 
 	
 	@Override
 	public void robotInit() { // Runs when the code first starts
-		RobotMap.setRobot(1); // ===== ROBOT ID: 0-COMPBOT, 1-PRACTICEBOT ===== //
+		RobotMap.setRobot(0); // ===== ROBOT ID: 0-COMPBOT, 1-PRACTICEBOT ===== //
 		oi = new Controllers(); // Init subsystems
 		log = new Log();
 		driveBase = new WestCoastDrive();
@@ -57,9 +64,16 @@ public class Robot extends TimedRobot {
 		distance = new LidarLite(new DigitalInput(5));
 		liftBottomLimit = new DigitalInput(0);
 		liftTopLimit = new DigitalInput(1);
-		CameraServer.getInstance().startAutomaticCapture();
+		InternalData.initGyro();
+		InternalData.resetGyro();
 		Wrist.initWrist();
 		Lift.resetLift();
+		locam = CameraServer.getInstance().startAutomaticCapture(0);
+		hicam = CameraServer.getInstance().startAutomaticCapture(1);
+		server = CameraServer.getInstance().getServer();
+		locam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
+		hicam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
+		server.setSource(locam);
 		Log.print(0, "Robot", "=== ROBOT INIT COMPLETED ===");
 	}
 	
@@ -97,7 +111,7 @@ public class Robot extends TimedRobot {
 		}
 		SmartDashboard.putNumber("Lift Pot Offset", Lift.encoderOffset);
 		SmartDashboard.putNumber("RAW Lift Pot", Lift.rawEncoder);
-		if(Lift.rawEncoder < 10) {
+		if(Lift.rawEncoder < 5) {
 			SmartDashboard.putBoolean("Lift Critical LOWER", true);
 		} else {
 			SmartDashboard.putBoolean("Lift Critical LOWER", false);			

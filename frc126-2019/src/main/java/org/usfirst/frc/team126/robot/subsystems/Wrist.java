@@ -71,7 +71,7 @@ public class Wrist extends Subsystem {
 		else {
 			moveState = limitStates.down;
 		}
-		if(Robot.wristMotor.getOutputCurrent() > 20) { // break for wrist motor
+		if(Robot.wristMotor.getOutputCurrent() > 10) { // break for wrist motor
 			if(moveState == limitStates.up) {
 				limitState = limitStates.top;
 				Log.print(1, "Wrist", "TOP LIMIT");
@@ -125,8 +125,8 @@ public class Wrist extends Subsystem {
 		*/
 		currentPos = wristPos.free;
 		if(Math.abs(speed) < 0.05) {
-			//speed = RobotMap.wristIdle;
-			speed = 0;
+			speed = RobotMap.wristIdle;
+			//speed = 0;
 		}
 		if(targetPos == wristPos.fold && Robot.liftBottomLimit.get() == true) {
 			targetPos = wristPos.free;

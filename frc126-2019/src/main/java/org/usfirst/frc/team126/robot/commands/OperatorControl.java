@@ -177,12 +177,19 @@ public class OperatorControl extends Command {
 		if(Math.abs(ry2) > 0.1) {
 			Robot.wrist.setTargetPos(Wrist.wristPos.free);
 		}
+		if(Math.abs(ly2) > 0.2) {
+			Robot.lift.setTargetPos(Lift.liftPos.free, true);
+		}
 		if(ry2 > 0) {
 			ry2 *= 0.6;
 		} else {
 			ry2 *= 0.4;
 		}
-
+		if(xboxA) {
+			Robot.server.setSource(Robot.locam);
+		} else if(xboxB) {
+			Robot.server.setSource(Robot.hicam);
+		}
 		Robot.wrist.actuateWrist(ry2);
 	}
 
