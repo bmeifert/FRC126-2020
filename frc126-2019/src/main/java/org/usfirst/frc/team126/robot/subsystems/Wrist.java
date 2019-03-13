@@ -49,6 +49,9 @@ public class Wrist extends Subsystem {
 		Robot.wristMotor.set(ControlMode.PercentOutput, 0.3);
 		isZeroing = true;
 	}
+	public static void zeroUpMatch() {
+		Robot.wristMotor.setSelectedSensorPosition(0,0,100);
+	}
 	public static void zeroPos() {
 		Robot.wristMotor.setSelectedSensorPosition(RobotMap.wristEncoderInversion * RobotMap.wristMax,0,100);
 		Robot.wristMotor.set(ControlMode.PercentOutput, -0.3);
@@ -68,7 +71,7 @@ public class Wrist extends Subsystem {
 		else {
 			moveState = limitStates.down;
 		}
-		if(Robot.wristMotor.getOutputCurrent() > 20) { // break for wrist motor
+		if(Robot.wristMotor.getOutputCurrent() > 10) { // break for wrist motor
 			if(moveState == limitStates.up) {
 				limitState = limitStates.top;
 				Log.print(1, "Wrist", "TOP LIMIT");
@@ -82,7 +85,7 @@ public class Wrist extends Subsystem {
 			limitState = limitStates.ok;
 		}
 		currentPot = Robot.wristMotor.getSelectedSensorPosition() * RobotMap.wristEncoderInversion;
-
+		/*
 		if(currentPot < 200) {
 			if(speed > 0) {
 				speed = 0;
@@ -92,6 +95,7 @@ public class Wrist extends Subsystem {
 				speed = 0;
 			}
 		}
+		*/
 		if(limitState == limitStates.bottom) {
 			if(speed < 0) {
 				speed = 0;
@@ -102,6 +106,7 @@ public class Wrist extends Subsystem {
 				speed = 0;
 			}
 		}
+		/*
 		if(currentPos != targetPos && targetPos != wristPos.free) {
 			if(encoderMap.get(targetPos) > currentPot + 100) {
 				autoInvert = -1;
@@ -117,8 +122,11 @@ public class Wrist extends Subsystem {
 		} else if(targetPos == wristPos.free){
 			currentPos = wristPos.free;
 		}
+		*/
+		currentPos = wristPos.free;
 		if(Math.abs(speed) < 0.05) {
 			speed = RobotMap.wristIdle;
+			//speed = 0;
 		}
 		if(targetPos == wristPos.fold && Robot.liftBottomLimit.get() == true) {
 			targetPos = wristPos.free;

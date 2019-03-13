@@ -31,12 +31,15 @@ public class Lift extends Subsystem {
 	public static liftStates lState = null;
 	public static limitStates limitState = null;
 	public static double encoderVal = 0;
+	public static double rawEncoder = 0;
 	public static double liftSpeed = 0;
 	public static double liftMultiplier = 0;
 	public static double previousLiftSpeed = 0;
 	public static double periodicDebugCounter = 0;
 	public static double targetEncoder = 0;
+	public static double currentTopLimit = 100;
 	public static boolean antiSlide;
+	public static double encoderOffset;
 	public static Potentiometer liftPot;
 	public static AnalogInput ai = new AnalogInput(0);
 	static boolean antiDrift = false;
@@ -49,15 +52,15 @@ public class Lift extends Subsystem {
 
 	public static void resetLift() { // Set everything to default. Will require us to re-zero the lift.
 
-		lState = liftStates.notzeroed;
-		targetPos = liftPos.free;
+		lState = liftStates.zeroing;
+		targetPos = liftPos.zero;
 		currentPos = liftPos.free;
 		limitState = limitStates.ok;
 		liftSpeed = 0;
 		encoderVal = 0;
 
 		try {
-			liftPot = new AnalogPotentiometer(ai, 100, RobotMap.potOffset);
+			liftPot = new AnalogPotentiometer(ai, 100, 0);
 		} catch(Exception e){
 			Log.print(2, "Lift", "LIFT POTENTIOMETER INIT FAILED");
 			liftPot = null;
@@ -103,21 +106,22 @@ public class Lift extends Subsystem {
 
 		if(Robot.liftBottomLimit.get() == false) { // The first thing we should always do is check if we're at a limit
 			limitState = limitStates.bottomLimit;
+			currentTopLimit = 100;
 		}
 		else if(Robot.liftTopLimit.get() == false) { // TODO we might want to consider additional action when we're at the top
 			limitState = limitStates.topLimit;
+			currentTopLimit = encoderVal;
 		}
 		else {
 			limitState = limitStates.ok; // If we're not at a limit than the limit state is OK
 		}
 		// TODO encoderVal = latest encoder value
 		if(liftPot != null) {
-			encoderVal = 100 - liftPot.get();
+			rawEncoder = 100 - liftPot.get();
+			encoderVal = 100 - liftPot.get() - encoderOffset;
 		} else {
 			encoderVal = 0;
-		}
-		if(encoderVal > RobotMap.liftTopLimit) {
-			limitState = limitStates.topLimit;
+			rawEncoder = 0;
 		}
 		if(targetPos == liftPos.zero) { // Handle lift movement for auto, fastest we should go down is -0.05 so we don't break anything
 			setLiftSpeed(-0.05);
@@ -129,21 +133,23 @@ public class Lift extends Subsystem {
 			}
 			setLiftSpeed(optionalSpeed);
 		} else if(currentPos != targetPos && targetPos != liftPos.zero) {
-			if(encoderVal < encoderMap.get(targetPos) - 0.1) { // 1/100 = margin of error to move up
+			if(encoderVal < encoderMap.get(targetPos) - 2) { // 2/100 = margin of error to move up
 				liftMultiplier = 0.5;
 				setLiftSpeed(liftMultiplier);
 				//setLiftSpeed(getCurve(distanceToTarget * liftMultiplier));
-			} else if(encoderVal > encoderMap.get(targetPos) + 0.1) { // 1/100 = margin of error to move down
+			} else if(encoderVal > encoderMap.get(targetPos) + 2) { // 2/100 = margin of error to move down
 				liftMultiplier = -0.05;
 				setLiftSpeed(liftMultiplier);
 				//setLiftSpeed(getCurve(distanceToTarget * liftMultiplier));
 
 			} else { // within margin of error, set current pos to target and stop the lift
+				driftVal = encoderMap.get(targetPos);
+				antiDrift = true;
 				currentPos = liftPos.free;
 				targetPos = liftPos.free;
 				lState = liftStates.ready;
 				liftMultiplier = 0;
-				setLiftSpeed(0);
+				setLiftSpeed(RobotMap.LiftPassiveComp);
 			}
 		}
 
@@ -154,15 +160,21 @@ public class Lift extends Subsystem {
 		if(limitState == limitStates.bottomLimit && targetSpeed < 0) { // Prevent movement below bottom limit
 			targetSpeed = 0;
 			previousLiftSpeed = 0;
+			encoderOffset = rawEncoder;
+			if(encoderOffset > 15) {
+				Log.print(3, "Lift", "POTENTIOMETER DRIFT OFFSET TOO HIGH - MECHANICAL RE-ZERO ASAP | OFFSET: "+encoderOffset+", MAX: ~25");
+			} else if(encoderOffset < 4) {
+				Log.print(3, "Lift", "POTENTIOMETER DRIFT OFFSET TOO LOW - MECHANICAL RE-ZERO ASAP | OFFSET: "+encoderOffset+", MIN: ~2");
+			}
 			if(targetPos == liftPos.zero) { // If we're at the bottom limit we're zeroed
 				targetPos = liftPos.free;
 				currentPos = liftPos.free;
 				lState = liftStates.ready;
 			}
 		} else if(limitState == limitStates.topLimit && targetSpeed > 0) { // Prevent movement above top limit
-			if(targetSpeed > 0.2) {
-				targetSpeed = 0.2;
-				previousLiftSpeed = 0.2; // Setting PreviousSpeed to zero prevents lift from jumping once it leaves the limit
+			if(targetSpeed > RobotMap.LiftPassiveComp) {
+				targetSpeed = RobotMap.LiftPassiveComp;
+				previousLiftSpeed = RobotMap.LiftPassiveComp; // Setting PreviousSpeed to zero prevents lift from jumping once it leaves the limit
 			}
 
 		}
@@ -172,11 +184,12 @@ public class Lift extends Subsystem {
 				if(targetSpeed > 0) {
 					targetSpeed = 0;
 				}
-				else if(targetSpeed < -0.01) {
-					targetSpeed = -0.01;
+				else if(targetSpeed < -0.05) {
+					targetSpeed = -0.05;
 				}
 			} else if(lState == liftStates.ready && currentPos == liftPos.free) {
 				// PASS
+				targetSpeed *= 0.6; // don't send it flying up kid
 				// If the operator is controlling the lift then pass through
 			} else { // If it's saying we should move but we're not in an appropriate state disable just to make sure.
 				targetSpeed = 0;
@@ -189,15 +202,17 @@ public class Lift extends Subsystem {
 			previousLiftSpeed = targetSpeed;
 		}
 
-		if(targetSpeed > 0.8) {
-			targetSpeed = 0.8;
+		if(targetSpeed > 0.6) {
+			targetSpeed = 0.6;
 		} else if(targetSpeed < -0.05) {
 			targetSpeed = -0.05;
 		}
-
+		if(encoderVal > RobotMap.liftMax && targetSpeed > RobotMap.LiftActiveComp) {
+			targetSpeed = RobotMap.LiftActiveComp;
+		}
 		periodicDebugCounter++;
-		if(periodicDebugCounter > 50) {
-			Log.print(0, "Lift", "LIFT STATE: "+lState+" TARGET POS: " +targetPos+" CURRENT POS: "+currentPos+" ENCODER: "+encoderVal+" MOTOR SPEED " + targetSpeed);
+		if(periodicDebugCounter > 100) {
+			//Log.print(0, "Lift", "State: "+lState+" Tpos: " +targetPos+" Cpos: "+currentPos+" CPot: "+encoderVal+" RPot:"+rawEncoder+" Speed:" + targetSpeed);
 			periodicDebugCounter = 0;
 		}
 		if(targetSpeed > 0 && targetSpeed < 0.1 && limitState != limitStates.bottomLimit) {
@@ -206,17 +221,20 @@ public class Lift extends Subsystem {
 				driftVal = encoderVal;
 			} else {
 				if(encoderVal < driftVal && limitState != limitStates.bottomLimit && forceAntiDriftOff == false) {
-					targetSpeed = 0.3;
+					targetSpeed = RobotMap.LiftActiveComp;
 				} else {
-					targetSpeed = 0.2;
+					targetSpeed = RobotMap.LiftPassiveComp;
 				}
 			}
 		}
+		if(encoderVal > currentTopLimit - 10 && targetSpeed > 0.4) { // Dynamic top limit
+			targetSpeed = 0.4;
+		}
 		forceAntiDriftOff = false;
-		//Robot.leftLift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.leftLift1Inversion);
-		//Robot.leftLift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.leftLift2Inversion);
-		//Robot.rightLift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.rightLift1Inversion);
-		//Robot.rightLift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.rightLift2Inversion);
+		Robot.leftLift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.leftLift1Inversion);
+		Robot.leftLift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.leftLift2Inversion);
+		Robot.rightLift1.set(ControlMode.PercentOutput, targetSpeed * RobotMap.rightLift1Inversion);
+		Robot.rightLift2.set(ControlMode.PercentOutput, targetSpeed * RobotMap.rightLift2Inversion);
 	}
 
 }

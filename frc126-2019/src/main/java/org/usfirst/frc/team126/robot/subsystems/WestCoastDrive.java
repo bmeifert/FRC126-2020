@@ -8,55 +8,48 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class WestCoastDrive extends Subsystem {
 
-	double leftMultiplier, rightMultiplier, leftSpeed, rightSpeed;
+	double leftMultiplier, rightMultiplier, leftSpeed, rightSpeed, fbSlowDown, rotSlowDown;
 	public void initDefaultCommand() {
 		setDefaultCommand(new OperatorControl());
 		leftSpeed = 0;
 		rightSpeed = 0;
 	}
 
-	public void Drive(double fb, double rot, boolean isCurved, boolean isSmoothed, int smoothFactor) { // Smooth drive
-		isSmoothed = false;
+	public void Drive(double fb, double rot) { // Smooth drive
 		if(Math.abs(fb) < 0.1) {
 			fb = 0;
 		}
 		if(Math.abs(rot) < 0.1) {
 			rot = 0;
 		}
-		if(isCurved) { // curve inputs for more prescision
-			if(fb > 0) {
-				fb = fb * fb; // if it's stupid but it works it's not stupid
+		if(Lift.encoderVal > RobotMap.startLiftSlowDown) { // Stabilize robot when lift is high
+			fbSlowDown = 1 - (Lift.encoderVal + RobotMap.startLiftSlowDown) / RobotMap.liftSlowDownFactor;
+			if(fbSlowDown < 0.3) {
+				fbSlowDown = 0.3;
 			}
-			else {
-				fb = 0 - fb * fb;
+			rotSlowDown = 1 - ((Lift.encoderVal + RobotMap.startLiftSlowDown) / RobotMap.liftSlowDownFactor);
+			if(rotSlowDown < 0.5) {
+				rotSlowDown = 0.5;
 			}
-			if(rot > 0) {
-				rot = rot * rot;
+
+			if(fb > fbSlowDown) {
+				fb = fbSlowDown;
+			} else if(fb < -1 * fbSlowDown) {
+				fb = fbSlowDown * -1;
 			}
-			else {
-				rot = 0 - rot * rot;
+			if(rot > rotSlowDown) {
+				rot = rotSlowDown;
+			} else if(rot < -1 * rotSlowDown) {
+				rot = rotSlowDown * -1;
 			}
+			//fb *= fbSlowDown;
+			//rot *= rotSlowDown;
 		}
 
-		if(smoothFactor < 1) { // Smooth factor failsafe
-			smoothFactor = 1;
-		}
-
-		if(smoothFactor > 10) {
-			smoothFactor = 10;
-		}
-
-		leftMultiplier = fb + (rot / 1.5);
-		rightMultiplier = fb - (rot / 1.5);
-
-		if(isSmoothed) {
-			leftSpeed = (leftSpeed * smoothFactor + leftMultiplier) / (smoothFactor + 1); // Smooth out spikes and sudden movements by averaging speeds
-			rightSpeed = (rightSpeed * smoothFactor + rightMultiplier) / (smoothFactor + 1);
-		}
-		else {
-			leftSpeed = leftMultiplier;
-			rightSpeed = rightMultiplier;
-		}
+		leftMultiplier = fb + (rot);
+		rightMultiplier = fb - (rot);
+		leftSpeed = leftMultiplier;
+		rightSpeed = rightMultiplier;
 
 		Robot.left1.set(ControlMode.PercentOutput, leftSpeed * RobotMap.left1Inversion);
 		Robot.right1.set(ControlMode.PercentOutput, rightSpeed * RobotMap.right1Inversion);

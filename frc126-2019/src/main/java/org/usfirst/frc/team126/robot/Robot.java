@@ -1,5 +1,8 @@
 package org.usfirst.frc.team126.robot;
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoSink;
+import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -41,6 +44,10 @@ public class Robot extends TimedRobot {
 	public static Log log;
 	public static double currentDraw;
 	public static double prevDraw = 0;
+	public static UsbCamera locam;
+	public static UsbCamera hicam;
+	public static VideoSink server;
+
 
 	
 	@Override
@@ -57,9 +64,16 @@ public class Robot extends TimedRobot {
 		distance = new LidarLite(new DigitalInput(5));
 		liftBottomLimit = new DigitalInput(0);
 		liftTopLimit = new DigitalInput(1);
-		CameraServer.getInstance().startAutomaticCapture();
+		InternalData.initGyro();
+		InternalData.resetGyro();
 		Wrist.initWrist();
 		Lift.resetLift();
+		locam = CameraServer.getInstance().startAutomaticCapture(0);
+		hicam = CameraServer.getInstance().startAutomaticCapture(1);
+		server = CameraServer.getInstance().getServer();
+		locam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
+		hicam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
+		server.setSource(locam);
 		Log.print(0, "Robot", "=== ROBOT INIT COMPLETED ===");
 	}
 	
@@ -79,11 +93,39 @@ public class Robot extends TimedRobot {
 
 		SmartDashboard.putNumber("Current", currentDraw);
 		SmartDashboard.putNumber("Battery Load", prevDraw);
+		SmartDashboard.putNumber("Linear LPOS", Lift.encoderVal);
+		if(Lift.encoderVal > RobotMap.firstStopPosition - 3 && Lift.encoderVal < RobotMap.firstStopPosition + 3) {
+			SmartDashboard.putBoolean("1st LPOS", true);
+		} else {
+			SmartDashboard.putBoolean("1st LPOS", false);
+		}
+		if(Lift.encoderVal > RobotMap.secondStopPosition - 3 && Lift.encoderVal < RobotMap.secondStopPosition + 3) {
+			SmartDashboard.putBoolean("2nd LPOS", true);
+		} else {
+			SmartDashboard.putBoolean("2nd LPOS", false);
+		}
+		if(Lift.encoderVal > RobotMap.thirdStopPosition - 3 && Lift.encoderVal < RobotMap.thirdStopPosition + 3) {
+			SmartDashboard.putBoolean("3rd LPOS", true);
+		} else {
+			SmartDashboard.putBoolean("3rd LPOS", false);
+		}
+		SmartDashboard.putNumber("Lift Pot Offset", Lift.encoderOffset);
+		SmartDashboard.putNumber("RAW Lift Pot", Lift.rawEncoder);
+		if(Lift.rawEncoder < 5) {
+			SmartDashboard.putBoolean("Lift Critical LOWER", true);
+		} else {
+			SmartDashboard.putBoolean("Lift Critical LOWER", false);			
+		}
+		if(Lift.rawEncoder > 90) {
+			SmartDashboard.putBoolean("Lift Critical UPPER", true);
+		} else {
+			SmartDashboard.putBoolean("Lift Critical UPPER", false);			
+		}
 	}
 
 	@Override
 	public void disabledInit() { // Runs when robot is first disabled
-		Log.print(0, "Robot", "ROBOT DISABLED");
+		Log.print(1, "Robot", "ROBOT DISABLED");
 	}
 
 	@Override
@@ -94,7 +136,8 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() { // Runs when sandstorm starts
 		Wrist.initWrist();
-		Log.print(0, "Robot", "ROBOT ENABLED - SANDSTORM");
+		Wrist.zeroUpMatch();
+		Log.print(1, "Robot", "ROBOT ENABLED - SANDSTORM");
 	}
 
 	@Override
@@ -108,7 +151,7 @@ public class Robot extends TimedRobot {
 		if(autonomous != null){
 			autonomous.cancel();
 		}
-		Log.print(0, "Robot", "ROBOT ENABLED - OPERATOR");
+		Log.print(1, "Robot", "ROBOT ENABLED - OPERATOR");
     }
 
 	@Override

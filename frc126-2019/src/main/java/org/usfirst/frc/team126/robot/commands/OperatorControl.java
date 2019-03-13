@@ -12,10 +12,6 @@ public class OperatorControl extends Command {
 	double camX, camY, camV, maxSpeed, trigs1, trigs2; // Misc control values
 	boolean xboxLTrig, xboxRTrig, xboxA, xboxB, xboxX, xboxY, xboxLStick, xboxRStick; // Button values for drive controller
 	boolean xboxLTrig2, xboxRTrig2, xboxA2, xboxB2, xboxX2, xboxY2, xboxLStick2, xboxRStick2; // Button values for operator controller
-
-	boolean isCurved = false;
-	boolean isSmoothed = false;
-	int smoothFactor = 1;
 	public OperatorControl() {
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.driveBase);
@@ -125,7 +121,7 @@ public class OperatorControl extends Command {
 		if(xboxLStick) {
 			Robot.lift.setTargetPos(Lift.liftPos.free, true);
 		}
-
+		/*
 		if(pov2 == 0) {
 			Robot.wrist.setTargetPos(Wrist.wristPos.up);
 		} else if(pov2 == 90) {
@@ -135,6 +131,7 @@ public class OperatorControl extends Command {
 		} else if(pov2 == 270) {
 			Robot.wrist.setTargetPos(Wrist.wristPos.fold);
 		}
+		*/
 
 		if(tr > 0) {
 			trigs1 = tr;
@@ -159,20 +156,20 @@ public class OperatorControl extends Command {
 			camV = Robot.vision.getPacketData(1, "v");
 			if(camV == 1) {
 				if(camX > 165) {
-					Robot.driveBase.Drive(0, 0.05 + (camX - 165) / 300, false, true, 5);
+					Robot.driveBase.Drive(0, 0.05 + (camX - 165) / 300);
 				} else if(camX < 135) {
-					Robot.driveBase.Drive(0, -0.05 + (camX - 135) / 300, false, true, 5);
+					Robot.driveBase.Drive(0, -0.05 + (camX - 135) / 300);
 				} else {
-					Robot.driveBase.Drive(0, 0, false, true, 5);
+					Robot.driveBase.Drive(0, 0);
 				}
 				Robot.log.print(0, "OperatorControl", "ASSIST TAKEOVER");
 			} else {
 				Robot.log.print(1, "OperatorControl", "ASSIST FAIL");
-				Robot.driveBase.Drive(0, 0, false, true, 5);
+				Robot.driveBase.Drive(0, 0);
 			}
 
 		} else {
-			Robot.driveBase.Drive(ly * 0.4, rx * 0.4, isCurved, isSmoothed, smoothFactor); // Drive with set values
+			Robot.driveBase.Drive(ly, rx); // Drive with set values
 		}
 		Robot.lift.moveLift(ly2); // Move lift (must be called every iteration)
 		Robot.intake.setIntake(trigs2, true);
@@ -180,12 +177,19 @@ public class OperatorControl extends Command {
 		if(Math.abs(ry2) > 0.1) {
 			Robot.wrist.setTargetPos(Wrist.wristPos.free);
 		}
+		if(Math.abs(ly2) > 0.2) {
+			Robot.lift.setTargetPos(Lift.liftPos.free, true);
+		}
 		if(ry2 > 0) {
 			ry2 *= 0.6;
 		} else {
 			ry2 *= 0.4;
 		}
-
+		if(xboxA) {
+			Robot.server.setSource(Robot.locam);
+		} else if(xboxB) {
+			Robot.server.setSource(Robot.hicam);
+		}
 		Robot.wrist.actuateWrist(ry2);
 	}
 
