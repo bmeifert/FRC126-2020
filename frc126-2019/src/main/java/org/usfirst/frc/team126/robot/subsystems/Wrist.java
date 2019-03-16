@@ -21,7 +21,7 @@ public class Wrist extends Subsystem {
 	static limitStates limitState = limitStates.up;
 	static limitStates moveState = limitStates.up;
 	static boolean antiDrift = false;
-	static double currentPot, prevPot;
+	public static double currentPot, prevPot;
 	static wristPos targetPos;
 	static wristPos currentPos;
 	static double autoInvert;
@@ -85,7 +85,6 @@ public class Wrist extends Subsystem {
 			limitState = limitStates.ok;
 		}
 		currentPot = Robot.wristMotor.getSelectedSensorPosition() * RobotMap.wristEncoderInversion;
-		/*
 		if(currentPot < 200) {
 			if(speed > 0) {
 				speed = 0;
@@ -95,7 +94,6 @@ public class Wrist extends Subsystem {
 				speed = 0;
 			}
 		}
-		*/
 		if(limitState == limitStates.bottom) {
 			if(speed < 0) {
 				speed = 0;

@@ -121,6 +121,7 @@ public class Robot extends TimedRobot {
 		} else {
 			SmartDashboard.putBoolean("Lift Critical UPPER", false);			
 		}
+		SmartDashboard.putNumber("Wrist Encoder", Wrist.currentPot);
 	}
 
 	@Override
