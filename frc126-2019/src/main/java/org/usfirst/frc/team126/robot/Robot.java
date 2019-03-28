@@ -25,6 +25,7 @@ public class Robot extends TimedRobot {
 	public static TalonSRX rightLift2 = new TalonSRX(RobotMap.rightLift2);
 	public static TalonSRX intakeMotor = new TalonSRX(RobotMap.intakeMotor);
 	public static TalonSRX wristMotor = new TalonSRX(RobotMap.wristMotor);
+	public static TalonSRX climberMotor = new TalonSRX(RobotMap.climberMotor);
 
 
 	public double robotID;
@@ -36,6 +37,7 @@ public class Robot extends TimedRobot {
 	public static Intake intake;
 	public static Vision vision;
 	public static Lift lift;
+	public static Climber climber;
 	public static Wrist wrist;
 	public static Pneumatics pneumatics;
 	public static LidarLite distance;
@@ -60,6 +62,7 @@ public class Robot extends TimedRobot {
 		intake = new Intake();
 		vision = new Vision();
 		lift = new Lift();
+		climber = new Climber();
 		pneumatics = new Pneumatics();
 		distance = new LidarLite(new DigitalInput(5));
 		liftBottomLimit = new DigitalInput(0);

@@ -49,6 +49,7 @@ public class RobotMap {
 	public static int rightLift2 = 9;
 	public static int wristMotor = 13;
 	public static int intakeMotor = 5;
+	public static int climberMotor = 6;
 
 	
 	//Motor Inversions
@@ -81,6 +82,7 @@ public class RobotMap {
 	public static double startLiftSlowDown;
 	public static double liftSlowDownFactor;
 	public static double liftMax;
+	public static double climberInversion;
 
 
 
@@ -116,6 +118,7 @@ public class RobotMap {
 			startLiftSlowDown = 20;
 			liftSlowDownFactor = 3;
 			liftMax = 70;
+			climberInversion = 1;
 		} else if(robotID == 1){ // 2019 pracbot
 
 			left1Inversion = -1; // Motor inversions
@@ -147,6 +150,7 @@ public class RobotMap {
 			startLiftSlowDown = 20;
 			liftSlowDownFactor = 3;
 			liftMax = 70;
+			climberInversion = 1;
 		}
 	}
 }
