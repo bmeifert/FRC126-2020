@@ -123,6 +123,12 @@ public class Lift extends Subsystem {
 			encoderVal = 0;
 			rawEncoder = 0;
 		}
+		if(rawEncoder < 0.5) {
+			limitState = limitStates.bottomLimit;
+		}
+		if(rawEncoder > 99.5) {
+			limitState = limitStates.topLimit;
+		}
 		if(targetPos == liftPos.zero) { // Handle lift movement for auto, fastest we should go down is -0.05 so we don't break anything
 			setLiftSpeed(-0.05);
 			forceAntiDriftOff = true;

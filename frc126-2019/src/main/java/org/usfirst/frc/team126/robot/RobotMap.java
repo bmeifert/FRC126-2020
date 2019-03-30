@@ -111,11 +111,11 @@ public class RobotMap {
 			secondStopPosition = 31;
 			thirdStopPosition = 56;
 			potOffset = 8; // Lift potentiometer offset (LEGACY)
-			LiftPassiveComp = 0.1;
-			LiftActiveComp = 0.2;
+			LiftPassiveComp = 0.15;
+			LiftActiveComp = 0.25;
 			startLiftSlowDown = 20;
 			liftSlowDownFactor = 3;
-			liftMax = 70;
+			liftMax = 90;
 		} else if(robotID == 1){ // 2019 pracbot
 
 			left1Inversion = -1; // Motor inversions
