@@ -134,7 +134,7 @@ public class Lift extends Subsystem {
 			forceAntiDriftOff = true;
 		} else if(targetPos == liftPos.free) { // Take lift out of auto for operator control -- NOTE: This is semi-dangerous
 			if(optionalSpeed < 0) {
-				optionalSpeed = 0.05 + optionalSpeed * 0.15;
+				optionalSpeed = RobotMap.LiftPassiveComp + optionalSpeed * 0.2;
 				forceAntiDriftOff = true;
 			}
 			setLiftSpeed(optionalSpeed);

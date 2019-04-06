@@ -191,6 +191,7 @@ public class OperatorControl extends Command {
 			Robot.server.setSource(Robot.hicam);
 		}
 		Robot.wrist.actuateWrist(ry2);
+		Robot.climber.setClimber(trigs1);
 	}
 
 	// Returns true if command finished

@@ -21,7 +21,7 @@ public class Wrist extends Subsystem {
 	static limitStates limitState = limitStates.up;
 	static limitStates moveState = limitStates.up;
 	static boolean antiDrift = false;
-	static double currentPot, prevPot;
+	public static double currentPot, prevPot;
 	static wristPos targetPos;
 	static wristPos currentPos;
 	static double autoInvert;

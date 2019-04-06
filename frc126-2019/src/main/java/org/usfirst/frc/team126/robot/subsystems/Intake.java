@@ -16,11 +16,18 @@ public class Intake extends Subsystem {
 	}
 	public static void setIntake(double speed, boolean isSmoothed) {
 		if(isSmoothed) {
+			if(speed > 0) {
+				//speed *= 0.5;
+			}
 			Robot.intakeMotor.set(ControlMode.PercentOutput, speed);
 			intakeSpeed = speed;
 			
 		} else {
+			if(speed > 0) {
+				//speed *= 0.5;
+			}
 			Robot.intakeMotor.set(ControlMode.PercentOutput, speed);
+
 			intakeSpeed = speed;
 		}
 

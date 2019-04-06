@@ -49,6 +49,7 @@ public class RobotMap {
 	public static int rightLift2 = 9;
 	public static int wristMotor = 13;
 	public static int intakeMotor = 5;
+	public static int climberMotor = 6;
 
 	
 	//Motor Inversions
@@ -63,6 +64,7 @@ public class RobotMap {
 	public static int wristInversion;
 	public static int intakeInversion;
 	public static int hatchInversion;
+	public static int climberInversion;
 	public static int wristEncoderInversion;
 	public static int wristMax;
 
@@ -99,6 +101,7 @@ public class RobotMap {
 			wristInversion = 1;
 			hatchInversion = 1;
 			wristEncoderInversion = -1;
+			climberInversion = 1;
 
 			wristIdle = 0.05;
 			liftTopLimit = 60;
@@ -130,6 +133,7 @@ public class RobotMap {
 			wristInversion = 1;
 			hatchInversion = 1;
 			wristEncoderInversion = -1;
+			climberInversion = 1;
 
 			wristIdle = 0.05;
 			liftTopLimit = 60;

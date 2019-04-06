@@ -25,6 +25,7 @@ public class Robot extends TimedRobot {
 	public static TalonSRX rightLift2 = new TalonSRX(RobotMap.rightLift2);
 	public static TalonSRX intakeMotor = new TalonSRX(RobotMap.intakeMotor);
 	public static TalonSRX wristMotor = new TalonSRX(RobotMap.wristMotor);
+	public static TalonSRX climberMotor = new TalonSRX(RobotMap.climberMotor);
 
 
 	public double robotID;
@@ -41,6 +42,7 @@ public class Robot extends TimedRobot {
 	public static LidarLite distance;
 	public static DigitalInput liftBottomLimit;
 	public static DigitalInput liftTopLimit;
+	public static Climber climber;
 	public static Log log;
 	public static double currentDraw;
 	public static double prevDraw = 0;
@@ -94,6 +96,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Current", currentDraw);
 		SmartDashboard.putNumber("Battery Load", prevDraw);
 		SmartDashboard.putNumber("Linear LPOS", Lift.encoderVal);
+		SmartDashboard.putNumber("Wrist Encoder", Wrist.currentPot);
 		if(Lift.encoderVal > RobotMap.firstStopPosition - 3 && Lift.encoderVal < RobotMap.firstStopPosition + 3) {
 			SmartDashboard.putBoolean("1st LPOS", true);
 		} else {
