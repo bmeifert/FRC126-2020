@@ -20,21 +20,10 @@ public class Log extends Subsystem {
 			catheader = "  [INFO] ";
 		} else if(category == 1) {
 			catheader = " >[WARN] ";
-		} else if(category == 2){
+		} else {
 			catheader = ">>[CRIT] ";
-		} else {
-			catheader = ">>[EMER]";
-			System.out.println(">>=================");
 		}
-		if(Arrays.asList(mutedSystems).contains(header) && category < 3) {
-
-		} else {
-			System.out.println(catheader + header + ": " + content);
-		}
-
-		if(category > 2) {
-			System.out.println(">>=================");
-		}
+		System.out.println(catheader + header + ": " + content);
 	}
 
 }

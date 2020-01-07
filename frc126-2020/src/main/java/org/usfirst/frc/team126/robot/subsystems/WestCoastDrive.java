@@ -15,37 +15,13 @@ public class WestCoastDrive extends Subsystem {
 		rightSpeed = 0;
 	}
 
-	public void Drive(double fb, double rot) { // Smooth drive
+	public void Drive(double fb, double rot) { // Send power to the drive motors
 		if(Math.abs(fb) < 0.1) {
 			fb = 0;
 		}
 		if(Math.abs(rot) < 0.1) {
 			rot = 0;
 		}
-		if(Lift.encoderVal > RobotMap.startLiftSlowDown) { // Stabilize robot when lift is high
-			fbSlowDown = 1 - (Lift.encoderVal + RobotMap.startLiftSlowDown) / RobotMap.liftSlowDownFactor;
-			if(fbSlowDown < 0.3) {
-				fbSlowDown = 0.3;
-			}
-			rotSlowDown = 1 - ((Lift.encoderVal + RobotMap.startLiftSlowDown) / RobotMap.liftSlowDownFactor);
-			if(rotSlowDown < 0.5) {
-				rotSlowDown = 0.5;
-			}
-
-			if(fb > fbSlowDown) {
-				fb = fbSlowDown;
-			} else if(fb < -1 * fbSlowDown) {
-				fb = fbSlowDown * -1;
-			}
-			if(rot > rotSlowDown) {
-				rot = rotSlowDown;
-			} else if(rot < -1 * rotSlowDown) {
-				rot = rotSlowDown * -1;
-			}
-			//fb *= fbSlowDown;
-			//rot *= rotSlowDown;
-		}
-
 		leftMultiplier = fb + (rot);
 		rightMultiplier = fb - (rot);
 		leftSpeed = leftMultiplier;
