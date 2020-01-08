@@ -42,8 +42,8 @@ public class RobotMap {
 	// Motor IDs
 	public static int left1 = 1;
 	public static int left2 = 2;
-	public static int right1 = 10;
-	public static int right2 = 11;
+	public static int right1 = 3;
+	public static int right2 = 4;
 
 	//Motor Inversions
 	public static int left1Inversion;

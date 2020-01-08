@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team126.robot.subsystems.*;
 import org.usfirst.frc.team126.robot.RobotMap;
+import org.usfirst.frc.team126.robot.commands.AutoDrive;
+import org.usfirst.frc.team126.robot.commands.AutoTest;
+
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class Robot extends TimedRobot {
@@ -69,6 +72,10 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() { // Runs when autonomous starts
 		Log.print(1, "Robot", "ROBOT ENABLED - AUTONOMOUS");
+		autonomous = (Command) new AutoDrive();
+		if(autonomous != null){
+			autonomous.start();
+		}
 	}
 
 	@Override

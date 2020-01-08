@@ -1,7 +1,5 @@
 package org.usfirst.frc.team126.robot.subsystems;
 
-import java.util.Arrays;
-
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class Log extends Subsystem {

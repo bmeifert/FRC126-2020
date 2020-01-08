@@ -22,8 +22,8 @@ public class WestCoastDrive extends Subsystem {
 		if(Math.abs(rot) < 0.1) {
 			rot = 0;
 		}
-		leftMultiplier = fb + (rot);
-		rightMultiplier = fb - (rot);
+		leftMultiplier = fb + (rot * 0.5);
+		rightMultiplier = fb - (rot * 0.5);
 		leftSpeed = leftMultiplier;
 		rightSpeed = rightMultiplier;
 
