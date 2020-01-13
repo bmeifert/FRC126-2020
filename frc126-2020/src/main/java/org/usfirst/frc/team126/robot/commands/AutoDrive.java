@@ -5,6 +5,6 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class AutoDrive extends CommandGroup {
 
     public AutoDrive() {
-    	addSequential(new DriveForwards(), 3);
+    	addSequential(new Drive(0.25,0), 1);
     	}
 }

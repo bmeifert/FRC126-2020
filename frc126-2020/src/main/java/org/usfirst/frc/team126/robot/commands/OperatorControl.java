@@ -26,6 +26,8 @@ public class OperatorControl extends Command {
 	@SuppressWarnings("static-access")
 	@Override
 	protected void execute() {
+		// START CONTROL SETUP
+
 		// Get stick inputs -- this does not need to be modified year to year
 		ly = Robot.oi.driveController.getRawAxis(RobotMap.lStickY) * -1; // Left stick Y
 		lx = Robot.oi.driveController.getRawAxis(RobotMap.lStickY); // Left stick X
@@ -106,6 +108,7 @@ public class OperatorControl extends Command {
 		} else {
 			trigs2 = tl2 * -1;
 		}
+		// END CONTROLS SETUP
 
 		Robot.driveBase.Drive(ly, rx); // Drive with set values
 	}

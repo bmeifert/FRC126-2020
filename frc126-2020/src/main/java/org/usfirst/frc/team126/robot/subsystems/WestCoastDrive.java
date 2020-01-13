@@ -16,12 +16,6 @@ public class WestCoastDrive extends Subsystem {
 	}
 
 	public void Drive(double fb, double rot) { // Send power to the drive motors
-		if(Math.abs(fb) < 0.1) {
-			fb = 0;
-		}
-		if(Math.abs(rot) < 0.1) {
-			rot = 0;
-		}
 		leftMultiplier = fb + (rot * 0.5);
 		rightMultiplier = fb - (rot * 0.5);
 		leftSpeed = leftMultiplier;

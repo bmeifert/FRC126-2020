@@ -7,11 +7,11 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team126.robot.subsystems.*;
+import org.usfirst.frc.team126.robot.commands.*;
 import org.usfirst.frc.team126.robot.RobotMap;
-import org.usfirst.frc.team126.robot.commands.AutoDrive;
-import org.usfirst.frc.team126.robot.commands.AutoTest;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -29,8 +29,16 @@ public class Robot extends TimedRobot {
 	public static InternalData internalData;
 	public static Controllers oi;
 	public static Log log;
-	public static UsbCamera locam;
+	public static UsbCamera driveCam;
 	public static VideoSink server;
+
+	int selectedAutoPosition;
+	int selectedAutoFunction;
+	
+	@SuppressWarnings("rawtypes")
+	SendableChooser autoPosition = new SendableChooser(); // Position chooser
+	@SuppressWarnings("rawtypes")
+	SendableChooser autoFunction = new SendableChooser(); // Priority chooser
 
 
 	
@@ -45,11 +53,22 @@ public class Robot extends TimedRobot {
 		internalData = new InternalData();
 		InternalData.initGyro();
 		InternalData.resetGyro();
-		locam = CameraServer.getInstance().startAutomaticCapture(0);
+		driveCam = CameraServer.getInstance().startAutomaticCapture(0);
 		server = CameraServer.getInstance().getServer();
-		locam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
-		server.setSource(locam);
-		Log.print(0, "Robot", "=== ROBOT INIT COMPLETED ===");
+		driveCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
+		server.setSource(driveCam);
+
+		autoPosition.addOption("Left", 0);
+		autoPosition.addOption("Right", 1);
+		autoPosition.addOption("Center", 2);
+		SmartDashboard.putData("AutoPosition", autoPosition);
+
+		autoFunction.addOption("Function 0", 0);
+		autoFunction.addOption("Function 1", 1);
+		autoFunction.addOption("Function 2", 2);
+		SmartDashboard.putData("AutoFunction", autoFunction);
+
+		Log.print(0, "Robot", "Robot Init Completed");
 	}
 	
 	@Override
@@ -61,7 +80,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() { // Runs when robot is first disabled
-		Log.print(1, "Robot", "ROBOT DISABLED");
+		Log.print(1, "Robot", "Robot Disabled");
 	}
 
 	@Override
@@ -71,8 +90,23 @@ public class Robot extends TimedRobot {
 	
 	@Override
 	public void autonomousInit() { // Runs when autonomous starts
-		Log.print(1, "Robot", "ROBOT ENABLED - AUTONOMOUS");
-		autonomous = (Command) new AutoDrive();
+		Log.print(1, "Robot", "Robot Enabled - Autonomous");
+		selectedAutoPosition = (int) autoPosition.getSelected();
+		selectedAutoFunction = (int) autoFunction.getSelected();
+		switch(selectedAutoPosition) {
+			case 0 :
+				autonomous = (Command) new AutoDrive();
+				break;
+			case 1 :
+				autonomous = (Command) new AutoWait();
+				break;
+			case 2 :
+				autonomous = (Command) new AutoDrive();
+				break;
+			default :
+				autonomous = (Command) new AutoWait();
+				break;
+		}
 		if(autonomous != null){
 			autonomous.start();
 		}
@@ -89,7 +123,7 @@ public class Robot extends TimedRobot {
 		if(autonomous != null){
 			autonomous.cancel();
 		}
-		Log.print(1, "Robot", "ROBOT ENABLED - OPERATOR");
+		Log.print(1, "Robot", "Robot Enabled - Operator control");
     }
 
 	@Override

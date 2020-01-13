@@ -7,11 +7,15 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class DriveForwards extends Command {
-    public DriveForwards() {
+public class Drive extends Command {
+    double driveFb;
+    double driveLr;
+    public Drive(double fb, double lr) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-    	requires(Robot.driveBase);
+        requires(Robot.driveBase);
+        driveFb = fb;
+        driveLr = lr;
     }
 
     // Called just before this Command runs the first time
@@ -20,7 +24,7 @@ public class DriveForwards extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        Robot.driveBase.Drive(0.25, 0);
+        Robot.driveBase.Drive(driveFb, driveLr);
     }
 
     // Make this return true when this Command no longer needs to run execute()
