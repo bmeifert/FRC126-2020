@@ -5,13 +5,17 @@ import edu.wpi.cscore.VideoSink;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+
 import org.usfirst.frc.team126.robot.subsystems.*;
 import org.usfirst.frc.team126.robot.commands.*;
 import org.usfirst.frc.team126.robot.RobotMap;
+import com.revrobotics.ColorSensorV3;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -31,6 +35,9 @@ public class Robot extends TimedRobot {
 	public static Log log;
 	public static UsbCamera driveCam;
 	public static VideoSink server;
+	public static ColorSensorV3 colorDetector;
+
+	Color detectedColor;
 
 	int selectedAutoPosition;
 	int selectedAutoFunction;
@@ -53,10 +60,13 @@ public class Robot extends TimedRobot {
 		internalData = new InternalData();
 		InternalData.initGyro();
 		InternalData.resetGyro();
+		colorDetector = new ColorSensorV3(Port.kOnboard);
 		driveCam = CameraServer.getInstance().startAutomaticCapture(0);
 		server = CameraServer.getInstance().getServer();
 		driveCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
 		server.setSource(driveCam);
+		ColorData.Setup();
+
 
 		autoPosition.addOption("Left", 0);
 		autoPosition.addOption("Right", 1);
@@ -129,6 +139,19 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() { // Runs periodically during teleop
 		Scheduler.getInstance().run();
+		detectedColor = ColorData.getMatch();
+		if(detectedColor == ColorData.red) {
+			System.out.println("RED");
+		}
+		else if(detectedColor == ColorData.blue) {
+			System.out.println("BLUE");
+		}
+		else if(detectedColor == ColorData.yellow) {
+			System.out.println("YELLOW");
+		}
+		else if(detectedColor == ColorData.green) {
+			System.out.println("GREEN");
+		}
 
 	}
 
