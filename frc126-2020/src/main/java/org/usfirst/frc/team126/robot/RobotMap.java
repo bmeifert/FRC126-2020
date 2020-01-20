@@ -52,6 +52,7 @@ public class RobotMap {
 	public static int right2Inversion;
 
 	//Position Calibrations
+	public static double voltageThreshold = 10;
 
 	public static void setRobot(double robotID){
 		if(robotID == 0){ // 2020 compbot

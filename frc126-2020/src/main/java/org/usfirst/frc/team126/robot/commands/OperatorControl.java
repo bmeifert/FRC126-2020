@@ -2,15 +2,22 @@ package org.usfirst.frc.team126.robot.commands;
 
 import org.usfirst.frc.team126.robot.Robot;
 import org.usfirst.frc.team126.robot.RobotMap;
+import org.usfirst.frc.team126.robot.subsystems.ColorSpinner;
 import org.usfirst.frc.team126.robot.subsystems.Log;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.util.Color;
 public class OperatorControl extends Command {
 	double lx, ly, rx, ry, tl, tr; // Control values for drive controller
 	double lx2, ly2, rx2, ry2, tl2, tr2, pov1, pov2; // Control values for operator controller
 	double camX, camY, camV, maxSpeed, trigs1, trigs2; // Misc control values
 	boolean xboxLTrig, xboxRTrig, xboxA, xboxB, xboxX, xboxY, xboxLStick, xboxRStick; // Button values for drive controller
 	boolean xboxLTrig2, xboxRTrig2, xboxA2, xboxB2, xboxX2, xboxY2, xboxLStick2, xboxRStick2; // Button values for operator controller
+	
+	public static enum driveStates{drive, rotationControl, positionControl};
+	public static driveStates currentState;
+	public static Color targetColor;
+
 	public OperatorControl() {
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.driveBase);
@@ -109,8 +116,33 @@ public class OperatorControl extends Command {
 			trigs2 = tl2 * -1;
 		}
 		// END CONTROLS SETUP
+		if(xboxA) {
+			currentState = driveStates.drive;
+		}
+		switch(currentState) {
+			case rotationControl:
 
-		Robot.driveBase.Drive(ly, rx); // Drive with set values
+			break;
+
+			case positionControl:
+				if(ColorSpinner.getMatch() == targetColor) {
+					ColorSpinner.spin(0);
+					currentState = driveStates.drive;
+				} else {
+					ColorSpinner.spin(0.5);
+				}
+				Robot.driveBase.Drive(ly / 2, rx / 2);
+			break;
+
+			default:
+				Robot.driveBase.Drive(ly, rx);
+				if(xboxX) {
+					currentState = driveStates.positionControl;
+				}
+			break;
+		}
+
+		 // Drive with set values
 	}
 
 	// Returns true if command finished

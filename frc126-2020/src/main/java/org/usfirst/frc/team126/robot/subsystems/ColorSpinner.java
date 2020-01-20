@@ -3,10 +3,11 @@ package org.usfirst.frc.team126.robot.subsystems;
 import org.usfirst.frc.team126.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import com.revrobotics.ColorMatch;
 
-public class ColorData extends Subsystem {
+public class ColorSpinner extends Subsystem {
 	public static ColorMatch colorMatch = new ColorMatch();
 	public static Color red = ColorMatch.makeColor(0.535, 0.340, 0.125);
 	public static Color green = ColorMatch.makeColor(0.161, 0.590, 0.248);
@@ -39,5 +40,8 @@ public class ColorData extends Subsystem {
 	}
 	public static Color getMatch() {
 		return colorMatch.matchClosestColor(ColorMatch.makeColor(getRed(), getGreen(), getBlue())).color;
+	}
+	public static void spin(double speed) {
+		SmartDashboard.putNumber("Color Spinner", speed);
 	}
 }

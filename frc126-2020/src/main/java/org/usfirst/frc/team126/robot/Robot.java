@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.util.Color;
 
 import org.usfirst.frc.team126.robot.subsystems.*;
 import org.usfirst.frc.team126.robot.commands.*;
+import org.usfirst.frc.team126.robot.commands.OperatorControl.driveStates;
 import org.usfirst.frc.team126.robot.RobotMap;
 import com.revrobotics.ColorSensorV3;
 
@@ -65,7 +66,7 @@ public class Robot extends TimedRobot {
 		server = CameraServer.getInstance().getServer();
 		driveCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
 		server.setSource(driveCam);
-		ColorData.Setup();
+		ColorSpinner.Setup();
 
 
 		autoPosition.addOption("Left", 0);
@@ -133,26 +134,14 @@ public class Robot extends TimedRobot {
 		if(autonomous != null){
 			autonomous.cancel();
 		}
+		OperatorControl.currentState = driveStates.drive;
 		Log.print(1, "Robot", "Robot Enabled - Operator control");
     }
 
 	@Override
 	public void teleopPeriodic() { // Runs periodically during teleop
 		Scheduler.getInstance().run();
-		detectedColor = ColorData.getMatch();
-		if(detectedColor == ColorData.red) {
-			System.out.println("RED");
-		}
-		else if(detectedColor == ColorData.blue) {
-			System.out.println("BLUE");
-		}
-		else if(detectedColor == ColorData.yellow) {
-			System.out.println("YELLOW");
-		}
-		else if(detectedColor == ColorData.green) {
-			System.out.println("GREEN");
-		}
-
+		SmartDashboard.putString("Drive State", OperatorControl.currentState.toString());
 	}
 
 	@Override
