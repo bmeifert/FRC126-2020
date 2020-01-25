@@ -14,9 +14,13 @@ public class OperatorControl extends Command {
 	boolean xboxLTrig, xboxRTrig, xboxA, xboxB, xboxX, xboxY, xboxLStick, xboxRStick; // Button values for drive controller
 	boolean xboxLTrig2, xboxRTrig2, xboxA2, xboxB2, xboxX2, xboxY2, xboxLStick2, xboxRStick2; // Button values for operator controller
 	
-	public static enum driveStates{drive, rotationControl, positionControl};
+	public static enum driveStates{drive, rotationControl, positionControl, chassis};
 	public static driveStates currentState;
 	public static Color targetColor;
+	public static double targetRotations;
+	static double currentRotations;
+	static boolean rotationFirstIteration = true;
+	static boolean onTargetColor;
 
 	public OperatorControl() {
 		// Use requires() here to declare subsystem dependencies
@@ -37,7 +41,7 @@ public class OperatorControl extends Command {
 
 		// Get stick inputs -- this does not need to be modified year to year
 		ly = Robot.oi.driveController.getRawAxis(RobotMap.lStickY) * -1; // Left stick Y
-		lx = Robot.oi.driveController.getRawAxis(RobotMap.lStickY); // Left stick X
+		lx = Robot.oi.driveController.getRawAxis(RobotMap.lStickX); // Left stick X
 		tl = Robot.oi.driveController.getRawAxis(RobotMap.Ltrigger); // Left trigger
 		tr = Robot.oi.driveController.getRawAxis(RobotMap.Rtrigger); // Right trigger
 		ry = Robot.oi.driveController.getRawAxis(RobotMap.rStickY) * -1; // Right stick Y
@@ -118,9 +122,32 @@ public class OperatorControl extends Command {
 		// END CONTROLS SETUP
 		if(xboxA) {
 			currentState = driveStates.drive;
+			ColorSpinner.spin(0);
 		}
 		switch(currentState) {
 			case rotationControl:
+				if(rotationFirstIteration) {
+					targetColor = ColorSpinner.getMatch();
+					rotationFirstIteration = false;
+					onTargetColor = false;
+				} else {
+					ColorSpinner.spin(0.5);
+					if(ColorSpinner.getMatch() == targetColor) {
+						if(!onTargetColor) {
+							currentRotations += 0.5;
+							onTargetColor = true;
+						}
+					} else {
+						if(onTargetColor) {
+							onTargetColor = false;
+						}
+					}
+					if(currentRotations > targetRotations) {
+						ColorSpinner.spin(0);
+						currentState = driveStates.drive;
+					}
+
+				}
 
 			break;
 
@@ -134,10 +161,22 @@ public class OperatorControl extends Command {
 				Robot.driveBase.Drive(ly / 2, rx / 2);
 			break;
 
+			case chassis:
+				Robot.driveBase.Drive(trigs1 * -1, lx / 2);
+			break;
+
 			default:
-				Robot.driveBase.Drive(ly, rx);
+				Robot.driveBase.Drive(ly, rx / 2);
 				if(xboxX) {
 					currentState = driveStates.positionControl;
+					targetColor = ColorSpinner.blue;
+				}
+				if(xboxB) {
+					targetRotations = 2;
+					currentState = driveStates.rotationControl;
+				}
+				if(xboxY) {
+					currentState = driveStates.chassis;
 				}
 			break;
 		}

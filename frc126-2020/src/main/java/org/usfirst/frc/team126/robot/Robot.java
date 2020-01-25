@@ -37,6 +37,7 @@ public class Robot extends TimedRobot {
 	public static UsbCamera driveCam;
 	public static VideoSink server;
 	public static ColorSensorV3 colorDetector;
+	public static double voltageThreshold;
 
 	Color detectedColor;
 
@@ -67,16 +68,19 @@ public class Robot extends TimedRobot {
 		driveCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
 		server.setSource(driveCam);
 		ColorSpinner.Setup();
+		voltageThreshold = 10;
+		SmartDashboard.putNumber("Voltage Threshold", voltageThreshold);
+		OperatorControl.currentState = driveStates.drive;
 
-
-		autoPosition.addOption("Left", 0);
-		autoPosition.addOption("Right", 1);
-		autoPosition.addOption("Center", 2);
+		autoPosition.addOption("Default", 0);
+		autoPosition.addOption("Left", 1);
+		autoPosition.addOption("Right", 2);
+		autoPosition.addOption("Center", 3);
 		SmartDashboard.putData("AutoPosition", autoPosition);
-
-		autoFunction.addOption("Function 0", 0);
-		autoFunction.addOption("Function 1", 1);
-		autoFunction.addOption("Function 2", 2);
+		autoFunction.addOption("Default", 0);
+		autoFunction.addOption("Function 0", 1);
+		autoFunction.addOption("Function 1", 2);
+		autoFunction.addOption("Function 2", 3);
 		SmartDashboard.putData("AutoFunction", autoFunction);
 
 		Log.print(0, "Robot", "Robot Init Completed");
@@ -87,6 +91,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Match Time Left", InternalData.getMatchTime()); // Provide the drivers all the cool data
 		SmartDashboard.putNumber("Voltage", InternalData.getVoltage());
 		SmartDashboard.putBoolean("Enabled", InternalData.isEnabled());
+		voltageThreshold = SmartDashboard.getNumber("Voltage Threshold", voltageThreshold);
 	}
 
 	@Override
@@ -102,20 +107,28 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() { // Runs when autonomous starts
 		Log.print(1, "Robot", "Robot Enabled - Autonomous");
-		selectedAutoPosition = (int) autoPosition.getSelected();
-		selectedAutoFunction = (int) autoFunction.getSelected();
+		try {
+			selectedAutoPosition = (int) autoPosition.getSelected();
+		} catch(NullPointerException e) {
+			selectedAutoPosition = 0;
+		}
+		try {
+			selectedAutoFunction = (int) autoFunction.getSelected();
+		} catch(NullPointerException e) {
+			selectedAutoFunction = 0;
+		}
 		switch(selectedAutoPosition) {
 			case 0 :
 				autonomous = (Command) new AutoDrive();
 				break;
 			case 1 :
-				autonomous = (Command) new AutoWait();
+				autonomous = (Command) new AutoTest();
 				break;
 			case 2 :
-				autonomous = (Command) new AutoDrive();
+				autonomous = (Command) new AutoWait();
 				break;
 			default :
-				autonomous = (Command) new AutoWait();
+				autonomous = (Command) new AutoDrive();
 				break;
 		}
 		if(autonomous != null){

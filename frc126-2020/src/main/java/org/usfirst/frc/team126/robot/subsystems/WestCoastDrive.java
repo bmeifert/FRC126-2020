@@ -17,18 +17,19 @@ public class WestCoastDrive extends Subsystem {
 	}
 
 	public void Drive(double fb, double rot) { // Send power to the drive motors
-		leftMultiplier = fb + (rot * 0.5);
-		rightMultiplier = fb - (rot * 0.5);
+		leftMultiplier = fb + (rot);
+		rightMultiplier = fb - (rot);
 		leftSpeed = leftMultiplier;
 		rightSpeed = rightMultiplier;
-		limiter = 1 + (1 * (InternalData.getVoltage() - RobotMap.voltageThreshold));
+
+		limiter = 1 + (1 * (InternalData.getVoltage() - Robot.voltageThreshold));
 		if(limiter < 0) {
 			limiter = 0;
 		} else if(limiter > 1) {
 			limiter = 1;
 		}
 		previousLimiter = (4 * previousLimiter + limiter) / 5;
-		if(InternalData.getVoltage() < RobotMap.voltageThreshold) {
+		if(InternalData.getVoltage() < Robot.voltageThreshold) {
 			leftSpeed *= previousLimiter;
 			rightSpeed *= previousLimiter;
 		}

@@ -2,57 +2,53 @@ package org.usfirst.frc.team126.robot.commands;
 
 import org.usfirst.frc.team126.robot.Robot;
 import org.usfirst.frc.team126.robot.subsystems.InternalData;
-import org.usfirst.frc.team126.robot.subsystems.Log;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class Drive extends Command {
-    double driveFb;
-    double driveLr;
+public class Rotate extends Command {
+    double degrees;
+    double initialAngle;
     double targetAngle;
-    public Drive(double fb, double lr) {
+    public Rotate(double deg) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(Robot.driveBase);
-        driveFb = fb;
-        driveLr = lr;
+        degrees = deg;
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        targetAngle = InternalData.getGyroAngle();
+        initialAngle = InternalData.getGyroAngle();
+        targetAngle = initialAngle + degrees;
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        Log.print(0, "AutoDrive", "Driving");
-        if(driveLr == 0) {
-            if(InternalData.getGyroAngle() - targetAngle > 1) {
-                Robot.driveBase.Drive(driveFb, -0.1);
-            }
-            else if(InternalData.getGyroAngle() - targetAngle < -1) {
-                Robot.driveBase.Drive(driveFb, 0.1);
-            } else {
-                Robot.driveBase.Drive(driveFb, 0);
-            }
+        if(targetAngle - InternalData.getGyroAngle() > 1) {
+            Robot.driveBase.Drive(0, 0.25);
+        } else if(targetAngle - InternalData.getGyroAngle() < -1) {
+            Robot.driveBase.Drive(0, -0.25);
         } else {
-            Robot.driveBase.Drive(driveFb, driveLr);
-            
+            Robot.driveBase.Drive(0,0);
         }
- 
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        if(Math.abs(targetAngle - InternalData.getGyroAngle()) < 1 ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // Called once after isFinished returns true
     protected void end() {
         Robot.driveBase.Drive(0, 0);
+
     }
 
     // Called when another command which requires one or more of the same
