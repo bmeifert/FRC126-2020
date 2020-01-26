@@ -2,7 +2,7 @@ package org.usfirst.frc.team126.robot.subsystems;
 
 import edu.wpi.first.wpilibj.I2C;
 
-public class PixyI2C {
+public class PixyI2C_ORIG {
 	String name;
 	PixyPacket values;
 	I2C pixy;
@@ -11,7 +11,7 @@ public class PixyI2C {
 	String print;
 	boolean lastNoData=false;
 
-	public PixyI2C(String id, I2C argPixy, PixyPacket[] argPixyPacket, PixyException argPixyException,
+	public PixyI2C_ORIG(String id, I2C argPixy, PixyPacket[] argPixyPacket, PixyException argPixyException,
 			PixyPacket argValues) {
 		pixy = argPixy;
 		packets = argPixyPacket;

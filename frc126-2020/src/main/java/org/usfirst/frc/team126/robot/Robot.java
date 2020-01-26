@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team126.robot.subsystems.*;
 import org.usfirst.frc.team126.robot.RobotMap;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import org.usfirst.frc.team126.robot.sensors.*;
 
 public class Robot extends TimedRobot {
 
@@ -49,8 +50,7 @@ public class Robot extends TimedRobot {
 	public static UsbCamera locam;
 	public static UsbCamera hicam;
 	public static VideoSink server;
-
-
+	//public static PixyI2C pixycam;
 	
 	@Override
 	public void robotInit() { // Runs when the code first starts
@@ -66,6 +66,7 @@ public class Robot extends TimedRobot {
 		distance = new LidarLite(new DigitalInput(5));
 		liftBottomLimit = new DigitalInput(0);
 		liftTopLimit = new DigitalInput(1);
+		//pixycam = new PixyI2c();
 		InternalData.initGyro();
 		InternalData.resetGyro();
 		Wrist.initWrist();

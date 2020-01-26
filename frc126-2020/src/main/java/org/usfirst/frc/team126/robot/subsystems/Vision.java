@@ -1,4 +1,6 @@
-package org.usfirst.frc.team126.robot.subsystems;
+/*
+
+*/package org.usfirst.frc.team126.robot.subsystems;
 
 import org.usfirst.frc.team126.robot.commands.*;
 import edu.wpi.first.wpilibj.I2C;
@@ -13,7 +15,7 @@ public class Vision extends Subsystem {
     String print;
 
     public Vision() {
-		Pixy = new PixyI2C("pixy", new I2C(Port.kOnboard, 0x54), packetData, new PixyException(print), new PixyPacket());
+		Pixy = new PixyI2C_ORIG("pixy", new I2C(Port.kOnboard, 0x54), packetData, new PixyException(print), new PixyPacket());
     }
     
     public void initDefaultCommand() {
