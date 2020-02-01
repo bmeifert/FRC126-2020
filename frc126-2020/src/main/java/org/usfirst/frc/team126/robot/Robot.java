@@ -36,6 +36,7 @@ public class Robot extends TimedRobot {
 	public static CANSparkMax spark2 = new CANSparkMax(11, CANSparkMaxLowLevel.MotorType.kBrushless);
 
 	public double robotID;
+	double currentMotorTestSpeed;
 
 	public static Command autonomous; // Create the subsystems that control the hardware
 	public static WestCoastDrive driveBase;
@@ -167,9 +168,10 @@ public class Robot extends TimedRobot {
 		}
 		OperatorControl.currentState = driveStates.drive;
 		Log.print(1, "Robot", "Robot Enabled - Operator control");
-		SmartDashboard.putNumber("Motor Test Speed", 0);
-		spark1.set(SmartDashboard.getNumber("Motor Test Speed", 0));
-		spark2.set(SmartDashboard.getNumber("Motor Test Speed", 0));
+		currentMotorTestSpeed = 0;
+		SmartDashboard.putNumber("Motor Test Speed", currentMotorTestSpeed);
+		spark1.set(0);
+		spark2.set(0);
 		
     }
 
@@ -177,8 +179,9 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() { // Runs periodically during teleop
 		Scheduler.getInstance().run();
 		SmartDashboard.putString("Drive State", OperatorControl.currentState.toString());
-		spark1.set(SmartDashboard.getNumber("Motor Test Speed", 0));
-		spark2.set(SmartDashboard.getNumber("Motor Test Speed", 0));
+		currentMotorTestSpeed = (currentMotorTestSpeed * 9 + SmartDashboard.getNumber("Motor Test Speed", 0)) / 10;
+		spark1.set(currentMotorTestSpeed);
+		spark2.set(currentMotorTestSpeed);
 	}
 
 	@Override
