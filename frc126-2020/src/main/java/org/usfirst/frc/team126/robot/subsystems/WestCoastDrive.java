@@ -4,6 +4,8 @@ import org.usfirst.frc.team126.robot.Robot;
 import org.usfirst.frc.team126.robot.RobotMap;
 import org.usfirst.frc.team126.robot.commands.OperatorControl;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class WestCoastDrive extends Subsystem {
@@ -33,11 +35,13 @@ public class WestCoastDrive extends Subsystem {
 			leftSpeed *= previousLimiter;
 			rightSpeed *= previousLimiter;
 		}
-
 		Robot.left1.set(ControlMode.PercentOutput, leftSpeed * RobotMap.left1Inversion);
+		SmartDashboard.putNumber("left1", leftSpeed * RobotMap.left1Inversion);
 		Robot.right1.set(ControlMode.PercentOutput, rightSpeed * RobotMap.right1Inversion);
+		SmartDashboard.putNumber("right1", rightSpeed * RobotMap.right1Inversion);
 		Robot.left2.set(ControlMode.PercentOutput, leftSpeed * RobotMap.left2Inversion);
+		SmartDashboard.putNumber("left2", leftSpeed * RobotMap.left2Inversion);
 		Robot.right2.set(ControlMode.PercentOutput, rightSpeed * RobotMap.right2Inversion);
-
+		SmartDashboard.putNumber("right2", rightSpeed * RobotMap.right2Inversion);
 	}
 }

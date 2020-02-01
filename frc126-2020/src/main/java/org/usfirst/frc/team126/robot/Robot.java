@@ -18,6 +18,8 @@ import org.usfirst.frc.team126.robot.commands.OperatorControl.driveStates;
 import org.usfirst.frc.team126.robot.RobotMap;
 import com.revrobotics.ColorSensorV3;
 
+import java.lang.reflect.ParameterizedType;
+
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class Robot extends TimedRobot {
@@ -26,6 +28,9 @@ public class Robot extends TimedRobot {
 	public static TalonSRX right1 = new TalonSRX(RobotMap.right1);
 	public static TalonSRX left2 = new TalonSRX(RobotMap.left2);
 	public static TalonSRX right2 = new TalonSRX(RobotMap.right2);
+	public static TalonSRX turretRotator = new TalonSRX(RobotMap.turretRotator);
+	public static TalonSRX turretShooter = new TalonSRX(RobotMap.turretShooter);
+	public static TalonSRX spinnerMotor = new TalonSRX(RobotMap.spinnerMotor);
 
 	public double robotID;
 
@@ -34,10 +39,13 @@ public class Robot extends TimedRobot {
 	public static InternalData internalData;
 	public static Controllers oi;
 	public static Log log;
+	public static Turret turret;
 	public static UsbCamera driveCam;
 	public static VideoSink server;
 	public static ColorSensorV3 colorDetector;
 	public static double voltageThreshold;
+	public static Vision vision;
+
 
 	Color detectedColor;
 
@@ -58,20 +66,27 @@ public class Robot extends TimedRobot {
 		
 		oi = new Controllers(); // Init subsystems
 		log = new Log();
+
 		driveBase = new WestCoastDrive();
+		turret = new Turret();
 		internalData = new InternalData();
-		InternalData.initGyro();
-		InternalData.resetGyro();
 		colorDetector = new ColorSensorV3(Port.kOnboard);
+		vision = new Vision();
+
 		driveCam = CameraServer.getInstance().startAutomaticCapture(0);
 		server = CameraServer.getInstance().getServer();
 		driveCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
 		server.setSource(driveCam);
+
+		InternalData.initGyro();
+		InternalData.resetGyro();
 		ColorSpinner.Setup();
+		Turret.Setup();
+
 		voltageThreshold = 10;
-		SmartDashboard.putNumber("Voltage Threshold", voltageThreshold);
 		OperatorControl.currentState = driveStates.drive;
 
+		SmartDashboard.putNumber("Voltage Threshold", voltageThreshold);
 		autoPosition.addOption("Default", 0);
 		autoPosition.addOption("Left", 1);
 		autoPosition.addOption("Right", 2);

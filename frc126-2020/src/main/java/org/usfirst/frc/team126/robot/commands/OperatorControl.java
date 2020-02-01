@@ -169,14 +169,13 @@ public class OperatorControl extends Command {
 				Robot.driveBase.Drive(ly, rx / 2);
 				if(xboxX) {
 					currentState = driveStates.positionControl;
+					TurretControl.currentState = TurretControl.turretStates.idle;
 					targetColor = ColorSpinner.blue;
 				}
-				if(xboxB) {
-					targetRotations = 2;
-					currentState = driveStates.rotationControl;
-				}
 				if(xboxY) {
-					currentState = driveStates.chassis;
+					targetRotations = 2;
+					TurretControl.currentState = TurretControl.turretStates.seek;
+					currentState = driveStates.rotationControl;
 				}
 			break;
 		}

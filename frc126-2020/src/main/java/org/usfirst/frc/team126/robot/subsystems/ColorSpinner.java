@@ -5,6 +5,8 @@ import org.usfirst.frc.team126.robot.Robot;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.ColorMatch;
 
 public class ColorSpinner extends Subsystem {
@@ -42,6 +44,7 @@ public class ColorSpinner extends Subsystem {
 		return colorMatch.matchClosestColor(ColorMatch.makeColor(getRed(), getGreen(), getBlue())).color;
 	}
 	public static void spin(double speed) {
-		SmartDashboard.putNumber("Color Spinner", speed);
+		Robot.spinnerMotor.set(ControlMode.PercentOutput, speed);
+		SmartDashboard.putNumber("spinnerMotor", speed);
 	}
 }

@@ -2,7 +2,6 @@ package org.usfirst.frc.team126.robot.commands;
 
 import org.usfirst.frc.team126.robot.Robot;
 import org.usfirst.frc.team126.robot.subsystems.InternalData;
-import org.usfirst.frc.team126.robot.subsystems.Log;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -28,7 +27,6 @@ public class Drive extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        Log.print(0, "AutoDrive", "Driving");
         if(driveLr == 0) {
             if(InternalData.getGyroAngle() - targetAngle > 1) {
                 Robot.driveBase.Drive(driveFb, -0.1);
