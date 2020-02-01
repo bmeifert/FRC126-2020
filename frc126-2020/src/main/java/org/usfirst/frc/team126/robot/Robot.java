@@ -17,8 +17,9 @@ import org.usfirst.frc.team126.robot.commands.*;
 import org.usfirst.frc.team126.robot.commands.OperatorControl.driveStates;
 import org.usfirst.frc.team126.robot.RobotMap;
 import com.revrobotics.ColorSensorV3;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 
-import java.lang.reflect.ParameterizedType;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -31,6 +32,8 @@ public class Robot extends TimedRobot {
 	public static TalonSRX turretRotator = new TalonSRX(RobotMap.turretRotator);
 	public static TalonSRX turretShooter = new TalonSRX(RobotMap.turretShooter);
 	public static TalonSRX spinnerMotor = new TalonSRX(RobotMap.spinnerMotor);
+	public static CANSparkMax spark1 = new CANSparkMax(10, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax spark2 = new CANSparkMax(11, CANSparkMaxLowLevel.MotorType.kBrushless);
 
 	public double robotID;
 
@@ -164,12 +167,18 @@ public class Robot extends TimedRobot {
 		}
 		OperatorControl.currentState = driveStates.drive;
 		Log.print(1, "Robot", "Robot Enabled - Operator control");
+		SmartDashboard.putNumber("Motor Test Speed", 0);
+		spark1.set(SmartDashboard.getNumber("Motor Test Speed", 0));
+		spark2.set(SmartDashboard.getNumber("Motor Test Speed", 0));
+		
     }
 
 	@Override
 	public void teleopPeriodic() { // Runs periodically during teleop
 		Scheduler.getInstance().run();
 		SmartDashboard.putString("Drive State", OperatorControl.currentState.toString());
+		spark1.set(SmartDashboard.getNumber("Motor Test Speed", 0));
+		spark2.set(SmartDashboard.getNumber("Motor Test Speed", 0));
 	}
 
 	@Override
