@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 import org.usfirst.frc.team126.robot.subsystems.*;
 import org.usfirst.frc.team126.robot.commands.*;
@@ -49,7 +50,7 @@ public class Robot extends TimedRobot {
 	public static ColorSensorV3 colorDetector;
 	public static double voltageThreshold;
 	public static Vision vision;
-
+	public static LidarLite distance;
 
 	Color detectedColor;
 
@@ -81,7 +82,8 @@ public class Robot extends TimedRobot {
 		server = CameraServer.getInstance().getServer();
 		driveCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
 		server.setSource(driveCam);
-
+		distance = new LidarLite(new DigitalInput(5));
+	
 		InternalData.initGyro();
 		InternalData.resetGyro();
 		ColorSpinner.Setup();
