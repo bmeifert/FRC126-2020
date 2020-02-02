@@ -181,7 +181,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putString("Drive State", OperatorControl.currentState.toString());
 		currentMotorTestSpeed = (currentMotorTestSpeed * 9 + SmartDashboard.getNumber("Motor Test Speed", 0)) / 10;
 		spark1.set(currentMotorTestSpeed);
-		spark2.set(currentMotorTestSpeed);
+		spark2.set(0 - currentMotorTestSpeed);
 	}
 
 	@Override
