@@ -19,8 +19,8 @@ import org.usfirst.frc.team126.robot.RobotMap;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-
-
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class Robot extends TimedRobot {
@@ -34,9 +34,12 @@ public class Robot extends TimedRobot {
 	public static TalonSRX spinnerMotor = new TalonSRX(RobotMap.spinnerMotor);
 	public static CANSparkMax spark1 = new CANSparkMax(10, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static CANSparkMax spark2 = new CANSparkMax(11, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static TalonFX falcon1 = new TalonFX(12);
 
 	public double robotID;
 	double currentMotorTestSpeed;
+	double currentFalconSpeed;
+	double falconRPMdistance;
 
 	public static Command autonomous; // Create the subsystems that control the hardware
 	public static WestCoastDrive driveBase;
@@ -169,9 +172,11 @@ public class Robot extends TimedRobot {
 		OperatorControl.currentState = driveStates.drive;
 		Log.print(1, "Robot", "Robot Enabled - Operator control");
 		currentMotorTestSpeed = 0;
+		currentFalconSpeed = 0;
 		SmartDashboard.putNumber("Motor Test Speed", currentMotorTestSpeed);
-		spark1.set(0);
-		spark2.set(0);
+		//spark1.set(0);
+		//spark2.set(0);
+		falcon1.set(ControlMode.PercentOutput, 0);
 		
     }
 
@@ -180,8 +185,19 @@ public class Robot extends TimedRobot {
 		Scheduler.getInstance().run();
 		SmartDashboard.putString("Drive State", OperatorControl.currentState.toString());
 		currentMotorTestSpeed = (currentMotorTestSpeed * 9 + SmartDashboard.getNumber("Motor Test Speed", 0)) / 10;
-		spark1.set(currentMotorTestSpeed);
-		spark2.set(currentMotorTestSpeed);
+		//spark1.set(currentMotorTestSpeed);
+		//spark2.set(currentMotorTestSpeed);
+		falconRPMdistance = currentMotorTestSpeed - falcon1.getSelectedSensorVelocity() / 3.41;
+		currentFalconSpeed += falconRPMdistance / 100000;
+		if(currentFalconSpeed > 1) {
+			currentFalconSpeed = 1;
+		} else if(currentFalconSpeed < -1) {
+			currentFalconSpeed = -1;
+		}
+		falcon1.set(ControlMode.PercentOutput, currentFalconSpeed);
+		SmartDashboard.putNumber("Falcon RPM", Math.abs(falcon1.getSelectedSensorVelocity() / 3.41));
+		
+		
 	}
 
 	@Override
