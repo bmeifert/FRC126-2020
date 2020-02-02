@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 import org.usfirst.frc.team126.robot.subsystems.*;
 import org.usfirst.frc.team126.robot.commands.*;
@@ -52,7 +53,7 @@ public class Robot extends TimedRobot {
 	public static ColorSensorV3 colorDetector;
 	public static double voltageThreshold;
 	public static Vision vision;
-
+	public static LidarLite distance;
 
 	Color detectedColor;
 
@@ -84,7 +85,8 @@ public class Robot extends TimedRobot {
 		server = CameraServer.getInstance().getServer();
 		driveCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
 		server.setSource(driveCam);
-
+		distance = new LidarLite(new DigitalInput(5));
+	
 		InternalData.initGyro();
 		InternalData.resetGyro();
 		ColorSpinner.Setup();
@@ -186,7 +188,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putString("Drive State", OperatorControl.currentState.toString());
 		currentMotorTestSpeed = (currentMotorTestSpeed * 9 + SmartDashboard.getNumber("Motor Test Speed", 0)) / 10;
 		//spark1.set(currentMotorTestSpeed);
-		//spark2.set(currentMotorTestSpeed);
+		//spark2.set(0 - currentMotorTestSpeed);
 		falconRPMdistance = currentMotorTestSpeed - falcon1.getSelectedSensorVelocity() / 3.41;
 		currentFalconSpeed += falconRPMdistance / 100000;
 		if(currentFalconSpeed > 1) {
