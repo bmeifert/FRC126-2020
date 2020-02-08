@@ -38,7 +38,6 @@ public class Robot extends TimedRobot {
 	public static TalonFX falcon1 = new TalonFX(12);
 
 	public double robotID;
-	double currentMotorTestSpeed;
 	double currentFalconSpeed;
 	double falconRPMdistance;
 
@@ -173,11 +172,8 @@ public class Robot extends TimedRobot {
 		}
 		OperatorControl.currentState = driveStates.drive;
 		Log.print(1, "Robot", "Robot Enabled - Operator control");
-		currentMotorTestSpeed = 0;
 		currentFalconSpeed = 0;
-		SmartDashboard.putNumber("Motor Test Speed", currentMotorTestSpeed);
-		//spark1.set(0);
-		//spark2.set(0);
+		SmartDashboard.putNumber("Motor Test Speed", 0);
 		falcon1.set(ControlMode.PercentOutput, 0);
 		
     }
@@ -186,20 +182,21 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() { // Runs periodically during teleop
 		Scheduler.getInstance().run();
 		SmartDashboard.putString("Drive State", OperatorControl.currentState.toString());
-		currentMotorTestSpeed = (currentMotorTestSpeed * 9 + SmartDashboard.getNumber("Motor Test Speed", 0)) / 10;
-		//spark1.set(currentMotorTestSpeed);
-		//spark2.set(0 - currentMotorTestSpeed);
-		falconRPMdistance = currentMotorTestSpeed - falcon1.getSelectedSensorVelocity() / 3.41;
-		currentFalconSpeed += falconRPMdistance / 100000;
+		falconRPMdistance = SmartDashboard.getNumber("Motor Test Speed", 0) - falcon1.getSelectedSensorVelocity() / 3.41;
+		currentFalconSpeed += falconRPMdistance / 65000;
 		if(currentFalconSpeed > 1) {
 			currentFalconSpeed = 1;
 		} else if(currentFalconSpeed < -1) {
 			currentFalconSpeed = -1;
 		}
+		if(Math.abs(falconRPMdistance) < 30) {
+			SmartDashboard.putBoolean("RPM locked", true);
+		} else {
+			SmartDashboard.putBoolean("RPM locked", false);
+		}
 		falcon1.set(ControlMode.PercentOutput, currentFalconSpeed);
+		SmartDashboard.putNumber("falcon1", currentFalconSpeed);
 		SmartDashboard.putNumber("Falcon RPM", Math.abs(falcon1.getSelectedSensorVelocity() / 3.41));
-		
-		
 	}
 
 	@Override
