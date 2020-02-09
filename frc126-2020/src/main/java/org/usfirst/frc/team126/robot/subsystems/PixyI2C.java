@@ -1,24 +1,16 @@
 package org.usfirst.frc.team126.robot.subsystems;
 
 import edu.wpi.first.wpilibj.I2C;
+import org.usfirst.frc.team126.robot.Robot;
 
 public class PixyI2C {
 	String name;
-	PixyPacket values;
 	I2C pixy;
-	PixyPacket[] packets;
 	PixyException pExc;
-	String print;
-	boolean lastNoData=false;
 
-	public PixyI2C(String id, I2C argPixy, PixyPacket[] argPixyPacket, PixyException argPixyException,
-			PixyPacket argValues) {
+	public PixyI2C(String id, I2C argPixy) {
 		pixy = argPixy;
-		packets = argPixyPacket;
-		pExc = argPixyException;
-		values = argValues;
 		name = "Pixy_" + id;
-		lastNoData=false;
 	}
 
 	// Convert the raw bytes in integers with endian conversion
@@ -29,153 +21,356 @@ public class PixyI2C {
 	public byte getByte() {
 		byte[] rawData = new byte[1];
 
-		//SmartDashboard.putString("Pixy getPacketData", "getByte");
-
 		try {
-			//SmartDashboard.putString("Pixy getPacketData", "readOnly");
 			pixy.readOnly(rawData, 1);
 		} catch (RuntimeException e) {
-			//SmartDashboard.putString(name + "Status", e.toString());
 			//System.out.println("getByte RuntimeException " + e.toString());
 			return 0;
 		}
 		if (rawData.length < (1)) {
-			//SmartDashboard.putString(name + "Status", "raw data length " + rawData.length);
 			//System.out.println("getByte rawData.length " + rawData.length);
 			return 0;
 		}
-		//System.out.println("getByte returning " + String.format("0x%02X", rawData[0]));
 		return (rawData[0]);
 	}
 
-	public boolean findStart() {
-		boolean frameStart=false, firstSync=false;
-		int tries=512;
-		byte b1, b2, zeroCount=0;
-				
-		//SmartDashboard.putString("Pixy getPacketData", "findStart");
+    private int readResponse() {
+		byte b1, b2;
+		byte[] rawData = new byte[256];
 
-		while (!frameStart && tries-- > 0) {
-			b1 = getByte();
-			//SmartDashboard.putString("Pixy b1", String.format("0x%02X", b1));
-			//if (firstSync) {
-				//System.out.println("firstSync true, b1 = " + String.format("0x%02X", b1));
-			//}	
-			if (b1 == (byte)0x55) {
-				zeroCount=0;
-				//System.out.println("Found b1 = " + String.format("0x%02X", b1));
-				b2 = getByte();
-			} else {
-				if (b1 == (byte)0x00) {
-					if (zeroCount++ > 24) {
-						if (!lastNoData) {
-							  System.out.println("No data");
-						}
-						lastNoData=true;	  
-						return(false);
-					}	
-				} else {
-					zeroCount=0;
-				}
-				continue;
-			}
+		b1 = getByte();
+		b2 = getByte();
 
-			zeroCount=0;
-			if (b2 == (byte)0xAA && b1 == (byte)0x55) {
-				//System.out.println("Found b1 = 0xaa, b2 = 0x55, firstSync:" + firstSync);
-				if (firstSync == true) {
-					frameStart = true;
-					break;
-				} else {
-					firstSync = true;	
-				}
-			} else {
-				firstSync = false;
-			}
-		}
+		// Verify Packet Signature 
+		if ( b2 != (byte)0xc1 || b1 != (byte)0xaf) {
+			System.out.println(String.format("Did not find start of frame, b1: 0x%02X b2 0x%02X", b1,b2));
+			return -1;
+		}	
+		if (getByte() != (byte)1) {
+			System.out.println("Did not find good packet type");
+			return -1;
+		}		
 
-		lastNoData=false;
-		return frameStart;
+		int len = (int)getByte();
+		// Read the rest of the response
+		pixy.readOnly(rawData,len);
+
+		return 0;
 	}
 
-	public int readPacket(boolean firstPacket) {
+	public int setLED(int red, int green, int blue) throws PixyException {
+		/*
+		setLED(r, g, b)
 
-		//SmartDashboard.putString("Pixy getPacketData", "readPacket (" + firstPacket + ")");
+		Request:
+			Byte	Description	Value(s)
+			0 - 1	16-bit sync	174, 193 (0xc1ae)
+			2	Type of packet	20
+			3	Length of payload	3
+			4	r - Red value	0 - 255
+			5	g - Green value	0 - 255
+			6	b - Blue value	0 - 255
 
-		byte[] rawData = new byte[14];
-		int Checksum, Signature, keyWord, offset = 0, readSize = 14;
+		Response:
+			Byte	Description	Value(s)
+			0 - 1	16-bit sync	175, 193 (0xc1af)
+			2	Type of packet	1
+			3	Length of payload	4
+			4 - 5	16-bit checksum	sum of payload bytes
+			6 - 9	32-bit result/acknowledge	result value
+		*/	
+
+		byte[] rawData = new byte[256];
+
+		// Sync Value
+		rawData[1]=(byte)0xc1;
+		rawData[0]=(byte)0xae;
 		
-		if (firstPacket) { readSize = 12; }
+		// Packet Type
+		rawData[2]=(byte)20;
 
-		try {
-	    	pixy.readOnly(rawData,readSize);
-	    } catch (RuntimeException e) {
-	    	//SmartDashboard.putString(name + "Status", e.toString());
-	    	System.out.println(name + "  " + e);
-	    	return -1;
-	    }
-	    if (rawData.length < readSize) {
-	    	//SmartDashboard.putString(name + "Status", "raw data length " + rawData.length);
-	    	System.out.println("byte array length is broken length=" + rawData.length);
-	    	return -1;
+		// Packet Length 
+		rawData[3]=(byte)3;
+
+		// Set Color Values
+		rawData[4]=(byte)red;
+		rawData[5]=(byte)green;
+		rawData[6]=(byte)blue;
+
+		if (pixy.writeBulk(rawData, 7)) {
+			System.out.println("Error sending setLED message");
+			return -1;
+		}	
+
+		return readResponse();
+	}	
+
+	public int setServo(int leftRight, int upDown) throws PixyException {
+		/*
+		setServos(s0, s1)
+
+		Request:
+			Byte	Description	Value(s)
+			0 - 1	16-bit sync	174, 193 (0xc1ae)
+			2	Type of packet	18
+			3	Length of payload	4
+			4 - 5	16-bit s0 - pan servo value	0 - 511
+			6 - 7	16-bit s1 - tilt servo value	0 - 511
+
+		Response:
+			Byte	Description	Value(s)
+			0 - 1	16-bit sync	175, 193 (0xc1af)
+			2	Type of packet	1
+			3	Length of payload	4
+			4 - 5	16-bit checksum	sum of payload bytes
+			6 - 9	32-bit result/acknowledge	result value
+		*/
+
+		byte[] rawData = new byte[256];
+	
+		if (leftRight < 0 || leftRight > 511) {
+			System.out.println("Invalid leftRight value pased to setServo");
+            return -1;			
+		}
+
+		if (upDown < 0 || upDown > 511) {
+			System.out.println("Invalid upDown value pased to setServo");
+            return -1;			
+		}
+
+		// Sync Byte 0x1ae
+		rawData[0]=(byte)0xae;	
+		rawData[1]=(byte)0xc1;
+
+		// Packet Type
+		rawData[2]=(byte)18;
+
+		// Packet Length 
+		rawData[3]=(byte)4;
+	 
+		// set leftRight Postion 0 - 511
+		rawData[4] = (byte)(leftRight & 255);
+		rawData[5] = (byte)(leftRight >> 8); 
+
+		// set upDown Postion 0 - 511
+		rawData[6] = (byte)(upDown & 255);
+		rawData[7] = (byte)(upDown >> 8); 
+			
+		if (pixy.writeBulk(rawData, 8)) {
+			System.out.println("Error sending setServo message");
+			return -1;
 		}
 		
-		if (!firstPacket) {
-			keyWord = cvt(rawData[1], rawData[0]);
-			if (keyWord != 0xaa55) { 
-				//System.out.println("1.) Found bad keyword: " + String.format("0x%04X", keyWord));
-				return -1;	
-			}
-			offset = 2;
+		return readResponse();
+	}	
+
+	public int setLamp(boolean upperOn, boolean lowerOn) throws PixyException {
+		/*
+		setLamp(upper, lower)
+
+		Request:
+			Byte	Description	Value(s)
+			0 - 1	16-bit sync	174, 193 (0xc1ae)
+			2	Type of packet	22
+			3	Length of payload	2
+			4	Upper - turn on the two white LEDs along Pixy2 top edge	0 (off) or 1 (on)
+			5	Lower - turn on all channels of lower RGB LED	0 (off) or 1 (on)
+
+		Response:
+			Byte	Description	Value(s)
+			0 - 1	16-bit sync	175, 193 (0xc1af)
+			2	Type of packet	1
+			3	Length of payload	4
+			4 - 5	16-bit checksum	sum of payload bytes
+			6 - 9	32-bit result/acknowledge	result value
+		*/
+
+		byte[] rawData = new byte[256];
+	
+		// Sync Byte 0x1ae
+		rawData[0]=(byte)0xae;	
+		rawData[1]=(byte)0xc1;
+
+		// Packet Type
+		rawData[2]=(byte)22;
+
+		// Packet Length 
+		rawData[3]=(byte)2;
+	 
+		// set UpperLamp
+		if (upperOn) {
+			rawData[4] = (byte)1;
+		} else {
+			rawData[4] = (byte)0;
+		}	
+
+		// set UpperLamp
+		if (lowerOn) {
+			rawData[5] = (byte)1;
+		} else {
+			rawData[5] = (byte)0;
+		}	
+	
+		if (pixy.writeBulk(rawData, 6)) {
+			System.out.println("Error sending setLamp message");
+			return -1;
 		}
 		
-		// This next block parses the rest of the data
-		Checksum = cvt(rawData[offset+1], rawData[offset+0]);
+		return readResponse();
+	}	
 
-		if (Checksum == 0xaa55 || Checksum == 0xaa56) {
-			// Found the start of new frame, stop 
-			//System.out.println("Found the start of new frame, stop: " + String.format("0x%04X", Checksum));
-			return -1; 
+	public int setCameraBrightness(int brightness) throws PixyException {
+		/*
+		setCameraBrightness(brightness)
+
+		Request:
+			Byte	Description	Value(s)
+			0 - 1	Sync	174, 193 (0xc1ae)
+			2	Type of packet	16
+			3	Length of payload	1
+			4	Brightness	0 - 255
+
+		Response:
+			Byte	Description	Value(s)
+			0 - 1	16-bit sync	175, 193 (0xc1af)
+			2	Type of packet	1
+			3	Length of payload	4
+			4 - 5	16-bit checksum	sum of payload bytes
+			6 - 9	32-bit result	result value
+		*/
+
+		if (brightness < 0 || brightness > 255) {
+			System.out.println("Invalid brightness value pased to setCameraBrightness");
+            return -1;			
 		}
-		Signature = cvt(rawData[offset+3], rawData[offset+2]);
-		if (Signature <= 0 || Signature > packets.length) {
-			// Bad Signature, return
+
+		byte[] rawData = new byte[256];
+	
+		// Sync Byte 0x1ae
+		rawData[0]=(byte)0xae;	
+		rawData[1]=(byte)0xc1;
+
+		// Packet Type
+		rawData[2]=(byte)16;
+
+		// Packet Length 
+		rawData[3]=(byte)1;
+	 
+		// set Brightness
+		rawData[4] = (byte)brightness;
+
+		if (pixy.writeBulk(rawData, 5)) {
+			System.out.println("Error sending setCameraBrightness message");
+			return -1;
+		}
+		
+		return readResponse();
+	}		
+
+	public int getBlocks(int objectId, int maxBlocks, PixyPacket[] dataPackets) throws PixyException {
+		/*
+		getBlocks(sigmap, maxBlocks)
+		Request:
+			Bit	Description	Value(s)
+			0 - 1	16-bit sync	174, 193 (0xc1ae)
+			2	Type of packet	32
+			3	Length of payload	2
+			4	Sigmap - indicate which signatures to receive data from	0 (none) - 255 (all)
+			5	Maximum blocks to return	0 (none) - 255 (all blocks)
+
+		Response:
+			Byte	Description	Value(s)
+			0 - 1	16-bit sync	175, 193 (0xc1af)
+			2	Type of packet	33
+			3	Length of payload	14
+			4 - 5	16-bit checksum	sum of payload bytes
+			6 - 7	16-bit signature / Color code number	0 - 255
+			8 - 9	16-bit X (center) of block in pixels	0 - 315
+			10 - 11	16-bit Y (center) of block in pixels	0 - 207
+			12 - 13	16-bit Width of block in pixels	0 - 316
+			14 - 15	16-bit Height of block in pixels	0 - 208
+			16 - 17	16-bit Angle of color-code in degrees	-180 - 180 (0 if not a color code)
+			18	Tracking index of block (see API for more info)	0 - 255
+			19	Age - number of frames this block has been tracked	0 - 255 (stops incrementing at 255)
+		*/
+
+		// Validate the objectID
+		if (objectId < 0 || objectId > 16) {
+			System.out.println("Invalid objectId value pased to getBlocks");
+            return -1;			
+		}
+
+		// Validate maxBlocks, right now we only support 1
+		if (maxBlocks <= 0 || maxBlocks > 1) {
+			System.out.println("Invalid maxBlocks value pased to getBlocks");
+            return -1;			
+		}
+
+		byte b1, b2;
+		byte[] rawData = new byte[256];
+	
+		// Sync Byte 0x1ae
+		rawData[0]=(byte)0xae;	
+		rawData[1]=(byte)0xc1;
+
+		// Packet Type
+		rawData[2]=(byte)32;
+
+		// Packet Length 
+		rawData[3]=(byte)2;
+	 
+		// set sigMap
+		rawData[4] = (byte)objectId;
+
+		// set maxBlocks
+		rawData[5] = (byte)maxBlocks;
+
+		if (pixy.writeBulk(rawData, 6)) {
+			System.out.println("Error sending getBlocks message");
 			return -1;
 		}
 
-		int x,y,w,h;
+		dataPackets[objectId].initPacket();
+		
+		// Read the response packet
+		b1 = getByte();
+		b2 = getByte();
 
-		x = cvt(rawData[offset+5], rawData[offset+4]);
-		y = cvt(rawData[offset+7], rawData[offset+6]);
-		w = cvt(rawData[offset+9], rawData[offset+8]);
-		h = cvt(rawData[offset+11], rawData[offset+10]);
-
-		if (Checksum != Signature + x + y + w + h) {
+		// Verify Packet Signature 
+		if ( b2 != (byte)0xc1 || b1 != (byte)0xaf) {
+			System.out.println(String.format("Did not find start of frame, b1: 0x%02X b2 0x%02X", b1,b2));
 			return -1;
+		}	
+
+		// Get the packet type and verify it's the proper response
+		b1 = getByte();
+		if (b1 != (byte)33) {
+			System.out.println("Did not find good packet type " + (int)b1);
+			return -1;
+		}		
+
+		// Get the length of the respone.  Will be 0 if no object of the specified 
+		// type is being tracked by the camera
+		int len = (int)getByte();
+		
+		if (len == 14) {
+			// Read the rest of the response
+    		pixy.readOnly(rawData,14);
+
+			// int checksum = cvt(rawData[1], rawData[0]);
+			// int colorCodeAngle = cvt(rawData[13], rawData[12]);
+			// int trackingIndex = (int)rawData[14];
+			// int trackingAge = (int)rawData[15];
+
+			dataPackets[objectId].X = cvt(rawData[5], rawData[4]);
+			dataPackets[objectId].Y = cvt(rawData[7], rawData[6]);
+			dataPackets[objectId].Height = cvt(rawData[9], rawData[8]);
+			dataPackets[objectId].Width = cvt(rawData[11], rawData[10]);
+			dataPackets[objectId].Signature = cvt(rawData[3], rawData[2]);
+			dataPackets[objectId].isValid = true;
+
+			return 1;
 		}
-
-		packets[Signature - 1].Signature = Signature;
-		packets[Signature - 1].X = x;
-		packets[Signature - 1].Y = y;
-		packets[Signature - 1].Width = w;
-		packets[Signature - 1].Height = h;
-		packets[Signature - 1].isValid = true;
-
-	    return 0;
-	}
-
-	public void readPackets() throws PixyException {
-		int ret=0,count=32;
-
-		//SmartDashboard.putString("Pixy getPacketData", "readPackets");
-
-		if (!findStart()) { return; }
-
-		ret = readPacket(true);
-
-		while (ret == 0 && count-- > 0) {
-			//SmartDashboard.putString("Pixy getPacketData", "readPackets count " + count);
-			ret=readPacket(false);
-		}
-	}
+		return -1;
+	}		
 }

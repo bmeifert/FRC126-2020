@@ -41,8 +41,9 @@ public class Turret extends Subsystem {
 	}
 	public static double getTargetPosition(double currentPosition) {
 		double targetPosition;
-		double visionX = Robot.vision.getX();
-		System.out.println(visionX);
+		double visionX = -1;
+		//Robot.vision.getX();
+		//System.out.println(visionX);
 		if(visionX == -1) {
 			
 			return currentPosition;

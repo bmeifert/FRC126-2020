@@ -26,7 +26,7 @@ public class SensorsPeriodic extends Command {
 		double ret = Robot.distance.getDistance();
         SmartDashboard.putNumber("Distance Sensor: ", ret);
 		if (count++ % 10 == 0) {
-			System.out.println("Sensor Reading " + String.format("%5.2f", ret));
+			//System.out.println("Sensor Reading " + String.format("%5.2f", ret));
         }	   
     }
 

@@ -5,130 +5,94 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.usfirst.frc.team126.robot.subsystems.PixyPacket;
 
 public class Vision extends Subsystem {
 
     public PixyI2C Pixy;
-	public PixyPacket[] packetData = new PixyPacket[8];
+	public PixyPacket[] packetData;
 	String print;
-	double currentX;
-	double currentY;
+
+	int servoX, servoY;
 
     public Vision() {
-		Pixy = new PixyI2C("pixy", new I2C(Port.kOnboard, 0x54), packetData, new PixyException(print), new PixyPacket());
-		currentX = -1;
-		currentY = -1;
+		Pixy = new PixyI2C("pixy", new I2C(Port.kOnboard, 0x54));
+		packetData = new PixyPacket[24];
+		for (int x=0; x<24; x++) {	
+			packetData[x] = new PixyPacket();
+		}
+		centerServo();
+		setServo();
     }
-    
+
+	public int getServoX() {
+       return servoX;
+	}
+
+	public int getServoY() {
+		return servoY;
+	}
+
+    public void setServoX(int value) {
+		servoX=value;
+		if (servoX < 15) { servoX = 15; }
+		if (servoX > 500 ) { servoX = 500; }
+	}
+
+	public void setServoY(int value) {
+		servoY=value;
+		if (servoY < 15) { servoY = 15; }
+		if (servoY > 500 ) { servoY = 500; }
+	}
+
+	public void incrServoX(int value) {
+		int tmp = servoX + value;
+		setServoX(tmp);
+	}
+
+	public void incrServoY(int value) {
+		int tmp = servoY + value;
+		setServoY(tmp);
+	}
+
+	public void centerServo() {
+		setServoX(250);
+		setServoY(250);
+	}
+
     public void initDefaultCommand() {
 		setDefaultCommand(new CameraData());
-		for (int i = 0; i < packetData.length; i++) {
-			packetData[i] = new PixyPacket();
-		}
-	}
-	public double getX() {
-		return currentX;
-	}
-	public double getY() {
-		return currentY;
 	}
 
-    public void refreshPacketData() {
-		// Clear out the old data in the packets
-		for (int i = 0; i < packetData.length; i++) {
-			if (packetData[i] == null) {
-				//System.out.println("Packetdata[" + (i) + "] == NULL");
-			} else {
-				packetData[i].isValid=false;
-			}	
-		}
-
-		//SmartDashboard.putString("Pixy getPacketData", "Retrieving Data");
-
-		// Try and read the packets from the Pixy 
+	public void setLED(int red, int green, int blue) {
 		try {
-			Pixy.readPackets();
+			Pixy.setLED(red, green, blue);
 		} catch (PixyException e) {
 			SmartDashboard.putString("Pixy Error: ", "exception");
-			for (int i = 0; i < packetData.length; i++) {
-				packetData[i].isValid=false;
-			}
 		}
-
-		for (int i = 0; i < packetData.length; i++) {
-			if (!packetData[i].isValid) {
-				// If we hit an error, mark the packet as invalid
-
-				/*
-				SmartDashboard.putString("Pixy Error: " + (i+1), "True");
-				SmartDashboard.putNumber("Pixy X Value: " + (i+1), 99999999);
-				SmartDashboard.putNumber("Pixy Y Value: " + (i+1), 99999999);
-				SmartDashboard.putNumber("Pixy Width Value: " + (i+1), 99999999);
-				SmartDashboard.putNumber("Pixy Height Value: " + (i+1), 99999999);
-				*/
-				/*
-				currentX = -1;
-				currentY = -1;
-				System.out.println("Invalid packet - set to -1");
-				*/
-			} else {
-				int x,y,h,w;
-				x=packetData[i].X;
-				y=packetData[i].Y;
-				w=packetData[i].Width;
-				h=packetData[i].Height;
-				String xmove,ymove;
-
-				// If the read was good, mark the packet valid
-				/*
-	        	SmartDashboard.putString("Pixy Error: " + (i+1), "False");
-				SmartDashboard.putNumber("Pixy X Value: " + (i+1), x);
-				SmartDashboard.putNumber("Pixy Y Value: " + (i+1), y);
-				SmartDashboard.putNumber("Pixy Width Value: " + (i+1), w);
-				SmartDashboard.putNumber("Pixy Height Value: " + (i+1), h);
-				*/
-				currentX = x;
-				currentY = y;
-				if (x < 135) { 
-					xmove = "Move Left"; 
-				} else if (x > 165) { 
-					xmove = "Move Right"; 
-				} else {
-					 xmove = "X-Centered"; 
-				} 
-
-				if (y < 80) { 
-					ymove = "Move Up"; 
-				} else if (y > 120) { 
-					ymove = "Move Down"; 
-				} else {
-					 ymove = "Y-Centered"; 
-				} 
-
-				System.out.println("Packet " + (i+1) + " " + xmove + " " + ymove + " = " + packetData[i].toString());
-			}
-		}	
-
-		//SmartDashboard.putString("Pixy getPacketData", "done");
 	}
-	public double getPacketData(int packetID, String dataID ) {
-		packetID += -1; // offset
-		if(dataID == "x") {
-			return packetData[packetID].X;
+
+	public void setLamp(boolean upperOn, boolean lowerOn) {
+		try {
+			Pixy.setLamp(upperOn, lowerOn);
+		} catch (PixyException e) {
+			SmartDashboard.putString("Pixy Error: ", "exception");
 		}
-		if(dataID == "y") {
-			return packetData[packetID].Y;
+	}
+
+	public void setServo() {
+		try {
+			Pixy.setServo(servoX, servoY);
+		} catch (PixyException e) {
+			SmartDashboard.putString("Pixy Error: ", "exception");
 		}
-		if(dataID == "v") {
-			if(packetData[packetID].isValid == true) {
-				return 1;
-			}
-			else {
-				return 0;
-			}
-		}
-		else {
-			return -1;
-		}
+	}
+
+	public void getItems(int objectId, int maxBlocks) {
+		try {
+			Pixy.getBlocks(objectId, maxBlocks, packetData);
+		} catch (PixyException e) {
+			SmartDashboard.putString("Pixy Error: ", "exception");
+		}	
 	}
 }
