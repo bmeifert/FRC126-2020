@@ -10,10 +10,14 @@ public class Vision extends Subsystem {
 
     public PixyI2C Pixy;
 	public PixyPacket[] packetData = new PixyPacket[8];
-    String print;
+	String print;
+	double currentX;
+	double currentY;
 
     public Vision() {
 		Pixy = new PixyI2C("pixy", new I2C(Port.kOnboard, 0x54), packetData, new PixyException(print), new PixyPacket());
+		currentX = -1;
+		currentY = -1;
     }
     
     public void initDefaultCommand() {
@@ -21,7 +25,13 @@ public class Vision extends Subsystem {
 		for (int i = 0; i < packetData.length; i++) {
 			packetData[i] = new PixyPacket();
 		}
-    }
+	}
+	public double getX() {
+		return currentX;
+	}
+	public double getY() {
+		return currentY;
+	}
 
     public void refreshPacketData() {
 		// Clear out the old data in the packets
@@ -56,6 +66,11 @@ public class Vision extends Subsystem {
 				SmartDashboard.putNumber("Pixy Width Value: " + (i+1), 99999999);
 				SmartDashboard.putNumber("Pixy Height Value: " + (i+1), 99999999);
 				*/
+				/*
+				currentX = -1;
+				currentY = -1;
+				System.out.println("Invalid packet - set to -1");
+				*/
 			} else {
 				int x,y,h,w;
 				x=packetData[i].X;
@@ -72,7 +87,8 @@ public class Vision extends Subsystem {
 				SmartDashboard.putNumber("Pixy Width Value: " + (i+1), w);
 				SmartDashboard.putNumber("Pixy Height Value: " + (i+1), h);
 				*/
-
+				currentX = x;
+				currentY = y;
 				if (x < 135) { 
 					xmove = "Move Left"; 
 				} else if (x > 165) { 
@@ -89,7 +105,7 @@ public class Vision extends Subsystem {
 					 ymove = "Y-Centered"; 
 				} 
 
-				//System.out.println("Packet " + (i+1) + " " + xmove + " " + ymove + " = " + packetData[i].toString());
+				System.out.println("Packet " + (i+1) + " " + xmove + " " + ymove + " = " + packetData[i].toString());
 			}
 		}	
 

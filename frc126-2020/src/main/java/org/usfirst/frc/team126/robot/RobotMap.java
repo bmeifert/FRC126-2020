@@ -11,9 +11,10 @@ package org.usfirst.frc.team126.robot;
 	    \ \_\/\______/ \ \____/
 		 \/_/\/_____/   \/___/
 
+\\      Team 126 2020 Code       \\
 	~ Brought to you by:
-	~ Keith M, Kyle C, and Alyssa L
-	~ GO GET EM GAEL FORCE!!!
+	~ Keith Meifert
+	Go get em gaels!
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -41,116 +42,42 @@ public class RobotMap {
 	// Motor IDs
 	public static int left1 = 1;
 	public static int left2 = 2;
-	public static int right1 = 10;
-	public static int right2 = 11;
-	public static int leftLift1 = 3;
-	public static int leftLift2 = 4;
-	public static int rightLift1 = 8;
-	public static int rightLift2 = 9;
-	public static int wristMotor = 13;
-	public static int intakeMotor = 5;
-	public static int climberMotor = 6;
+	public static int right1 = 3;
+	public static int right2 = 4;
+	public static int turretRotator = 5;
+	public static int turretShooter = 6;
+	public static int spinnerMotor = 7;
 
-	
 	//Motor Inversions
 	public static int left1Inversion;
 	public static int right1Inversion;
 	public static int left2Inversion;
 	public static int right2Inversion;
-	public static int leftLift1Inversion;
-	public static int leftLift2Inversion;
-	public static int rightLift1Inversion;
-	public static int rightLift2Inversion;
-	public static int wristInversion;
-	public static int intakeInversion;
-	public static int hatchInversion;
-	public static int climberInversion;
-	public static int wristEncoderInversion;
-	public static int wristMax;
+	public static int turretRotatorInversion;
+	public static int turretShooterInversion;
+	public static int spinnerMotorInversion;
 
-	public static double firstStopPosition;
-	public static double secondStopPosition;
-	public static double thirdStopPosition;
-	public static double foldWristPos;
-	public static double flatWristPos;
-	public static double upWristPos;
-	public static double downWristPos;
-	public static double potOffset;
-	public static double wristIdle;
-	public static double liftTopLimit;
-	public static double LiftPassiveComp;
-	public static double LiftActiveComp;
-	public static double startLiftSlowDown;
-	public static double liftSlowDownFactor;
-	public static double liftMax;
-
-
+	//Position Calibrations
 
 	public static void setRobot(double robotID){
-		if(robotID == 0){ // 2019 compbot
-
+		if(robotID == 0){ // 2020 compbot
 			left1Inversion = -1; // Motor inversions
 			right1Inversion = 1;
 			left2Inversion = -1;
 			right2Inversion = 1;
-			leftLift1Inversion = -1;
-			leftLift2Inversion = -1;
-			rightLift1Inversion = 1;
-			rightLift2Inversion = 1;
-			intakeInversion = 1;
-			wristInversion = 1;
-			hatchInversion = 1;
-			wristEncoderInversion = -1;
-			climberInversion = 1;
+			turretRotatorInversion = 1;
+			turretShooterInversion = 1;
+			spinnerMotorInversion = 1;
 
-			wristIdle = 0.05;
-			liftTopLimit = 60;
-			wristMax = 15500;
-			foldWristPos = 250; // Wrist stops
-			flatWristPos = 11500;
-			upWristPos = 9500;
-			downWristPos = 15000;
-			firstStopPosition = 10; // Lift stops
-			secondStopPosition = 31;
-			thirdStopPosition = 56;
-			potOffset = 8; // Lift potentiometer offset (LEGACY)
-			LiftPassiveComp = 0.15;
-			LiftActiveComp = 0.25;
-			startLiftSlowDown = 20;
-			liftSlowDownFactor = 3;
-			liftMax = 90;
-		} else if(robotID == 1){ // 2019 pracbot
-
+		} else if(robotID == 1){ // 2019 testbed
 			left1Inversion = -1; // Motor inversions
 			right1Inversion = 1;
 			left2Inversion = -1;
 			right2Inversion = 1;
-			leftLift1Inversion = -1;
-			leftLift2Inversion = -1;
-			rightLift1Inversion = 1;
-			rightLift2Inversion = 1;
-			intakeInversion = 1;
-			wristInversion = 1;
-			hatchInversion = 1;
-			wristEncoderInversion = -1;
-			climberInversion = 1;
+			turretRotatorInversion = 1;
+			turretShooterInversion = 1;
+			spinnerMotorInversion = -1;
 
-			wristIdle = 0.05;
-			liftTopLimit = 60;
-			wristMax = 15500;
-			foldWristPos = 250; // Wrist stops
-			flatWristPos = 11500;
-			upWristPos = 9500;
-			downWristPos = 15000;
-			firstStopPosition = 8; // Lift stops
-			secondStopPosition = 30;
-			thirdStopPosition = 55;
-			potOffset = 8; // Lift potentiometer offset (LEGACY)
-			LiftPassiveComp = 0.1;
-			LiftActiveComp = 0.3;
-			startLiftSlowDown = 20;
-			liftSlowDownFactor = 3;
-			liftMax = 70;
 		}
 	}
 }

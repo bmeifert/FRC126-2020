@@ -1,5 +1,6 @@
 package org.usfirst.frc.team126.robot.subsystems;
 
+import org.usfirst.frc.team126.robot.commands.*;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalSource;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -30,6 +31,7 @@ public LidarLite (DigitalSource source) {
 }
 
 public void initDefaultCommand() {
+    setDefaultCommand(new SensorsPeriodic());
 }
 
 /**

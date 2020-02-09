@@ -5,12 +5,23 @@ import edu.wpi.cscore.VideoSink;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.DigitalInput;
+
 import org.usfirst.frc.team126.robot.subsystems.*;
+import org.usfirst.frc.team126.robot.commands.*;
+import org.usfirst.frc.team126.robot.commands.OperatorControl.driveStates;
 import org.usfirst.frc.team126.robot.RobotMap;
+import com.revrobotics.ColorSensorV3;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class Robot extends TimedRobot {
@@ -19,116 +30,96 @@ public class Robot extends TimedRobot {
 	public static TalonSRX right1 = new TalonSRX(RobotMap.right1);
 	public static TalonSRX left2 = new TalonSRX(RobotMap.left2);
 	public static TalonSRX right2 = new TalonSRX(RobotMap.right2);
-	public static TalonSRX leftLift1 = new TalonSRX(RobotMap.leftLift1); // Create the hardware that all the subsystems use
-	public static TalonSRX leftLift2 = new TalonSRX(RobotMap.leftLift2);
-	public static TalonSRX rightLift1 = new TalonSRX(RobotMap.rightLift1);
-	public static TalonSRX rightLift2 = new TalonSRX(RobotMap.rightLift2);
-	public static TalonSRX intakeMotor = new TalonSRX(RobotMap.intakeMotor);
-	public static TalonSRX wristMotor = new TalonSRX(RobotMap.wristMotor);
-	public static TalonSRX climberMotor = new TalonSRX(RobotMap.climberMotor);
-
+	public static TalonSRX turretRotator = new TalonSRX(RobotMap.turretRotator);
+	public static TalonSRX turretShooter = new TalonSRX(RobotMap.turretShooter);
+	public static TalonSRX spinnerMotor = new TalonSRX(RobotMap.spinnerMotor);
+	public static CANSparkMax spark1 = new CANSparkMax(10, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax spark2 = new CANSparkMax(11, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static TalonFX falcon1 = new TalonFX(12);
 
 	public double robotID;
+	double currentFalconSpeed;
+	double falconRPMdistance;
 
 	public static Command autonomous; // Create the subsystems that control the hardware
 	public static WestCoastDrive driveBase;
 	public static InternalData internalData;
 	public static Controllers oi;
-	public static Intake intake;
-	public static Vision vision;
-	public static Lift lift;
-	public static Wrist wrist;
-	public static Pneumatics pneumatics;
-	public static LidarLite distance;
-	public static DigitalInput liftBottomLimit;
-	public static DigitalInput liftTopLimit;
-	public static Climber climber;
 	public static Log log;
-	public static double currentDraw;
-	public static double prevDraw = 0;
-	public static UsbCamera locam;
-	public static UsbCamera hicam;
+	public static Turret turret;
+	public static UsbCamera driveCam;
 	public static VideoSink server;
+	public static ColorSensorV3 colorDetector;
+	public static double voltageThreshold;
+	public static Vision vision;
+	public static LidarLite distance;
+
+	Color detectedColor;
+
+	int selectedAutoPosition;
+	int selectedAutoFunction;
+	
+	@SuppressWarnings("rawtypes")
+	SendableChooser autoPosition = new SendableChooser(); // Position chooser
+	@SuppressWarnings("rawtypes")
+	SendableChooser autoFunction = new SendableChooser(); // Priority chooser
 
 
 	
 	@Override
 	public void robotInit() { // Runs when the code first starts
-		RobotMap.setRobot(0); // ===== ROBOT ID: 0-COMPBOT, 1-PRACTICEBOT ===== //
+
+		RobotMap.setRobot(0); // ===== ROBOT ID: 0-2020COMPBOT, 1-2019TESTBED ===== //
+		
 		oi = new Controllers(); // Init subsystems
 		log = new Log();
+
 		driveBase = new WestCoastDrive();
+		turret = new Turret();
 		internalData = new InternalData();
-		intake = new Intake();
+		colorDetector = new ColorSensorV3(Port.kOnboard);
 		vision = new Vision();
-		lift = new Lift();
-		pneumatics = new Pneumatics();
+
+		driveCam = CameraServer.getInstance().startAutomaticCapture(0);
+		server = CameraServer.getInstance().getServer();
+		driveCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
+		server.setSource(driveCam);
 		distance = new LidarLite(new DigitalInput(5));
-		liftBottomLimit = new DigitalInput(0);
-		liftTopLimit = new DigitalInput(1);
+	
 		InternalData.initGyro();
 		InternalData.resetGyro();
-		Wrist.initWrist();
-		Lift.resetLift();
-		locam = CameraServer.getInstance().startAutomaticCapture(0);
-		hicam = CameraServer.getInstance().startAutomaticCapture(1);
-		server = CameraServer.getInstance().getServer();
-		locam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
-		hicam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
-		server.setSource(locam);
-		Log.print(0, "Robot", "=== ROBOT INIT COMPLETED ===");
+		ColorSpinner.Setup();
+		Turret.Setup();
+
+		voltageThreshold = 10;
+		OperatorControl.currentState = driveStates.drive;
+
+		SmartDashboard.putNumber("Voltage Threshold", voltageThreshold);
+		autoPosition.addOption("Default", 0);
+		autoPosition.addOption("Left", 1);
+		autoPosition.addOption("Right", 2);
+		autoPosition.addOption("Center", 3);
+		SmartDashboard.putData("AutoPosition", autoPosition);
+		autoFunction.addOption("Default", 0);
+		autoFunction.addOption("Function 0", 1);
+		autoFunction.addOption("Function 1", 2);
+		autoFunction.addOption("Function 2", 3);
+		SmartDashboard.putData("AutoFunction", autoFunction);
+
+		Log.print(0, "Robot", "Robot Init Completed");
 	}
 	
 	@Override
 	public void robotPeriodic() { // Runs periodically regardless of robot state
-
 		SmartDashboard.putNumber("Match Time Left", InternalData.getMatchTime()); // Provide the drivers all the cool data
 		SmartDashboard.putNumber("Voltage", InternalData.getVoltage());
 		SmartDashboard.putBoolean("Enabled", InternalData.isEnabled());
-
-		currentDraw = Robot.left1.getOutputCurrent() + Robot.left2.getOutputCurrent() + // Find current amperage
-		Robot.right1.getOutputCurrent() + Robot.right2.getOutputCurrent() + 
-		Robot.leftLift1.getOutputCurrent() + Robot.leftLift2.getOutputCurrent() +
-		Robot.rightLift1.getOutputCurrent() + Robot.rightLift2.getOutputCurrent() +
-		Robot.wristMotor.getOutputCurrent() + Robot.intakeMotor.getOutputCurrent();
-		prevDraw = (prevDraw * 99 + currentDraw) / 100; // Find smoothed average amperage
-
-		SmartDashboard.putNumber("Current", currentDraw);
-		SmartDashboard.putNumber("Battery Load", prevDraw);
-		SmartDashboard.putNumber("Linear LPOS", Lift.encoderVal);
-		SmartDashboard.putNumber("Wrist Encoder", Wrist.currentPot);
-		if(Lift.encoderVal > RobotMap.firstStopPosition - 3 && Lift.encoderVal < RobotMap.firstStopPosition + 3) {
-			SmartDashboard.putBoolean("1st LPOS", true);
-		} else {
-			SmartDashboard.putBoolean("1st LPOS", false);
-		}
-		if(Lift.encoderVal > RobotMap.secondStopPosition - 3 && Lift.encoderVal < RobotMap.secondStopPosition + 3) {
-			SmartDashboard.putBoolean("2nd LPOS", true);
-		} else {
-			SmartDashboard.putBoolean("2nd LPOS", false);
-		}
-		if(Lift.encoderVal > RobotMap.thirdStopPosition - 3 && Lift.encoderVal < RobotMap.thirdStopPosition + 3) {
-			SmartDashboard.putBoolean("3rd LPOS", true);
-		} else {
-			SmartDashboard.putBoolean("3rd LPOS", false);
-		}
-		SmartDashboard.putNumber("Lift Pot Offset", Lift.encoderOffset);
-		SmartDashboard.putNumber("RAW Lift Pot", Lift.rawEncoder);
-		if(Lift.rawEncoder < 5) {
-			SmartDashboard.putBoolean("Lift Critical LOWER", true);
-		} else {
-			SmartDashboard.putBoolean("Lift Critical LOWER", false);			
-		}
-		if(Lift.rawEncoder > 90) {
-			SmartDashboard.putBoolean("Lift Critical UPPER", true);
-		} else {
-			SmartDashboard.putBoolean("Lift Critical UPPER", false);			
-		}
+		voltageThreshold = SmartDashboard.getNumber("Voltage Threshold", voltageThreshold);
 	}
 
 	@Override
 	public void disabledInit() { // Runs when robot is first disabled
-		Log.print(1, "Robot", "ROBOT DISABLED");
+		Log.print(1, "Robot", "Robot Disabled");
 	}
 
 	@Override
@@ -137,30 +128,75 @@ public class Robot extends TimedRobot {
 	}
 	
 	@Override
-	public void autonomousInit() { // Runs when sandstorm starts
-		Wrist.initWrist();
-		Wrist.zeroUpMatch();
-		Log.print(1, "Robot", "ROBOT ENABLED - SANDSTORM");
+	public void autonomousInit() { // Runs when autonomous starts
+		Log.print(1, "Robot", "Robot Enabled - Autonomous");
+		try {
+			selectedAutoPosition = (int) autoPosition.getSelected();
+		} catch(NullPointerException e) {
+			selectedAutoPosition = 0;
+		}
+		try {
+			selectedAutoFunction = (int) autoFunction.getSelected();
+		} catch(NullPointerException e) {
+			selectedAutoFunction = 0;
+		}
+		switch(selectedAutoPosition) {
+			case 0 :
+				autonomous = (Command) new AutoDrive();
+				break;
+			case 1 :
+				autonomous = (Command) new AutoTest();
+				break;
+			case 2 :
+				autonomous = (Command) new AutoWait();
+				break;
+			default :
+				autonomous = (Command) new AutoDrive();
+				break;
+		}
+		if(autonomous != null){
+			autonomous.start();
+		}
 	}
 
 	@Override
-	public void autonomousPeriodic() { // Runs periodically during sandstorm
+	public void autonomousPeriodic() { // Runs periodically during autonomous
 		Scheduler.getInstance().run();
 		
 	}
 
 	@Override
-	public void teleopInit() { // Runs when sandstorm ends
+	public void teleopInit() { // Runs when teleop begins
 		if(autonomous != null){
 			autonomous.cancel();
 		}
-		Log.print(1, "Robot", "ROBOT ENABLED - OPERATOR");
+		OperatorControl.currentState = driveStates.drive;
+		Log.print(1, "Robot", "Robot Enabled - Operator control");
+		currentFalconSpeed = 0;
+		SmartDashboard.putNumber("Motor Test Speed", 0);
+		falcon1.set(ControlMode.PercentOutput, 0);
+		
     }
 
 	@Override
 	public void teleopPeriodic() { // Runs periodically during teleop
 		Scheduler.getInstance().run();
-
+		SmartDashboard.putString("Drive State", OperatorControl.currentState.toString());
+		falconRPMdistance = SmartDashboard.getNumber("Motor Test Speed", 0) - falcon1.getSelectedSensorVelocity() / 3.41;
+		currentFalconSpeed += falconRPMdistance / 65000;
+		if(currentFalconSpeed > 1) {
+			currentFalconSpeed = 1;
+		} else if(currentFalconSpeed < -1) {
+			currentFalconSpeed = -1;
+		}
+		if(Math.abs(falconRPMdistance) < 30) {
+			SmartDashboard.putBoolean("RPM locked", true);
+		} else {
+			SmartDashboard.putBoolean("RPM locked", false);
+		}
+		falcon1.set(ControlMode.PercentOutput, currentFalconSpeed);
+		SmartDashboard.putNumber("falcon1", currentFalconSpeed);
+		SmartDashboard.putNumber("Falcon RPM", Math.abs(falcon1.getSelectedSensorVelocity() / 3.41));
 	}
 
 	@Override
