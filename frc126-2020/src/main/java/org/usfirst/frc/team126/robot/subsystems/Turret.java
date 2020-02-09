@@ -11,7 +11,6 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 public class Turret extends Subsystem {
 
-
 	public void initDefaultCommand() {
 		setDefaultCommand(new TurretControl());
 	}
@@ -39,25 +38,36 @@ public class Turret extends Subsystem {
 		}
 		return targetSpeed;
 	}
+
 	public static double getTargetPosition(double currentPosition) {
 		double targetPosition;
-		double visionX = -1;
-		//Robot.vision.getX();
-		//System.out.println(visionX);
-		if(visionX == -1) {
-			
+
+		if (!Robot.vision.packetData[1].isValid) {
+			System.out.println("Target is not valid");
 			return currentPosition;
 		}
-		//double visionX = SmartDashboard.getNumber("targetEncoder", 150);
-		if(visionX > 165) {
-			targetPosition = currentPosition + (visionX - 165) * 10;
-		} else if(visionX < 135) {
-			targetPosition = currentPosition + (visionX - 135) * 10;
-		} else {
+
+		int y = Robot.vision.packetData[1].Y;
+		int x = Robot.vision.packetData[1].X;
+		int sx = Robot.vision.getServoX();
+		int sy = Robot.vision.getServoY();
+
+		System.out.println("target valid " + x + " servo " + sx);
+		
+		int servoRatio = 3;
+
+		if (x < 80 ) {
+			targetPosition = (x * - servoRatio) + ((sx - 256) * servoRatio);
+		} else if (x > 120) {
+			targetPosition = (((x-110) * servoRatio) - ((sx - 255) * servoRatio));
+		} else if (sx < 200) {
+			targetPosition = ( (sx - 255) * servoRatio);	
+		} else if (sx > 300) {
+			targetPosition = ( (sx - 255) * servoRatio);
+		} else {	
 			targetPosition = currentPosition;
 		}
+
 		return targetPosition;
-
-
 	}
 }

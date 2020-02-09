@@ -36,6 +36,10 @@ public class TurretControl extends Command {
         //targetEncoder = SmartDashboard.getNumber("targetEncoder", targetEncoder);
         targetEncoder = Turret.getTargetPosition(currentEncoder);
         encoderDistance = Math.abs(targetEncoder - currentEncoder);
+
+        if ( targetEncoder > currentEncoder + 100 || targetEncoder < currentEncoder - 100) {
+            currentState = turretStates.seek;
+        }
         switch(currentState) {
             case idle:
                 Turret.setSpeed(0);
