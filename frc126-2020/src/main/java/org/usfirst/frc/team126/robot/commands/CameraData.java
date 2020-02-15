@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class CameraData extends Command {
 	public CameraData() {
 		// Use requires() here to declare subsystem dependencies
-		requires(Robot.vision);
+		//requires(Robot.vision);
 	}
 
 	// Run before command starts 1st iteration
@@ -18,7 +18,7 @@ public class CameraData extends Command {
 	@SuppressWarnings("static-access")
 	@Override
 	protected void execute() {
-		Robot.vision.refreshPacketData();
+		//Robot.vision.refreshPacketData();
 		//System.out.println(Robot.vision.getPacketData(1, "v"));
 	}
 

@@ -3,17 +3,22 @@ package org.usfirst.frc.team126.robot.commands;
 import org.usfirst.frc.team126.robot.Robot;
 import org.usfirst.frc.team126.robot.subsystems.ColorSpinner;
 import org.usfirst.frc.team126.robot.subsystems.Log;
-
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 public class OperatorControl extends Command {	
-	public static enum driveStates{drive, rotationControl, positionControl, chassis};
+	public static enum driveStates{drive, rotationControl, positionControl, chassis, demo};
 	public static driveStates currentState;
 	public static Color targetColor;
 	public static double targetRotations;
+	static double targetRPM, targetRPMdistance, currentTargetSpeed;
 	static double currentRotations;
 	static boolean rotationFirstIteration = true;
 	static boolean onTargetColor;
+	Solenoid s1 = new Solenoid(0);
+	static boolean gearSwitchPress = false;
+	static boolean gear = false;
 
 	public OperatorControl() {
 		// Use requires() here to declare subsystem dependencies
@@ -78,8 +83,33 @@ public class OperatorControl extends Command {
 				Robot.driveBase.Drive(driveJoystick.getLeftStickY() / 2, driveJoystick.getRightStickX() / 2);
 			break;
 
-			case chassis:
-				Robot.driveBase.Drive(driveJoystick.getTriggers() * -1, driveJoystick.getLeftStickX() / 2);
+			case demo:
+				if(driveJoystick.isRShoulderButton()) {
+					if(gearSwitchPress) {
+
+					} else {
+						if(gear) {
+							s1.set(false);
+							gear = false;
+						} else {
+							s1.set(true);
+							gear = true;
+						}
+						gearSwitchPress = true;
+					}
+				} else {
+					gearSwitchPress = false;
+				}
+				targetRPM = 500 + driveJoystick.getRightTrigger() * 6000;
+				targetRPMdistance = targetRPM - Robot.driveBase.getPeakRPM();
+				SmartDashboard.putNumber("Peak RPM", Robot.driveBase.getPeakRPM());
+				currentTargetSpeed += targetRPMdistance / 65000;
+				if(currentTargetSpeed > 1) {
+					currentTargetSpeed = 1;
+				} else if(currentTargetSpeed < -1) {
+					currentTargetSpeed = -1;
+				}
+			Robot.driveBase.Drive(currentTargetSpeed, 0.0);
 			break;
 
 			default:
@@ -93,6 +123,25 @@ public class OperatorControl extends Command {
 					targetRotations = 2;
 					TurretControl.currentState = TurretControl.turretStates.seek;
 					currentState = driveStates.rotationControl;
+				}
+				if(driveJoystick.isYButton()) {
+					currentState = driveStates.demo;
+				}
+				if(driveJoystick.isRShoulderButton()) {
+					if(gearSwitchPress) {
+
+					} else {
+						if(gear) {
+							s1.set(false);
+							gear = false;
+						} else {
+							s1.set(true);
+							gear = true;
+						}
+						gearSwitchPress = true;
+					}
+				} else {
+					gearSwitchPress = false;
 				}
 			break;
 		}

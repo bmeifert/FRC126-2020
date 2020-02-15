@@ -26,7 +26,6 @@ public class Turret extends Subsystem {
 	}
 	public static void setSpeed(double speed) {
 		Robot.turretRotator.set(ControlMode.PercentOutput, speed);
-		SmartDashboard.putNumber("turretRotator", speed);
 	}
 	public static double getSpeedCurve(double distance) {
 		double targetSpeed;
@@ -41,7 +40,8 @@ public class Turret extends Subsystem {
 	}
 	public static double getTargetPosition(double currentPosition) {
 		double targetPosition;
-		double visionX = Robot.vision.getX();
+		//double visionX = Robot.vision.getX();
+		double visionX = 150;
 		System.out.println(visionX);
 		if(visionX == -1) {
 			

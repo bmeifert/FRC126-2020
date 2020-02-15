@@ -21,7 +21,7 @@ public class Vision extends Subsystem {
     }
     
     public void initDefaultCommand() {
-		setDefaultCommand(new CameraData());
+		//setDefaultCommand(new CameraData());
 		for (int i = 0; i < packetData.length; i++) {
 			packetData[i] = new PixyPacket();
 		}
