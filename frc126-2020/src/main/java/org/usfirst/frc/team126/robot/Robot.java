@@ -36,6 +36,8 @@ public class Robot extends TimedRobot {
 	public static CANSparkMax spark1 = new CANSparkMax(10, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static CANSparkMax spark2 = new CANSparkMax(11, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static TalonFX falcon1 = new TalonFX(12);
+	public static TalonSRX armPulleyMotor = new TalonSRX(RobotMap.armPulleyMotor);
+	public static TalonSRX sideToSidePullyMotor = new TalonSRX(RobotMap.sideToSidePullyMotor);
 
 	public double robotID;
 	double currentFalconSpeed;
@@ -53,6 +55,7 @@ public class Robot extends TimedRobot {
 	public static double voltageThreshold;
 	public static Vision vision;
 	public static LidarLite distance;
+	public static Lift lift;
 
 	Color detectedColor;
 
@@ -79,6 +82,7 @@ public class Robot extends TimedRobot {
 		internalData = new InternalData();
 		colorDetector = new ColorSensorV3(Port.kOnboard);
 		vision = new Vision();
+		lift = new Lift();
 
 		driveCam = CameraServer.getInstance().startAutomaticCapture(0);
 		server = CameraServer.getInstance().getServer();
