@@ -43,9 +43,12 @@ public class Robot extends TimedRobot {
 	double currentFalconSpeed;
 	double falconRPMdistance;
 
-	public static int objectID=1;
-	
+	public static int objectId=1;
+	public static boolean trackTarget=true;
 
+	public static double robotTurn = 0;
+	public static double robotDrive = 0;
+	
 	public static Command autonomous; // Create the subsystems that control the hardware
 	public static WestCoastDrive driveBase;
 	public static InternalData internalData;
