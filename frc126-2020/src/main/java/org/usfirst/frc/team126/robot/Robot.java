@@ -36,6 +36,7 @@ public class Robot extends TimedRobot {
 	public static CANSparkMax spark1 = new CANSparkMax(10, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static CANSparkMax spark2 = new CANSparkMax(11, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static TalonFX falcon1 = new TalonFX(12);
+	public static VictorSPX victor1 = new VictorSPX(50);
 
 	public double robotID;
 	double currentFalconSpeed;
