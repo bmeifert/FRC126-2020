@@ -28,7 +28,12 @@ public class LimeLightWork extends Command {
 
                 if ( Robot.limeLight.getllTargetX() < -5 ) {
                     // Target is to the left of the Robot, need to move left
-
+                    Robot.robotTurn=-.25;
+                } else if ( Robot.limeLight.getllTargetX() > 5 ) {
+                    // Target is to the left of the Robot, need to move right
+                    Robot.robotTurn=.25;
+                } else {
+                    Robot.robotTurn=0;
                 }
 
             }
