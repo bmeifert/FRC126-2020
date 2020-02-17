@@ -62,6 +62,7 @@ public class Robot extends TimedRobot {
 	public static Vision vision;
 	public static LidarLite distance;
 	public static TargetLight tLight;
+	public static LimeLight limeLight;
 
 	Color detectedColor;
 
@@ -95,6 +96,7 @@ public class Robot extends TimedRobot {
 		server.setSource(driveCam);
 		distance = new LidarLite(new DigitalInput(5));
 		tLight = new TargetLight();
+		limeLight = new LimeLight();
 	
 		InternalData.initGyro();
 		InternalData.resetGyro();
