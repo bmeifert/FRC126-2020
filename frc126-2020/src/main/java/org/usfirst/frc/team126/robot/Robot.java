@@ -23,6 +23,7 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 public class Robot extends TimedRobot {
 
@@ -42,6 +43,9 @@ public class Robot extends TimedRobot {
 	double currentFalconSpeed;
 	double falconRPMdistance;
 
+	public static int objectID=1;
+	
+
 	public static Command autonomous; // Create the subsystems that control the hardware
 	public static WestCoastDrive driveBase;
 	public static InternalData internalData;
@@ -54,6 +58,7 @@ public class Robot extends TimedRobot {
 	public static double voltageThreshold;
 	public static Vision vision;
 	public static LidarLite distance;
+	public static TargetLight tLight;
 
 	Color detectedColor;
 
@@ -86,6 +91,7 @@ public class Robot extends TimedRobot {
 		driveCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
 		server.setSource(driveCam);
 		distance = new LidarLite(new DigitalInput(5));
+		tLight = new TargetLight();
 	
 		InternalData.initGyro();
 		InternalData.resetGyro();
