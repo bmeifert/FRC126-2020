@@ -7,8 +7,8 @@ import org.usfirst.frc.team126.robot.subsystems.Log;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.util.Color;
 public class OperatorControl extends Command {	
-	public static enum driveStates{drive, rotationControl, positionControl, chassis};
-	public static driveStates currentState;
+	public static enum driveStates{drive, rotationControl, positionControl, chassis, targetSeek};
+	public static driveStates currentState = driveStates.targetSeek;
 	public static Color targetColor;
 	public static double targetRotations;
 	static double currentRotations;
@@ -42,6 +42,15 @@ public class OperatorControl extends Command {
 			ColorSpinner.spin(0);
 		}
 		switch(currentState) {
+			case targetSeek:
+		    	//if(!driveJoystick.isYButton()) {
+				//	currentState = driveStates.drive;
+				//} else {
+                System.out.println("Direction: " + Robot.robotTurn + " Drive: " + Robot.robotDrive );
+				Robot.driveBase.Drive(Robot.robotDrive,Robot.robotTurn);
+				//}
+			break;
+
 			case rotationControl:
 				if(rotationFirstIteration) {
 					targetColor = ColorSpinner.getMatch();
@@ -93,6 +102,9 @@ public class OperatorControl extends Command {
 					targetRotations = 2;
 					TurretControl.currentState = TurretControl.turretStates.seek;
 					currentState = driveStates.rotationControl;
+				}
+				if(driveJoystick.isYButton()) {
+					currentState = driveStates.targetSeek;
 				}
 			break;
 		}

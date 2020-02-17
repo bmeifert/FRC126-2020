@@ -33,17 +33,25 @@ public class TurretControl extends Command {
     protected void execute() {
         currentEncoder = Turret.getEncoder();
         SmartDashboard.putNumber("turretEncoder", currentEncoder);
-        //targetEncoder = SmartDashboard.getNumber("targetEncoder", targetEncoder);
-        targetEncoder = Turret.getTargetPosition(currentEncoder);
+
+        targetEncoder = Turret.getTargetPosition(currentEncoder, Robot.objectId);
         encoderDistance = Math.abs(targetEncoder - currentEncoder);
+<<<<<<< Updated upstream
+=======
+
+        if ( targetEncoder > currentEncoder + 200 || targetEncoder < currentEncoder - 200) {
+            currentState = turretStates.seek;
+        }
+        int fudgeFactor=100;
+>>>>>>> Stashed changes
         switch(currentState) {
             case idle:
                 Turret.setSpeed(0);
             break;
             case seek:
-                if(currentEncoder < targetEncoder - 50) {
+                if(currentEncoder < targetEncoder - fudgeFactor) {
                     Turret.setSpeed(Turret.getSpeedCurve(encoderDistance));
-                } else if(currentEncoder > targetEncoder + 50) {
+                } else if(currentEncoder > targetEncoder + fudgeFactor) {
                     Turret.setSpeed(0 - Turret.getSpeedCurve(encoderDistance));
                 } else {
                     Turret.setSpeed(0);
@@ -51,16 +59,16 @@ public class TurretControl extends Command {
                 }
             break;
             case lock:
-                if(currentEncoder < targetEncoder - 50) {
+                if(currentEncoder < targetEncoder - fudgeFactor) {
                     Turret.setSpeed(Turret.getSpeedCurve(encoderDistance));
                     currentState = turretStates.seek;
-                } else if(currentEncoder > targetEncoder + 50) {
+                } else if(currentEncoder > targetEncoder + fudgeFactor) {
                     Turret.setSpeed(0 - Turret.getSpeedCurve(encoderDistance));
                     currentState = turretStates.seek;
                 } else {
-                    if(currentEncoder < targetEncoder - 10) {
+                    if(currentEncoder < targetEncoder - fudgeFactor) {
                         Turret.setSpeed(Turret.getSpeedCurve(encoderDistance));
-                    } else if(currentEncoder > targetEncoder + 10) {
+                    } else if(currentEncoder > targetEncoder + fudgeFactor) {
                         Turret.setSpeed(0 - Turret.getSpeedCurve(encoderDistance));
                     } else {
                         Turret.setSpeed(0);

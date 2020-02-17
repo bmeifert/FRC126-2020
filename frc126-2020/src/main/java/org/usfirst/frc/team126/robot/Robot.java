@@ -23,6 +23,7 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 public class Robot extends TimedRobot {
 
@@ -36,6 +37,12 @@ public class Robot extends TimedRobot {
 	public static CANSparkMax spark1 = new CANSparkMax(10, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static CANSparkMax spark2 = new CANSparkMax(11, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static TalonFX falcon1 = new TalonFX(12);
+	public static VictorSPX victor1 = new VictorSPX(50);
+
+	public static int objectId=1;
+	public static boolean trackTarget=true;
+	public static double robotTurn=0.0;
+	public static double robotDrive=0.0;
 
 	public double robotID;
 	double currentFalconSpeed;
@@ -53,6 +60,8 @@ public class Robot extends TimedRobot {
 	public static double voltageThreshold;
 	public static Vision vision;
 	public static LidarLite distance;
+	public static TargetLight tLight;
+	public static LimeLight limeLight;
 
 	Color detectedColor;
 
@@ -63,8 +72,6 @@ public class Robot extends TimedRobot {
 	SendableChooser autoPosition = new SendableChooser(); // Position chooser
 	@SuppressWarnings("rawtypes")
 	SendableChooser autoFunction = new SendableChooser(); // Priority chooser
-
-
 	
 	@Override
 	public void robotInit() { // Runs when the code first starts
@@ -85,6 +92,8 @@ public class Robot extends TimedRobot {
 		driveCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
 		server.setSource(driveCam);
 		distance = new LidarLite(new DigitalInput(5));
+		tLight = new TargetLight();
+		limeLight = new LimeLight();
 	
 		InternalData.initGyro();
 		InternalData.resetGyro();
@@ -171,6 +180,7 @@ public class Robot extends TimedRobot {
 			autonomous.cancel();
 		}
 		OperatorControl.currentState = driveStates.drive;
+		OperatorControl.currentState = driveStates.targetSeek;
 		Log.print(1, "Robot", "Robot Enabled - Operator control");
 		currentFalconSpeed = 0;
 		SmartDashboard.putNumber("Motor Test Speed", 0);

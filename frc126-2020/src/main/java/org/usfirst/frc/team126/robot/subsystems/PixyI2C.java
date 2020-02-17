@@ -48,6 +48,7 @@ public class PixyI2C {
 		return (rawData[0]);
 	}
 
+<<<<<<< Updated upstream
 	public boolean findStart() {
 		boolean frameStart=false, firstSync=false;
 		int tries=512;
@@ -96,6 +97,32 @@ public class PixyI2C {
 
 		lastNoData=false;
 		return frameStart;
+=======
+    private int readResponse() {
+		byte b1, b2;
+		byte[] rawData = new byte[256];
+
+		b1 = getByte();
+		b2 = getByte();
+
+		// Verify Packet Signature 
+		if ( b2 != (byte)0xc1 || b1 != (byte)0xaf) {
+			System.out.println(String.format("Did not find start of frame, b1: 0x%02X b2 0x%02X", b1,b2));
+			return -1;
+		}	
+		if (getByte() != (byte)1) {
+			System.out.println("Did not find good packet type");
+			return -1;
+		}		
+
+		int len = (int)getByte();
+		// Read the rest of the response
+		if ( len > 0 ) {
+		     pixy.readOnly(rawData,len);
+		}
+		
+ 		return 0;
+>>>>>>> Stashed changes
 	}
 
 	public int readPacket(boolean firstPacket) {

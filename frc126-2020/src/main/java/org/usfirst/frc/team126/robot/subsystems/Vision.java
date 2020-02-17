@@ -19,7 +19,46 @@ public class Vision extends Subsystem {
 		currentX = -1;
 		currentY = -1;
     }
+<<<<<<< Updated upstream
     
+=======
+
+	public int getServoX() {
+       return servoX;
+	}
+
+	public int getServoY() {
+		return servoY;
+	}
+
+    public void setServoX(int value) {
+		servoX=value;
+		if (servoX < 15) { servoX = 15; }
+		if (servoX > 500 ) { servoX = 500; }
+	}
+
+	public void setServoY(int value) {
+		servoY=value;
+		if (servoY < 15) { servoY = 15; }
+		if (servoY > 500 ) { servoY = 500; }
+	}
+
+	public void incrServoX(int value) {
+		int tmp = servoX + value;
+		setServoX(tmp);
+	}
+
+	public void incrServoY(int value) {
+		int tmp = servoY + value;
+		setServoY(tmp);
+	}
+
+	public void centerServo() {
+		setServoX(250);
+		setServoY(300);
+	}
+
+>>>>>>> Stashed changes
     public void initDefaultCommand() {
 		setDefaultCommand(new CameraData());
 		for (int i = 0; i < packetData.length; i++) {
