@@ -45,12 +45,6 @@ public class Turret extends Subsystem {
 			return currentPosition;
 		}
 		
-		if ( !Robot.vision.packetData[objectID].isValid ) {
-			Robot.robotTurn = 0;
-			Robot.robotDrive = 0;
-			return currentPosition;
-		}
-		
 		int y = Robot.vision.packetData[objectID].Y;
 		int x = Robot.vision.packetData[objectID].X;
 		int h = Robot.vision.packetData[objectID].Height;
@@ -60,22 +54,7 @@ public class Turret extends Subsystem {
 	
 		double servoRatio = 1.7;
 
-		// 4800 close
-		// 100 - far
-		
 		servoRatio += (h * w) / 4000.0;
-
-		double area = h * w;
-
-		if (objectID == 1) {
-			if ( area < 2000 ) {
-				Robot.robotDrive=.2;
-			} else {
-				Robot.robotDrive=0;
-			}
-		} else {
-			Robot.robotDrive=0;
-		}
 
 		if (sx < 200) {
 			targetPosition = ( (sx - 255) * servoRatio *-1);	
@@ -100,25 +79,6 @@ public class Turret extends Subsystem {
 		} else {	
 			targetPosition = currentPosition;
 		}
-
-		System.out.println("valid " + x + " tp:" + targetPosition 
-				 + " cx:" + x + " sx" + sx + " h:" + h
-				 + " w: " + w + " a:" + area);
-
-		double turnFactor = .25;
-	    if (Robot.robotDrive != 0) {
-			turnFactor = .15;
-		}
-		if ( targetPosition < -200) {
-			System.out.println("Move Left");
-			Robot.robotTurn= turnFactor * -1;
-		} else if ( targetPosition > 200) {
-			System.out.println("Move Right");
-			Robot.robotTurn=turnFactor;  
-		} else {		 
-			 System.out.println("Move Center");
-			 Robot.robotTurn=0;
-		}  		 
 
 		return targetPosition;
 	}

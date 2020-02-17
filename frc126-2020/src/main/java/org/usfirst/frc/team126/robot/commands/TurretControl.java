@@ -35,6 +35,7 @@ public class TurretControl extends Command {
         SmartDashboard.putNumber("turretEncoder", currentEncoder);
 
         targetEncoder = Turret.getTargetPosition(currentEncoder, Robot.objectId);
+        
         encoderDistance = Math.abs(targetEncoder - currentEncoder);
 
         if ( targetEncoder > currentEncoder + 200 || targetEncoder < currentEncoder - 200) {

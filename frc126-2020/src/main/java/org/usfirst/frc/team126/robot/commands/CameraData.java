@@ -26,7 +26,7 @@ public class CameraData extends Command {
 	@SuppressWarnings("static-access")
 	@Override
 	protected void execute() {
-//Turn on the LED's on the PixyCam 
+        //Turn on the LED's on the PixyCam 
 		//Robot.vision.setLamp(True,True);
 
 		// Track Specified object ID
@@ -36,7 +36,6 @@ public class CameraData extends Command {
 		// TODO hook this up to a button or something so that we
 		// track the power cell, or the throwing target
 		int objectId=Robot.objectId;
-
 
 		// Get the data for requested object from the camera
 		Robot.vision.getItems(objectId,1);
@@ -81,6 +80,8 @@ public class CameraData extends Command {
 			}
 
 			loop_count=0;
+
+			Robot.vision.trackTargetPosition(objectId);
 		} else {
 			// Set the LED to signify object was not found.
 			Robot.vision.setLED(255,0,0); 
@@ -116,7 +117,8 @@ public class CameraData extends Command {
 		}
 
 		// Set the calculated servo position 
-		Robot.vision.setServo();	}
+		Robot.vision.setServo();	
+	}
 
 	// Returns true if command finished
 	@Override

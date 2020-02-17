@@ -1,6 +1,5 @@
 package org.usfirst.frc.team126.robot.subsystems;
 
-import org.usfirst.frc.team126.robot.Robot;
 import org.usfirst.frc.team126.robot.commands.*;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -61,10 +60,6 @@ public class LimeLight extends Subsystem {
         } else {
             setllTargetData(true, ta, tx, ty);
         }        
-
-        if ( Robot.trackTarget ) {
-
-        }
     }
 
     public void setLED(boolean onOff) {

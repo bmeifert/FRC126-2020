@@ -1,6 +1,7 @@
 package org.usfirst.frc.team126.robot.subsystems;
 
 import org.usfirst.frc.team126.robot.commands.*;
+import org.usfirst.frc.team126.robot.Robot;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -94,5 +95,61 @@ public class Vision extends Subsystem {
 		} catch (PixyException e) {
 			SmartDashboard.putString("Pixy Error: ", "exception");
 		}	
+	}
+
+	public double trackTargetPosition(int objectID) {
+		double targetPosition;
+
+		if (Robot.trackTarget) {
+			// We are tracking the throwing target, not the ball
+			return 0;
+		}
+		
+		if ( !Robot.vision.packetData[objectID].isValid ) {
+			Robot.robotTurn = 0;
+			Robot.robotDrive = 0;
+			return 0;
+		}
+		
+		int y = Robot.vision.packetData[objectID].Y;
+		int x = Robot.vision.packetData[objectID].X;
+		int h = Robot.vision.packetData[objectID].Height;
+		int w = Robot.vision.packetData[objectID].Width;
+		int sx = Robot.vision.getServoX();
+		int sy = Robot.vision.getServoY();
+	
+	    targetPosition = Turret.getTargetPosition(0,objectID);
+
+		double area = h * w;
+		if (objectID == 1) {
+			if ( area < 2000 ) {
+				Robot.robotDrive=.2;
+			} else {
+				Robot.robotDrive=0;
+			}
+		} else {
+			Robot.robotDrive=0;
+		}
+
+		System.out.println("valid " + x + " tp:" + targetPosition 
+				 + " cx:" + x + " sx" + sx + " h:" + h
+				 + " w: " + w + " a:" + area);
+
+		double turnFactor = .25;
+	    if (Robot.robotDrive != 0) {
+			turnFactor = .15;
+		}
+		if ( targetPosition < -200) {
+			System.out.println("Move Left");
+			Robot.robotTurn= turnFactor * -1;
+		} else if ( targetPosition > 200) {
+			System.out.println("Move Right");
+			Robot.robotTurn=turnFactor;  
+		} else {		 
+			 System.out.println("Move Center");
+			 Robot.robotTurn=0;
+		}  		 
+
+		return targetPosition;
 	}
 }
