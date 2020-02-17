@@ -45,7 +45,6 @@ public class Robot extends TimedRobot {
 
 	public static int objectId=1;
 	public static boolean trackTarget=true;
-
 	public static double robotTurn = 0;
 	public static double robotDrive = 0;
 	
@@ -104,7 +103,9 @@ public class Robot extends TimedRobot {
 		Turret.Setup();
 
 		voltageThreshold = 10;
-		OperatorControl.currentState = driveStates.drive;
+		
+		//OperatorControl.currentState = driveStates.drive;
+		OperatorControl.currentState = driveStates.targetSeek;
 
 		SmartDashboard.putNumber("Voltage Threshold", voltageThreshold);
 		autoPosition.addOption("Default", 0);

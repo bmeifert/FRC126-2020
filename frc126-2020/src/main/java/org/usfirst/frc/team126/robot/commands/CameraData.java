@@ -6,10 +6,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CameraData extends Command {
     int loop_count=0;
+	int missed_count=0;
+	int directionX;
+	int directionY;
 
 	public CameraData() {
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.vision);
+		directionX = 1;
+		directionY = 1;
 	}
 
 	// Run before command starts 1st iteration
@@ -21,7 +26,7 @@ public class CameraData extends Command {
 	@SuppressWarnings("static-access")
 	@Override
 	protected void execute() {
-		//Turn on the LED's on the PixyCam 
+//Turn on the LED's on the PixyCam 
 		//Robot.vision.setLamp(True,True);
 
 		// Track Specified object ID
@@ -30,7 +35,8 @@ public class CameraData extends Command {
 		// 
 		// TODO hook this up to a button or something so that we
 		// track the power cell, or the throwing target
-		int objectId=1;
+		int objectId=Robot.objectId;
+
 
 		// Get the data for requested object from the camera
 		Robot.vision.getItems(objectId,1);
@@ -44,6 +50,10 @@ public class CameraData extends Command {
 		SmartDashboard.putNumber("Servo X: ", Robot.vision.getServoX());
 		SmartDashboard.putNumber("Servo Y: ", Robot.vision.getServoY());
 
+		if (Robot.objectId == 2) {
+		    Robot.vision.setLamp(true,false);
+		}
+		
 	    if (Robot.vision.packetData[objectId].isValid) {
 			// If the object is valid then turn on the LED and use the servos
 			// to center the object in the camera view
@@ -75,15 +85,38 @@ public class CameraData extends Command {
 			// Set the LED to signify object was not found.
 			Robot.vision.setLED(255,0,0); 
 
-			if (loop_count++ > 250) {
+			loop_count++;
+			if (loop_count == 25) {
 				// After 250 iterations of not seeing an object, recenter the camera.
 				Robot.vision.centerServo();
 			}
+			if (loop_count > 75) {
+			    // Scan for a target
+			    Robot.vision.incrServoX(5 * directionX);
+			    Robot.vision.incrServoY(2 * directionY);
+
+			    if ( Robot.vision.getServoX() > 450) {
+				   Robot.vision.setServoX(450);
+				   directionX = -1;
+			    }
+			    if ( Robot.vision.getServoX() < 50) {
+			    	Robot.vision.setServoX(50);
+			    	directionX = 1;
+			    }	
+			    if ( Robot.vision.getServoY() > 480) {
+				    Robot.vision.setServoY(480);
+				    directionY = -1;
+	        	}
+			    if ( Robot.vision.getServoY() < 50) {
+				    Robot.vision.setServoY(50);
+				    directionY = 1;
+				}
+				//System.out.println("dY: " + directionY + " dX: " + directionX + " lC: " + loop_count + " sX: " + Robot.vision.getServoX() + " sY: " + Robot.vision.getServoY() );
+			}	
 		}
 
 		// Set the calculated servo position 
-		Robot.vision.setServo();
-	}
+		Robot.vision.setServo();	}
 
 	// Returns true if command finished
 	@Override
@@ -94,12 +127,10 @@ public class CameraData extends Command {
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
-
 	}
 
 	// Called when another command tries to use this command's subsystem
 	@Override
 	protected void interrupted() {
-
 	}
 }

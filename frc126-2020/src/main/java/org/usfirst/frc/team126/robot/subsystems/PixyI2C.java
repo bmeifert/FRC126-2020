@@ -53,8 +53,10 @@ public class PixyI2C {
 
 		int len = (int)getByte();
 		// Read the rest of the response
-		pixy.readOnly(rawData,len);
-
+		if ( len > 0 ) {
+			pixy.readOnly(rawData,len);
+		}
+		
 		return 0;
 	}
 
