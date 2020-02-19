@@ -100,7 +100,7 @@ public class Vision extends Subsystem {
 	public double trackTargetPosition(int objectID) {
 		double targetPosition;
 
-		if (Robot.trackTarget) {
+		if (Robot.trackTarget != 2) {
 			// We are tracking the throwing target, not the ball
 			return 0;
 		}

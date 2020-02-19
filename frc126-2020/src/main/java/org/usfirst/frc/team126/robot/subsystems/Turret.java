@@ -40,7 +40,7 @@ public class Turret extends Subsystem {
 	public static double getTargetPosition(double currentPosition, int objectID) {
 		double targetPosition;
 
-		if (Robot.trackTarget) {
+		if (Robot.trackTarget != 2) {
 			// We are tracking the throwing target, not the ball
 			return currentPosition;
 		}

@@ -37,18 +37,30 @@ public class OperatorControl extends Command {
 		JoystickWrapper operatorJoystick = new JoystickWrapper(Robot.oi.operatorController, 0.05);
 
 		// END CONTROLS SETUP
-		if(driveJoystick.isAButton()) {
-			currentState = driveStates.drive;
-			ColorSpinner.spin(0);
-		}
+		//if(driveJoystick.isAButton()) {
+		//	currentState = driveStates.drive;
+		//	ColorSpinner.spin(0);
+		//}
+
+		//System.out.println("currentState: " + currentState);
+		
 		switch(currentState) {
 			case targetSeek:
-		    	//if(!driveJoystick.isYButton()) {
-				//	currentState = driveStates.drive;
-				//} else {
-                System.out.println("Direction: " + Robot.robotTurn + " Drive: " + Robot.robotDrive );
-				Robot.driveBase.Drive(Robot.robotDrive,Robot.robotTurn);
-				//}
+		    	if(!driveJoystick.isYButton() && !driveJoystick.isXButton()) {
+					currentState = driveStates.drive;
+					Robot.trackTarget=0;
+					Robot.robotTurn = 0;
+					Robot.robotDrive = 0;
+					Robot.limeLight.setLED(true);
+				} else {
+					if (driveJoystick.isYButton()) {
+						Robot.trackTarget=2;
+					} else {
+						Robot.trackTarget=1;
+					}
+                    System.out.println("Direction: " + Robot.robotTurn + " Drive: " + Robot.robotDrive );
+			 	    Robot.driveBase.Drive(Robot.robotDrive,Robot.robotTurn);
+		        }
 			break;
 
 			case rotationControl:
@@ -94,9 +106,19 @@ public class OperatorControl extends Command {
 			default:
 				Robot.driveBase.Drive(driveJoystick.getLeftStickY(), driveJoystick.getRightStickX() / 2);
 				if(driveJoystick.isXButton()) {
-					currentState = driveStates.positionControl;
-					TurretControl.currentState = TurretControl.turretStates.idle;
-					targetColor = ColorSpinner.blue;
+					currentState = driveStates.targetSeek;
+					Robot.trackTarget=1;
+					Robot.limeLight.setStreamMode(0);
+					Robot.limeLight.setLED(true);
+					Robot.robotTurn = 0;
+					Robot.robotDrive = 0;
+				}
+				if(driveJoystick.isYButton()) {
+					currentState = driveStates.targetSeek;
+					Robot.trackTarget=2;
+					Robot.limeLight.setLED(false);
+					Robot.robotTurn = 0;
+					Robot.robotDrive = 0;
 				}
 				if(driveJoystick.isBButton()) {
 					targetRotations = 2;

@@ -34,8 +34,8 @@ public class Robot extends TimedRobot {
 	public static TalonSRX turretRotator = new TalonSRX(RobotMap.turretRotator);
 	public static TalonSRX turretShooter = new TalonSRX(RobotMap.turretShooter);
 	public static TalonSRX spinnerMotor = new TalonSRX(RobotMap.spinnerMotor);
-	public static CANSparkMax spark1 = new CANSparkMax(10, CANSparkMaxLowLevel.MotorType.kBrushless);
-	public static CANSparkMax spark2 = new CANSparkMax(11, CANSparkMaxLowLevel.MotorType.kBrushless);
+	//public static CANSparkMax spark1 = new CANSparkMax(10, CANSparkMaxLowLevel.MotorType.kBrushless);
+	//public static CANSparkMax spark2 = new CANSparkMax(11, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static TalonFX falcon1 = new TalonFX(12);
 	public static VictorSPX victor1 = new VictorSPX(50);
 
@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
 	double falconRPMdistance;
 
 	public static int objectId=1;
-	public static boolean trackTarget=true;
+	public static int trackTarget = 0;
 	public static double robotTurn = 0;
 	public static double robotDrive = 0;
 	
@@ -104,8 +104,8 @@ public class Robot extends TimedRobot {
 
 		voltageThreshold = 10;
 		
-		//OperatorControl.currentState = driveStates.drive;
-		OperatorControl.currentState = driveStates.targetSeek;
+		OperatorControl.currentState = driveStates.drive;
+		//OperatorControl.currentState = driveStates.targetSeek;
 
 		SmartDashboard.putNumber("Voltage Threshold", voltageThreshold);
 		autoPosition.addOption("Default", 0);
@@ -184,6 +184,8 @@ public class Robot extends TimedRobot {
 			autonomous.cancel();
 		}
 		OperatorControl.currentState = driveStates.drive;
+		//OperatorControl.currentState = driveStates.targetSeek;
+
 		Log.print(1, "Robot", "Robot Enabled - Operator control");
 		currentFalconSpeed = 0;
 		SmartDashboard.putNumber("Motor Test Speed", 0);

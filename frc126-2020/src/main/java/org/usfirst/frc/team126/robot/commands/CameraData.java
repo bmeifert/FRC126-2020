@@ -49,8 +49,10 @@ public class CameraData extends Command {
 		SmartDashboard.putNumber("Servo X: ", Robot.vision.getServoX());
 		SmartDashboard.putNumber("Servo Y: ", Robot.vision.getServoY());
 
-		if (Robot.objectId == 2) {
+        if (Robot.objectId == 1) {
 		    Robot.vision.setLamp(true,false);
+		} else {
+			Robot.vision.setLamp(false,false);
 		}
 		
 	    if (Robot.vision.packetData[objectId].isValid) {
@@ -108,8 +110,8 @@ public class CameraData extends Command {
 				    Robot.vision.setServoY(480);
 				    directionY = -1;
 	        	}
-			    if ( Robot.vision.getServoY() < 50) {
-				    Robot.vision.setServoY(50);
+			    if ( Robot.vision.getServoY() < 300) {
+				    Robot.vision.setServoY(300);
 				    directionY = 1;
 				}
 				//System.out.println("dY: " + directionY + " dX: " + directionX + " lC: " + loop_count + " sX: " + Robot.vision.getServoX() + " sY: " + Robot.vision.getServoY() );

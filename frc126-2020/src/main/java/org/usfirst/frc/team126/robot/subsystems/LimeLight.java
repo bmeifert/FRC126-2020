@@ -64,7 +64,7 @@ public class LimeLight extends Subsystem {
 
     public void setLED(boolean onOff) {
         if (onOff) {
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(0);
         } else {
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
         }    
@@ -82,7 +82,7 @@ public class LimeLight extends Subsystem {
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipeline);
     }
 
-    public void setSteamMode(int mode) {
+    public void setStreamMode(int mode) {
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("stream").setNumber(mode);
     }
 

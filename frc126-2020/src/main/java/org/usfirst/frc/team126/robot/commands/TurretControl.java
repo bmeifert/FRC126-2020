@@ -34,12 +34,13 @@ public class TurretControl extends Command {
         currentEncoder = Turret.getEncoder();
         SmartDashboard.putNumber("turretEncoder", currentEncoder);
 
+        if (true) { return; }
         targetEncoder = Turret.getTargetPosition(currentEncoder, Robot.objectId);
         
         encoderDistance = Math.abs(targetEncoder - currentEncoder);
 
         if ( targetEncoder > currentEncoder + 200 || targetEncoder < currentEncoder - 200) {
-            currentState = turretStates.seek;
+            //currentState = turretStates.seek;
         }
         int fudgeFactor=100;
         switch(currentState) {
