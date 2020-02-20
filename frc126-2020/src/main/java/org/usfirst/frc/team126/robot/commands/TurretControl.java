@@ -16,6 +16,10 @@ public class TurretControl extends Command {
     public static double targetEncoder;
     public static double currentEncoder;
     public static double encoderDistance;
+
+	/************************************************************************
+	 ************************************************************************/
+
     public TurretControl() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
@@ -24,18 +28,23 @@ public class TurretControl extends Command {
         SmartDashboard.putNumber("targetEncoder", targetEncoder);
     }
 
+	/************************************************************************
+	 ************************************************************************/
+
     // Called just before this Command runs the first time
     protected void initialize() {
         currentState = turretStates.idle;
     }
 
+	/************************************************************************
+	 ************************************************************************/
+
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        currentEncoder = Turret.getEncoder();
+        currentEncoder = Robot.turret.getEncoder();
         SmartDashboard.putNumber("turretEncoder", currentEncoder);
-
-        if (true) { return; }
-        targetEncoder = Turret.getTargetPosition(currentEncoder, Robot.objectId);
+    
+        targetEncoder = Robot.turret.getTargetPosition(currentEncoder, Robot.objectId);
         
         encoderDistance = Math.abs(targetEncoder - currentEncoder);
 
@@ -45,32 +54,32 @@ public class TurretControl extends Command {
         int fudgeFactor=100;
         switch(currentState) {
             case idle:
-                Turret.setSpeed(0);
+            Robot.turret.setSpeed(0);
             break;
             case seek:
                 if(currentEncoder < targetEncoder - fudgeFactor) {
-                    Turret.setSpeed(Turret.getSpeedCurve(encoderDistance));
+                    Robot.turret.setSpeed(Robot.turret.getSpeedCurve(encoderDistance));
                 } else if(currentEncoder > targetEncoder + fudgeFactor) {
-                    Turret.setSpeed(0 - Turret.getSpeedCurve(encoderDistance));
+                    Robot.turret.setSpeed(0 - Robot.turret.getSpeedCurve(encoderDistance));
                 } else {
-                    Turret.setSpeed(0);
+                    Robot.turret.setSpeed(0);
                     currentState = turretStates.lock;
                 }
             break;
             case lock:
                 if(currentEncoder < targetEncoder - fudgeFactor) {
-                    Turret.setSpeed(Turret.getSpeedCurve(encoderDistance));
+                    Robot.turret.setSpeed(Robot.turret.getSpeedCurve(encoderDistance));
                     currentState = turretStates.seek;
                 } else if(currentEncoder > targetEncoder + fudgeFactor) {
-                    Turret.setSpeed(0 - Turret.getSpeedCurve(encoderDistance));
+                    Robot.turret.setSpeed(0 - Robot.turret.getSpeedCurve(encoderDistance));
                     currentState = turretStates.seek;
                 } else {
                     if(currentEncoder < targetEncoder - fudgeFactor) {
-                        Turret.setSpeed(Turret.getSpeedCurve(encoderDistance));
+                        Robot.turret.setSpeed(Robot.turret.getSpeedCurve(encoderDistance));
                     } else if(currentEncoder > targetEncoder + fudgeFactor) {
-                        Turret.setSpeed(0 - Turret.getSpeedCurve(encoderDistance));
+                        Robot.turret.setSpeed(0 - Robot.turret.getSpeedCurve(encoderDistance));
                     } else {
-                        Turret.setSpeed(0);
+                        Robot.turret.setSpeed(0);
                     }
                 }
             break;
@@ -80,19 +89,28 @@ public class TurretControl extends Command {
         }
     }
 
+	/************************************************************************
+	 ************************************************************************/
+
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
         return false;
     }
 
+	/************************************************************************
+	 ************************************************************************/
+
     // Called once after isFinished returns true
     protected void end() {
-        Turret.setSpeed(0);
+        Robot.turret.setSpeed(0);
     }
+
+	/************************************************************************
+	 ************************************************************************/
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-        Turret.setSpeed(0);
+        Robot.turret.setSpeed(0);
     }
 }

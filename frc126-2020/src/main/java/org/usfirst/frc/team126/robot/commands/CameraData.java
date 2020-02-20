@@ -49,7 +49,7 @@ public class CameraData extends Command {
 		SmartDashboard.putNumber("Servo X: ", Robot.vision.getServoX());
 		SmartDashboard.putNumber("Servo Y: ", Robot.vision.getServoY());
 
-        if (Robot.objectId == 1) {
+        if (Robot.trackTarget == Robot.targetTypes.ballTarget) {
 		    Robot.vision.setLamp(true,false);
 		} else {
 			Robot.vision.setLamp(false,false);

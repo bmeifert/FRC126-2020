@@ -48,15 +48,15 @@ public class OperatorControl extends Command {
 			case targetSeek:
 		    	if(!driveJoystick.isYButton() && !driveJoystick.isXButton()) {
 					currentState = driveStates.drive;
-					Robot.trackTarget=0;
+					Robot.trackTarget= Robot.targetTypes.noTarget;
 					Robot.robotTurn = 0;
 					Robot.robotDrive = 0;
 					Robot.limeLight.setLED(true);
 				} else {
 					if (driveJoystick.isYButton()) {
-						Robot.trackTarget=2;
+						Robot.trackTarget= Robot.targetTypes.ballTarget;
 					} else {
-						Robot.trackTarget=1;
+						Robot.trackTarget= Robot.targetTypes.throwingTarget;
 					}
                     System.out.println("Direction: " + Robot.robotTurn + " Drive: " + Robot.robotDrive );
 			 	    Robot.driveBase.Drive(Robot.robotDrive,Robot.robotTurn);
@@ -104,30 +104,35 @@ public class OperatorControl extends Command {
 			break;
 
 			default:
-				Robot.driveBase.Drive(driveJoystick.getLeftStickY(), driveJoystick.getRightStickX() / 2);
 				if(driveJoystick.isXButton()) {
+					Robot.driveBase.Drive(0,0);
 					currentState = driveStates.targetSeek;
-					Robot.trackTarget=1;
+					Robot.trackTarget= Robot.targetTypes.throwingTarget;
 					Robot.limeLight.setStreamMode(0);
+				    // turn on the LEDs on the lime light
 					Robot.limeLight.setLED(true);
+					// Reset any previous motion
 					Robot.robotTurn = 0;
 					Robot.robotDrive = 0;
-				}
-				if(driveJoystick.isYButton()) {
+					return;
+				}	
+				
+				if (driveJoystick.isYButton()) {
+					Robot.driveBase.Drive(0,0);
 					currentState = driveStates.targetSeek;
-					Robot.trackTarget=2;
+					Robot.trackTarget= Robot.targetTypes.ballTarget;
+				    // turn off the LEDs on the lime light
 					Robot.limeLight.setLED(false);
+					// Reset any previous motion
 					Robot.robotTurn = 0;
 					Robot.robotDrive = 0;
+					return;
 				}
-				if(driveJoystick.isBButton()) {
-					targetRotations = 2;
-					TurretControl.currentState = TurretControl.turretStates.seek;
-					currentState = driveStates.rotationControl;
-				}
-				if(driveJoystick.isYButton()) {
-					currentState = driveStates.targetSeek;
-				}
+
+				Robot.driveBase.Drive(driveJoystick.getLeftStickY(), driveJoystick.getRightStickX() / 2);
+				if (driveJoystick.isAButton()) {
+					Robot.tLight.toggleTargetLight();
+				}	
 			break;
 		}
 

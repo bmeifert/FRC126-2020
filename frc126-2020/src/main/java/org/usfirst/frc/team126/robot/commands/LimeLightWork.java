@@ -8,35 +8,32 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class LimeLightWork extends Command {
     public static int iter=0;
 
+	/************************************************************************
+	 ************************************************************************/
+
     public LimeLightWork() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         requires(Robot.limeLight);
     }
 
+	/************************************************************************
+	 ************************************************************************/
+
     // Called just before this Command runs the first time
     protected void initialize() {
     }
 
+	/************************************************************************
+	 ************************************************************************/
+
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
 
-        if (Robot.trackTarget == 2) {
-            //Robot.limeLight.setLED(false);
-            //System.out.println("limelift off");
-        } else {
-           // Robot.limeLight.setLED(true);
-            //System.out.println("limelift off");
-        }
-
-        if ( Robot.trackTarget != 1) {
-            //Robot.limeLight.setLED(false);
-            return;
-        }    
-      
         Robot.limeLight.getCameraData();
 
         System.out.println("LimeLightWork: V: " + Robot.limeLight.getllTargetValid());
+
         if (Robot.limeLight.getllTargetValid()){
             // We found a valid vision target.
             iter=0;
@@ -67,21 +64,43 @@ public class LimeLightWork extends Command {
             } else {
                 Robot.robotTurn=0;
             }
+
+
+            if ( Robot.limeLight.getllTargetX() < -1 ) {
+                Robot.limeLight.setllTurretTarget((int)(Robot.limeLight.getllTargetX() * 25));
+            } else if ( Robot.limeLight.getllTargetX() > 1 ) {
+                Robot.limeLight.setllTurretTarget((int)(Robot.limeLight.getllTargetX() * 25));
+            } else {
+                Robot.limeLight.setllTurretTarget(0);
+                Robot.robotTurn=0;
+            }
+
+
         } else {
             iter++;
+            Robot.limeLight.setllTurretTarget(Robot.turret.getEncoder());
 
             if (iter > 10 && iter < 350) {
-                Robot.robotTurn= -0.3;
+                // Try turning until we pick up a target
+                Robot.robotTurn= -0.25;
             } else {
                 Robot.robotTurn=0;
             }    
-            if (iter>150) { iter=0; }
+
+            if ( iter > 500 ) { 
+                iter=0; 
+            }
+
+            // Don't move forward or back
             Robot.robotDrive=0;
         }
 
         System.out.println("LimeLightWork: RT: " + Robot.robotTurn);
 
     }          
+
+	/************************************************************************
+	 ************************************************************************/
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {

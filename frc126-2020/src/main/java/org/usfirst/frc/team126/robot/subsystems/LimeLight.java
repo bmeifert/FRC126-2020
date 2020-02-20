@@ -11,43 +11,83 @@ public class LimeLight extends Subsystem {
     private double llTargetArea;
     private double llTargetX;
     private double llTargetY;
+    private double turretTarget;
+
+	/************************************************************************
+	 ************************************************************************/
 
     public LimeLight() {
         llTargetValid=false;
         llTargetArea = 0.0;
         llTargetX = 0.0;
         llTargetY = 0.0;
+        turretTarget = 0;
     }
+
+	/************************************************************************
+	 ************************************************************************/
 
     public void initDefaultCommand() {
 		setDefaultCommand(new LimeLightWork());
 	}
 
+	/************************************************************************
+	 ************************************************************************/
+
 	public boolean getllTargetValid() {
        return llTargetValid;
     }   
 
+	/************************************************************************
+	 ************************************************************************/
+
 	public double getllTargetArea() {
         return llTargetArea;
-     }   
+    }   
  
-     public double getllTargetX() {
+	/************************************************************************
+	 ************************************************************************/
+
+    public double getllTargetX() {
         return llTargetX;
-     }   
+    }   
 
-     public double getllTargetY() {
+	/************************************************************************
+	 ************************************************************************/
+
+    public double getllTargetY() {
         return llTargetY;
+    }   
+
+	/************************************************************************
+	 ************************************************************************/
+
+    public double getllTurretTarget() {
+        return turretTarget;
      }   
 
-     public void setllTargetData(boolean isValid,
-                                 double targetArea,
-                                 double targetX,
-                                 double targetY) {
+	/************************************************************************
+	 ************************************************************************/
+
+    public void setllTurretTarget(double target) {
+        turretTarget = target;
+    }   
+
+	/************************************************************************
+	 ************************************************************************/
+
+    public void setllTargetData(boolean isValid,
+                                double targetArea,
+                                double targetX,
+                                double targetY) {
         llTargetValid = isValid;
         llTargetArea = targetArea;
         llTargetX = targetX;
         llTargetY = targetY;
     }    
+
+	/************************************************************************
+	 ************************************************************************/
 
     public void getCameraData() {
         double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
@@ -62,6 +102,9 @@ public class LimeLight extends Subsystem {
         }        
     }
 
+	/************************************************************************
+	 ************************************************************************/
+
     public void setLED(boolean onOff) {
         if (onOff) {
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(0);
@@ -69,6 +112,9 @@ public class LimeLight extends Subsystem {
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
         }    
     }
+
+	/************************************************************************
+	 ************************************************************************/
 
     public void setCameraMode(boolean vision) {
         if (vision) {
@@ -78,9 +124,15 @@ public class LimeLight extends Subsystem {
         }    
     }
 
+	/************************************************************************
+	 ************************************************************************/
+
     public void setPipeline(int pipeline) {
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipeline);
     }
+
+	/************************************************************************
+	 ************************************************************************/
 
     public void setStreamMode(int mode) {
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("stream").setNumber(mode);

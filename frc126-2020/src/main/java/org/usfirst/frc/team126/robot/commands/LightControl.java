@@ -14,14 +14,23 @@ public class LightControl extends Command {
         requires(Robot.tLight);
     }
 
+	/************************************************************************
+	 ************************************************************************/
+
     // Called just before this Command runs the first time
     protected void initialize() {
     }
 
+	/************************************************************************
+	 ************************************************************************/
+
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        Robot.tLight.setLight(1);
+        Robot.tLight.setLight();
     }
+
+	/************************************************************************
+	 ************************************************************************/
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {

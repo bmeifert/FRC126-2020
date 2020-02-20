@@ -8,15 +8,24 @@ public class PixyI2C {
 	I2C pixy;
 	PixyException pExc;
 
+	/************************************************************************
+	 ************************************************************************/
+
 	public PixyI2C(String id, I2C argPixy) {
 		pixy = argPixy;
 		name = "Pixy_" + id;
 	}
 
+	/************************************************************************
+	 ************************************************************************/
+
 	// Convert the raw bytes in integers with endian conversion
 	public int cvt(byte upper, byte lower) {
 		return (((int) upper & 0xff) << 8) | ((int) lower & 0xff);
 	}
+
+	/************************************************************************
+	 ************************************************************************/
 
 	public byte getByte() {
 		byte[] rawData = new byte[1];
@@ -33,6 +42,9 @@ public class PixyI2C {
 		}
 		return (rawData[0]);
 	}
+
+	/************************************************************************
+	 ************************************************************************/
 
     private int readResponse() {
 		byte b1, b2;
@@ -59,6 +71,9 @@ public class PixyI2C {
 		
 		return 0;
 	}
+
+	/************************************************************************
+	 ************************************************************************/
 
 	public int setLED(int red, int green, int blue) throws PixyException {
 		/*
@@ -106,6 +121,9 @@ public class PixyI2C {
 
 		return readResponse();
 	}	
+
+	/************************************************************************
+	 ************************************************************************/
 
 	public int setServo(int leftRight, int upDown) throws PixyException {
 		/*
@@ -166,6 +184,9 @@ public class PixyI2C {
 		return readResponse();
 	}	
 
+	/************************************************************************
+	 ************************************************************************/
+
 	public int setLamp(boolean upperOn, boolean lowerOn) throws PixyException {
 		/*
 		setLamp(upper, lower)
@@ -221,6 +242,9 @@ public class PixyI2C {
 		return readResponse();
 	}	
 
+	/************************************************************************
+	 ************************************************************************/
+
 	public int setCameraBrightness(int brightness) throws PixyException {
 		/*
 		setCameraBrightness(brightness)
@@ -268,6 +292,9 @@ public class PixyI2C {
 		
 		return readResponse();
 	}		
+
+	/************************************************************************
+	 ************************************************************************/
 
 	public int getBlocks(int objectId, int maxBlocks, PixyPacket[] dataPackets) throws PixyException {
 		/*

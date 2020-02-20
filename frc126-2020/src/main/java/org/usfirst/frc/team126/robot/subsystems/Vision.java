@@ -14,9 +14,15 @@ public class Vision extends Subsystem {
 	public PixyPacket[] packetData;
 	String print;
 
+	boolean upperLightOn = false;
+	boolean lowerLightOn = false;
+
 	int servoX, servoY;
 
-    public Vision() {
+	/************************************************************************
+	 ************************************************************************/
+
+	public Vision() {
 		Pixy = new PixyI2C("pixy", new I2C(Port.kOnboard, 0x54));
 		packetData = new PixyPacket[24];
 		for (int x=0; x<24; x++) {	
@@ -26,19 +32,31 @@ public class Vision extends Subsystem {
 		setServo();
     }
 
+	/************************************************************************
+	 ************************************************************************/
+
 	public int getServoX() {
        return servoX;
 	}
 
-	public int getServoY() {
+	/************************************************************************
+	 ************************************************************************/
+
+	 public int getServoY() {
 		return servoY;
 	}
 
-    public void setServoX(int value) {
+	/************************************************************************
+	 ************************************************************************/
+
+	 public void setServoX(int value) {
 		servoX=value;
 		if (servoX < 15) { servoX = 15; }
 		if (servoX > 500 ) { servoX = 500; }
 	}
+
+	/************************************************************************
+	 ************************************************************************/
 
 	public void setServoY(int value) {
 		servoY=value;
@@ -46,24 +64,39 @@ public class Vision extends Subsystem {
 		if (servoY > 500 ) { servoY = 500; }
 	}
 
+	/************************************************************************
+	 ************************************************************************/
+
 	public void incrServoX(int value) {
 		int tmp = servoX + value;
 		setServoX(tmp);
 	}
+
+	/************************************************************************
+	 ************************************************************************/
 
 	public void incrServoY(int value) {
 		int tmp = servoY + value;
 		setServoY(tmp);
 	}
 
+	/************************************************************************
+	 ************************************************************************/
+
 	public void centerServo() {
 		setServoX(250);
 		setServoY(300);
 	}
 
-    public void initDefaultCommand() {
+	/************************************************************************
+	 ************************************************************************/
+
+	 public void initDefaultCommand() {
 		setDefaultCommand(new CameraData());
 	}
+
+	/************************************************************************
+	 ************************************************************************/
 
 	public void setLED(int red, int green, int blue) {
 		try {
@@ -73,13 +106,23 @@ public class Vision extends Subsystem {
 		}
 	}
 
+	/************************************************************************
+	 ************************************************************************/
+
 	public void setLamp(boolean upperOn, boolean lowerOn) {
 		try {
-			Pixy.setLamp(upperOn, lowerOn);
+			if (upperOn != upperLightOn || lowerOn != lowerLightOn ) {
+				Pixy.setLamp(upperOn, lowerOn);
+				upperLightOn = upperOn;
+				lowerLightOn = lowerOn;
+			}	   
 		} catch (PixyException e) {
 			SmartDashboard.putString("Pixy Error: ", "exception");
 		}
 	}
+
+	/************************************************************************
+	 ************************************************************************/
 
 	public void setServo() {
 		try {
@@ -89,6 +132,9 @@ public class Vision extends Subsystem {
 		}
 	}
 
+	/************************************************************************
+	 ************************************************************************/
+
 	public void getItems(int objectId, int maxBlocks) {
 		try {
 			Pixy.getBlocks(objectId, maxBlocks, packetData);
@@ -97,11 +143,15 @@ public class Vision extends Subsystem {
 		}	
 	}
 
-	public double trackTargetPosition(int objectID) {
-		double targetPosition;
+	/************************************************************************
+	 ************************************************************************/
 
-		if (Robot.trackTarget != 2) {
-			// We are tracking the throwing target, not the ball
+	public double trackTargetPosition(int objectID) {
+		double targetPosition=0;
+		double servoRatio = 1.7;
+
+		if (Robot.trackTarget != Robot.targetTypes.ballTarget) {
+			// We are not tracking the ball, just return
 			return 0;
 		}
 		
@@ -117,28 +167,47 @@ public class Vision extends Subsystem {
 		int w = Robot.vision.packetData[objectID].Width;
 		int sx = Robot.vision.getServoX();
 		int sy = Robot.vision.getServoY();
-	
-	    targetPosition = Turret.getTargetPosition(0,objectID);
+
+		servoRatio += (h * w) / 4000.0;
+
+		if (sx < 200) {
+			targetPosition = ( (sx - 255) * servoRatio *-1);	
+			if ( x < 80 ) {
+				targetPosition -= ( (80 - x) * servoRatio); 
+			}
+			if ( x > 120 ) {
+				targetPosition += ( (x-120) * servoRatio); 
+			}
+		} else if (sx > 300) {
+			targetPosition = ( (sx - 255) * servoRatio *-1);
+			if ( x < 80 ) {
+				targetPosition -= ( (80 - x) * servoRatio); 
+			}
+			if ( x > 120 ) {
+				targetPosition += ( (x-120) * servoRatio); 
+			}
+		} else if (x < 80 ) {
+			targetPosition = (x * -1 * servoRatio);
+		} else if (x > 120) {
+			targetPosition = ((x-110) * servoRatio);
+		}
 
 		double area = h * w;
-		if (objectID == 1) {
-			if ( area < 2000 ) {
-				Robot.robotDrive=.2;
-			} else {
-				Robot.robotDrive=0;
-			}
+		if ( area < 2000 ) {
+			Robot.robotDrive=.25;
 		} else {
 			Robot.robotDrive=0;
 		}
 
-		System.out.println("valid " + x + " tp:" + targetPosition 
-				 + " cx:" + x + " sx" + sx + " h:" + h
-				 + " w: " + w + " a:" + area);
+		System.out.println("vision valid, x:" + x + " tp:" + targetPosition 
+				 + " sx" + sx + " h:" + h + " w: " + w + " a:" + area);
 
 		double turnFactor = .25;
 	    if (Robot.robotDrive != 0) {
-			turnFactor = .15;
+		    // Slow down the turn if we are moving forward
+			turnFactor = .20;
 		}
+
 		if ( targetPosition < -200) {
 			System.out.println("Move Left");
 			Robot.robotTurn= turnFactor * -1;

@@ -10,76 +10,62 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 public class Turret extends Subsystem {
+	
+	/************************************************************************
+	 ************************************************************************/
+
 	public void initDefaultCommand() {
 		setDefaultCommand(new TurretControl());
 	}
+
+	/************************************************************************
+	 ************************************************************************/
 
 	public static void Setup() {
 		Robot.turretRotator.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 100);
 		Robot.turretRotator.setSelectedSensorPosition(0,0,100);
 	}
-	public static double getEncoder(){
+
+	/************************************************************************
+	 ************************************************************************/
+
+	public double getEncoder(){
 		return Robot.turretRotator.getSelectedSensorPosition();
 	}
-	public static void setSpeed(double speed) {
+
+	/************************************************************************
+	 ************************************************************************/
+
+	public void setSpeed(double speed) {
 		Robot.turretRotator.set(ControlMode.PercentOutput, speed);
 		SmartDashboard.putNumber("turretRotator", speed);
 	}
-	public static double getSpeedCurve(double distance) {
+
+	/************************************************************************
+	 ************************************************************************/
+
+	public double getSpeedCurve(double distance) {
 		double targetSpeed;
 		targetSpeed = distance / 1000;
 		if(targetSpeed < 0.1) {
 			targetSpeed = 0.1;
 		}
-		if(targetSpeed > 0.5) {
-			targetSpeed = 0.5;
+		if(targetSpeed > 0.25) {
+			targetSpeed = 0.25;
 		}
 		return targetSpeed;
 	}
 
-	public static double getTargetPosition(double currentPosition, int objectID) {
-		double targetPosition;
+	/************************************************************************
+	 ************************************************************************/
 
-		if (Robot.trackTarget != 2) {
-			// We are tracking the throwing target, not the ball
-			return currentPosition;
+	public double getTargetPosition(double currentPosition, int objectID) {
+
+		if (Robot.trackTarget == Robot.targetTypes.throwingTarget) {
+			// We are tracking the throwing target
+			return Robot.limeLight.getllTurretTarget();
 		}
 		
-		int y = Robot.vision.packetData[objectID].Y;
-		int x = Robot.vision.packetData[objectID].X;
-		int h = Robot.vision.packetData[objectID].Height;
-		int w = Robot.vision.packetData[objectID].Width;
-		int sx = Robot.vision.getServoX();
-		int sy = Robot.vision.getServoY();
-	
-		double servoRatio = 1.7;
-
-		servoRatio += (h * w) / 4000.0;
-
-		if (sx < 200) {
-			targetPosition = ( (sx - 255) * servoRatio *-1);	
-			if ( x < 80 ) {
-				targetPosition -= ( (80 - x) * servoRatio); 
-			}
-			if ( x > 120 ) {
-				targetPosition += ( (x-120) * servoRatio); 
-			}
-		} else if (sx > 300) {
-			targetPosition = ( (sx - 255) * servoRatio *-1);
-			if ( x < 80 ) {
-				targetPosition -= ( (80 - x) * servoRatio); 
-			}
-			if ( x > 120 ) {
-				targetPosition += ( (x-120) * servoRatio); 
-			}
-		} else if (x < 80 ) {
-			targetPosition = (x * -1 * servoRatio);
-		} else if (x > 120) {
-			targetPosition = ((x-110) * servoRatio);
-		} else {	
-			targetPosition = currentPosition;
-		}
-
-		return targetPosition;
+		return currentPosition;
 	}
 }

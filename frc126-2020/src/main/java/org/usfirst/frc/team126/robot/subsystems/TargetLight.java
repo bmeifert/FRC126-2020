@@ -10,14 +10,35 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class TargetLight extends Subsystem {
+	boolean targetLightOn=false;
+
+	/************************************************************************
+	 ************************************************************************/
 
 	public void initDefaultCommand() {
 		setDefaultCommand(new LightControl());
 	}
 
-    public void setLight(double brightness) {
-		Robot.victor1.set(ControlMode.PercentOutput, brightness);
-		SmartDashboard.putNumber("targetLight", brightness);
+	/************************************************************************
+	 ************************************************************************/
+
+	public void setLight() {
+		if (targetLightOn) {
+			Robot.victor1.set(ControlMode.PercentOutput, 1);
+		} else {
+			Robot.victor1.set(ControlMode.PercentOutput, 0);
+		}
+		SmartDashboard.putBoolean("targetLight", targetLightOn);
 	}
 
+	/************************************************************************
+	 ************************************************************************/
+
+    public void toggleTargetLight() {
+       if ( targetLightOn ) {
+		   	targetLightOn=false;
+	   } else {
+           	targetLightOn=false;
+	   }
+	}
 }
