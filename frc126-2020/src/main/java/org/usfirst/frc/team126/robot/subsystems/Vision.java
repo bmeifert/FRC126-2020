@@ -17,6 +17,9 @@ public class Vision extends Subsystem {
 	boolean upperLightOn = false;
 	boolean lowerLightOn = false;
 
+	int centeredCount=0;
+	boolean grabNow=false;
+
 	int servoX, servoY;
 
 	/************************************************************************
@@ -150,14 +153,20 @@ public class Vision extends Subsystem {
 		double targetPosition=0;
 		double servoRatio = 1.7;
 
+		SmartDashboard.putBoolean("grabNow:", grabNow);
+		
 		if (Robot.trackTarget != Robot.targetTypes.ballTarget) {
 			// We are not tracking the ball, just return
+			centeredCount=0;
+			grabNow=false;
 			return 0;
 		}
 		
 		if ( !Robot.vision.packetData[objectID].isValid ) {
+			centeredCount = 0;
 			Robot.robotTurn = 0;
 			Robot.robotDrive = 0;
+			grabNow=false;
 			return 0;
 		}
 		
@@ -211,11 +220,25 @@ public class Vision extends Subsystem {
 		if ( targetPosition < -200) {
 			System.out.println("Move Left");
 			Robot.robotTurn= turnFactor * -1;
+			centeredCount=0;
+			grabNow=false;
 		} else if ( targetPosition > 200) {
 			System.out.println("Move Right");
 			Robot.robotTurn=turnFactor;  
+			centeredCount=0;
+			grabNow=false;
 		} else {		 
-			 System.out.println("Move Center");
+			 if (Robot.robotDrive == 0) {
+				 centeredCount++;
+			 } else {
+				centeredCount=0;
+			 }		 
+			 if (centeredCount > 10) {
+				System.out.println("Grab Ball!");
+				grabNow=true;
+			 } else {
+				System.out.println("Move Center");
+			 }
 			 Robot.robotTurn=0;
 		}  		 
 

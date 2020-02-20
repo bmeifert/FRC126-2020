@@ -14,6 +14,8 @@ public class OperatorControl extends Command {
 	static double currentRotations;
 	static boolean rotationFirstIteration = true;
 	static boolean onTargetColor;
+	int count=0;
+	int targetLightCount=0;
 
 	public OperatorControl() {
 		// Use requires() here to declare subsystem dependencies
@@ -31,6 +33,8 @@ public class OperatorControl extends Command {
 	@Override
 	protected void execute() {
 		// START CONTROL SETUP
+
+		count++;
 
 		// Get stick inputs
 		JoystickWrapper driveJoystick = new JoystickWrapper(Robot.oi.driveController, 0.05);
@@ -131,7 +135,10 @@ public class OperatorControl extends Command {
 
 				Robot.driveBase.Drive(driveJoystick.getLeftStickY(), driveJoystick.getRightStickX() / 2);
 				if (driveJoystick.isAButton()) {
-					Robot.tLight.toggleTargetLight();
+					if (count > targetLightCount + 50) {
+						Robot.tLight.toggleTargetLight();
+						targetLightCount = count;
+					}	
 				}	
 			break;
 		}

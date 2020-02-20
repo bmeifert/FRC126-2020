@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class LimeLightWork extends Command {
     public static int iter=0;
+    int centeredCount=0;
+    boolean shootNow=false;
 
 	/************************************************************************
 	 ************************************************************************/
@@ -32,7 +34,7 @@ public class LimeLightWork extends Command {
 
         Robot.limeLight.getCameraData();
 
-        System.out.println("LimeLightWork: V: " + Robot.limeLight.getllTargetValid());
+        SmartDashboard.putBoolean("shootnow:", shootNow);
 
         if (Robot.limeLight.getllTargetValid()){
             // We found a valid vision target.
@@ -46,11 +48,11 @@ public class LimeLightWork extends Command {
             System.out.println("LimeLightWork: X: " + Robot.limeLight.getllTargetX());
 
             if (area < .2) {
-                threshold = 2;
-            } else if (area < 1) {
                 threshold = 3;
-            } else if (area < 2) {
+            } else if (area < 1) {
                 threshold = 4;
+            } else if (area < 2) {
+                threshold = 5;
             } else {
                 threshold = 5;
             }
@@ -58,13 +60,22 @@ public class LimeLightWork extends Command {
             if ( Robot.limeLight.getllTargetX() < ( -1 * threshold ) ) {
                 // Target is to the left of the Robot, need to move left
                 Robot.robotTurn=-.25;
+                centeredCount=0;
+                shootNow=false;
             } else if ( Robot.limeLight.getllTargetX() > threshold ) {
                 // Target is to the left of the Robot, need to move right
                 Robot.robotTurn=.25;
+                centeredCount=0;
+                shootNow=false;
             } else {
+                centeredCount++;
+                if (centeredCount > 10) {
+                    shootNow=true;
+                } else {
+                    shootNow=false;
+                }
                 Robot.robotTurn=0;
             }
-
 
             if ( Robot.limeLight.getllTargetX() < -1 ) {
                 Robot.limeLight.setllTurretTarget((int)(Robot.limeLight.getllTargetX() * 25));
@@ -72,12 +83,11 @@ public class LimeLightWork extends Command {
                 Robot.limeLight.setllTurretTarget((int)(Robot.limeLight.getllTargetX() * 25));
             } else {
                 Robot.limeLight.setllTurretTarget(0);
-                Robot.robotTurn=0;
             }
-
-
         } else {
             iter++;
+            centeredCount=0;
+            shootNow=false;
             Robot.limeLight.setllTurretTarget(Robot.turret.getEncoder());
 
             if (iter > 10 && iter < 350) {
