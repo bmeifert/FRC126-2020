@@ -48,12 +48,12 @@ public class Turret extends Subsystem {
 
 	public double getSpeedCurve(double distance) {
 		double targetSpeed;
-		targetSpeed = distance / 1000;
-		if(targetSpeed < 0.1) {
-			targetSpeed = 0.1;
+		targetSpeed = distance / 500;
+		if(targetSpeed < 0.15) {
+			targetSpeed = 0.15;
 		}
-		if(targetSpeed > 0.25) {
-			targetSpeed = 0.25;
+		if(targetSpeed > 0.6) {
+			targetSpeed = 0.6;
 		}
 		return targetSpeed;
 	}
@@ -63,18 +63,19 @@ public class Turret extends Subsystem {
 
 	public double getTargetPosition(double currentPosition, int objectID) {
 
-		if (Robot.trackTarget == Robot.targetTypes.throwingTarget) {
+		if (Robot.trackTarget == Robot.targetTypes.throwingTarget ||
+			Robot.trackTarget == Robot.targetTypes.turretOnly ) {
 			// We are tracking the throwing target
 			System.out.println("Turret getTargetPosition: " + Robot.limeLight.getllTurretTarget());
 			return Robot.limeLight.getllTurretTarget();
 		}
 
 		if (zeroLeft) {
-			return currentPosition - 200;
+			return currentPosition - 75;
 		}
 
 		if (zeroRight) {
-			return currentPosition + 200;
+			return currentPosition + 75;
 		}
 
 		return currentPosition;

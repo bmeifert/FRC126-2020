@@ -88,7 +88,7 @@ public class Vision extends Subsystem {
 
 	public void centerServo() {
 		setServoX(250);
-		setServoY(300);
+		setServoY(425);
 	}
 
 	/************************************************************************

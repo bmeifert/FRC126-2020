@@ -50,20 +50,23 @@ public class OperatorControl extends Command {
 		
 		switch(currentState) {
 			case targetSeek:
-		    	if(!driveJoystick.isYButton() && !driveJoystick.isXButton()) {
+		    	if(!driveJoystick.isYButton() && !driveJoystick.isXButton() && !driveJoystick.isBButton()) {
 					currentState = driveStates.drive;
 					Robot.trackTarget= Robot.targetTypes.noTarget;
 					Robot.robotTurn = 0;
 					Robot.robotDrive = 0;
 					Robot.limeLight.setLED(true);
 				} else {
-					if (driveJoystick.isYButton()) {
-						Robot.trackTarget= Robot.targetTypes.ballTarget;
+					if (Robot.trackTarget != Robot.targetTypes.turretOnly) {
+						System.out.println("Direction: " + Robot.robotTurn + " Drive: " + Robot.robotDrive );
+						if (Robot.robotDrive == 0 && Robot.robotTurn == 0) {
+							Robot.driveBase.Drive(driveJoystick.getLeftStickY(), driveJoystick.getRightStickX() / 2);
+						} else {
+							Robot.driveBase.Drive(Robot.robotDrive,Robot.robotTurn);
+						}	 
 					} else {
-						Robot.trackTarget= Robot.targetTypes.throwingTarget;
+						Robot.driveBase.Drive(driveJoystick.getLeftStickY(), driveJoystick.getRightStickX() / 2);
 					}
-                    System.out.println("Direction: " + Robot.robotTurn + " Drive: " + Robot.robotDrive );
-			 	    Robot.driveBase.Drive(Robot.robotDrive,Robot.robotTurn);
 		        }
 			break;
 
@@ -120,13 +123,32 @@ public class OperatorControl extends Command {
 					Robot.robotDrive = 0;
 					return;
 				}	
-				
+
 				if (driveJoystick.isYButton()) {
 					Robot.driveBase.Drive(0,0);
 					currentState = driveStates.targetSeek;
-					Robot.trackTarget= Robot.targetTypes.ballTarget;
-				    // turn off the LEDs on the lime light
-					Robot.limeLight.setLED(false);
+ 
+					boolean llball=false;
+					if (!llball) {
+						Robot.trackTarget= Robot.targetTypes.ballTarget;
+				    	// turn off the LEDs on the lime light
+						Robot.limeLight.setLED(false);
+						// Reset any previous motion
+					} else {
+						Robot.trackTarget= Robot.targetTypes.ballLLTarget;
+						Robot.limeLight.setLED(true);
+					}	
+					Robot.robotTurn = 0;
+					Robot.robotDrive = 0;
+					return;
+				}
+
+				if (driveJoystick.isBButton()) {
+					Robot.driveBase.Drive(0,0);
+					currentState = driveStates.targetSeek;
+					Robot.trackTarget= Robot.targetTypes.turretOnly;
+					Robot.limeLight.setStreamMode(0);
+					Robot.limeLight.setLED(true);
 					// Reset any previous motion
 					Robot.robotTurn = 0;
 					Robot.robotDrive = 0;

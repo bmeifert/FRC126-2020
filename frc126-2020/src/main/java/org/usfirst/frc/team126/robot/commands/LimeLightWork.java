@@ -33,7 +33,9 @@ public class LimeLightWork extends Command {
     protected void execute() {
         SmartDashboard.putBoolean("shootnow:", shootNow);
 
-        if (Robot.trackTarget != Robot.targetTypes.throwingTarget) {
+        if (Robot.trackTarget != Robot.targetTypes.throwingTarget &&
+            Robot.trackTarget != Robot.targetTypes.turretOnly &&
+            Robot.trackTarget != Robot.targetTypes.ballLLTarget ) {
             // We are not tracking the ball, just return
             shootNow=false;
 			return;
@@ -41,6 +43,7 @@ public class LimeLightWork extends Command {
         
         Robot.limeLight.getCameraData();
 
+        SmartDashboard.putBoolean("LL Valid:", Robot.limeLight.getllTargetValid());
 
         if (Robot.limeLight.getllTargetValid()){
             // We found a valid vision target.
@@ -51,44 +54,64 @@ public class LimeLightWork extends Command {
             double area = Robot.limeLight.getllTargetArea();
             double threshold;
 
-            System.out.println("LimeLightWork: X: " + Robot.limeLight.getllTargetX() + " Area: " + area );
+            //System.out.println("LimeLightWork: X: " + Robot.limeLight.getllTargetX() + " Area: " + area );
+
+            SmartDashboard.putNumber("LL Area:", area);
 
             if (area < .2) {
-                threshold = 2;
+                threshold = 1.5;
             } else if (area < 1) {
-                threshold = 3;
+                threshold = 2.5;
             } else if (area < 2) {
-                threshold = 4;
+                threshold = 3.5;
             } else {
-                threshold = 5;
+                threshold = 4.5;
             }
 
             if ( Robot.limeLight.getllTargetX() < ( -1 * threshold ) ) {
                 // Target is to the left of the Robot, need to move left
-                Robot.robotTurn=-.3;
+                Robot.robotTurn=-.25;
+                if ( Robot.limeLight.getllTargetX() + threshold < ( -1 * threshold ) ) {
+                    Robot.robotTurn=-.3;
+                }
                 centeredCount=0;
                 shootNow=false;
             } else if ( Robot.limeLight.getllTargetX() > threshold ) {
                 // Target is to the left of the Robot, need to move right
-                Robot.robotTurn=.3;
+                Robot.robotTurn=.25;
+                if ( Robot.limeLight.getllTargetX() - threshold > threshold ) {
+                    Robot.robotTurn=.3;
+                }
                 centeredCount=0;
                 shootNow=false;
             } else {
                 centeredCount++;
-                if (centeredCount > 20) {
-                    shootNow=true;
-                } else {
-                    shootNow=false;
-                }
+                if (Robot.trackTarget != Robot.targetTypes.ballLLTarget) {
+                    if (centeredCount > 20) {
+                        shootNow=true;
+                    } else {
+                        shootNow=false;
+                    }
+                }    
                 Robot.robotTurn=0;
             }
 
-            if ( Robot.limeLight.getllTargetX() < -.25 ) {
-                Robot.limeLight.setllTurretTarget((int)(Robot.limeLight.getllTargetX() * 20));
-            } else if ( Robot.limeLight.getllTargetX() > .25 ) {
-                Robot.limeLight.setllTurretTarget((int)(Robot.limeLight.getllTargetX() * 20));
+            if (Robot.trackTarget != Robot.targetTypes.ballLLTarget) {
+              if ( Robot.limeLight.getllTargetX() < -.10 ) {
+                    Robot.limeLight.setllTurretTarget((int)(Robot.limeLight.getllTargetX() * 15));
+              } else if ( Robot.limeLight.getllTargetX() > .10 ) {
+                  Robot.limeLight.setllTurretTarget((int)(Robot.limeLight.getllTargetX() * 15));
+              } else {
+                  Robot.limeLight.setllTurretTarget(0);
+              }
+              Robot.robotDrive=0;
             } else {
                 Robot.limeLight.setllTurretTarget(0);
+                if ( area < 6 ) {
+                    Robot.robotDrive=.25;
+                } else {
+                    Robot.robotDrive=0;
+                }
             }
         } else {
             iter++;

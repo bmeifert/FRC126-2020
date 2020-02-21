@@ -1,4 +1,5 @@
 package org.usfirst.frc.team126.robot.subsystems;
+import org.usfirst.frc.team126.robot.Robot;
 
 import org.usfirst.frc.team126.robot.commands.*;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -90,6 +91,13 @@ public class LimeLight extends Subsystem {
 	 ************************************************************************/
 
     public void getCameraData() {
+
+        if ( Robot.trackTarget == Robot.targetTypes.throwingTarget ||
+        Robot.trackTarget == Robot.targetTypes.turretOnly ) {
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
+        } else {
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
+        }
         double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
         double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
         double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);

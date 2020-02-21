@@ -28,6 +28,13 @@ public class CameraData extends Command {
 	protected void execute() {
         //Turn on the LED's on the PixyCam 
 		//Robot.vision.setLamp(True,True);
+		int objectId=Robot.objectId;
+
+		if (Robot.trackTarget != Robot.targetTypes.ballTarget) {
+			Robot.vision.trackTargetPosition(objectId);
+			Robot.vision.setLamp(false,false);
+			return;
+		}
 
 		// Track Specified object ID
 		// 1 - Power Cell
@@ -35,19 +42,18 @@ public class CameraData extends Command {
 		// 
 		// TODO hook this up to a button or something so that we
 		// track the power cell, or the throwing target
-		int objectId=Robot.objectId;
 
 		// Get the data for requested object from the camera
 		Robot.vision.getItems(objectId,1);
 
 		// Report the object data to the smart dashboard.
 		SmartDashboard.putNumber("Vision X: ", Robot.vision.packetData[objectId].X);
-		SmartDashboard.putNumber("Vision Y: ", Robot.vision.packetData[objectId].Y);
+		//SmartDashboard.putNumber("Vision Y: ", Robot.vision.packetData[objectId].Y);
 		SmartDashboard.putNumber("Vision H: ", Robot.vision.packetData[objectId].Height);
-		SmartDashboard.putNumber("Vision W: ", Robot.vision.packetData[objectId].Width);
+		//SmartDashboard.putNumber("Vision W: ", Robot.vision.packetData[objectId].Width);
 		SmartDashboard.putBoolean("Vision V: ", Robot.vision.packetData[objectId].isValid);
-		SmartDashboard.putNumber("Servo X: ", Robot.vision.getServoX());
-		SmartDashboard.putNumber("Servo Y: ", Robot.vision.getServoY());
+		//SmartDashboard.putNumber("Servo X: ", Robot.vision.getServoX());
+		//SmartDashboard.putNumber("Servo Y: ", Robot.vision.getServoY());
 
         if (Robot.trackTarget == Robot.targetTypes.ballTarget) {
 		    Robot.vision.setLamp(true,false);
@@ -89,11 +95,11 @@ public class CameraData extends Command {
 			Robot.vision.setLED(255,0,0); 
 
 			loop_count++;
-			if (loop_count == 25) {
+			if (loop_count == 5) {
 				// After 250 iterations of not seeing an object, recenter the camera.
 				Robot.vision.centerServo();
 			}
-			if (loop_count > 75) {
+			if (loop_count > 10) {
 			    // Scan for a target
 			    Robot.vision.incrServoX(8 * directionX);
 			    Robot.vision.incrServoY(4 * directionY);
@@ -106,12 +112,12 @@ public class CameraData extends Command {
 			    	Robot.vision.setServoX(50);
 			    	directionX = 1;
 			    }	
-			    if ( Robot.vision.getServoY() > 480) {
-				    Robot.vision.setServoY(480);
+			    if ( Robot.vision.getServoY() > 490) {
+				    Robot.vision.setServoY(490);
 				    directionY = -1;
 	        	}
-			    if ( Robot.vision.getServoY() < 300) {
-				    Robot.vision.setServoY(300);
+			    if ( Robot.vision.getServoY() < 400) {
+				    Robot.vision.setServoY(400);
 				    directionY = 1;
 				}
 				//System.out.println("dY: " + directionY + " dX: " + directionX + " lC: " + loop_count + " sX: " + Robot.vision.getServoX() + " sY: " + Robot.vision.getServoY() );

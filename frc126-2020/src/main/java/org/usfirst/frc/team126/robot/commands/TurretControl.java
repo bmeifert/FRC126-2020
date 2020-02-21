@@ -50,10 +50,10 @@ public class TurretControl extends Command {
     
         encoderDistance = Math.abs(targetEncoder - currentEncoder);
 
-        if ( targetEncoder > currentEncoder + 15 || targetEncoder < currentEncoder - 15) {
+        if ( targetEncoder > currentEncoder + 3 || targetEncoder < currentEncoder - 3) {
             currentState = turretStates.seek;
         }
-        int fudgeFactor=100;
+        int fudgeFactor=25;
         switch(currentState) {
             case idle:
             Robot.turret.setSpeed(0);
