@@ -63,22 +63,22 @@ public class CameraData extends Command {
 			if (Robot.vision.packetData[objectId].Y < 80) {
 				// if the object is below the center of the camera, move the
 				// camera down
-				Robot.vision.incrServoY(-15);
+				Robot.vision.incrServoY(-10);
 			}
 			if (Robot.vision.packetData[objectId].Y > 120) {
 				// if the object is above the center of the camera, move the
 				// camera up
-				Robot.vision.incrServoY(15);
+				Robot.vision.incrServoY(10);
 			}
 			if (Robot.vision.packetData[objectId].X < 145) {
 				// if the object is to the left of the center of the camera, move the
 				// camera left
-				Robot.vision.incrServoX(15);
+				Robot.vision.incrServoX(10);
 			}
 			if (Robot.vision.packetData[objectId].X > 170) {
 				// if the object is to the right of the center of the camera, move the
 				// camera right
-				Robot.vision.incrServoX(-15);
+				Robot.vision.incrServoX(-10);
 			}
 
 			loop_count=0;
@@ -95,8 +95,8 @@ public class CameraData extends Command {
 			}
 			if (loop_count > 75) {
 			    // Scan for a target
-			    Robot.vision.incrServoX(5 * directionX);
-			    Robot.vision.incrServoY(2 * directionY);
+			    Robot.vision.incrServoX(8 * directionX);
+			    Robot.vision.incrServoY(4 * directionY);
 
 			    if ( Robot.vision.getServoX() > 450) {
 				   Robot.vision.setServoX(450);

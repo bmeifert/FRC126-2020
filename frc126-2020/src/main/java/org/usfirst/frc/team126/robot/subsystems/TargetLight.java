@@ -38,7 +38,7 @@ public class TargetLight extends Subsystem {
        if ( targetLightOn ) {
 		   	targetLightOn=false;
 	   } else {
-           	targetLightOn=false;
+           	targetLightOn=true;
 	   }
 	}
 }

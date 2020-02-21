@@ -10,6 +10,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 public class Turret extends Subsystem {
+	public boolean zeroLeft=false;
+	public boolean zeroRight=false;
 	
 	/************************************************************************
 	 ************************************************************************/
@@ -25,7 +27,7 @@ public class Turret extends Subsystem {
 		Robot.turretRotator.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 100);
 		Robot.turretRotator.setSelectedSensorPosition(0,0,100);
 	}
-
+	
 	/************************************************************************
 	 ************************************************************************/
 
@@ -63,9 +65,18 @@ public class Turret extends Subsystem {
 
 		if (Robot.trackTarget == Robot.targetTypes.throwingTarget) {
 			// We are tracking the throwing target
+			System.out.println("Turret getTargetPosition: " + Robot.limeLight.getllTurretTarget());
 			return Robot.limeLight.getllTurretTarget();
 		}
-		
+
+		if (zeroLeft) {
+			return currentPosition - 200;
+		}
+
+		if (zeroRight) {
+			return currentPosition + 200;
+		}
+
 		return currentPosition;
 	}
 }

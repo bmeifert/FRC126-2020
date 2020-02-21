@@ -31,10 +31,16 @@ public class LimeLightWork extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+        SmartDashboard.putBoolean("shootnow:", shootNow);
 
+        if (Robot.trackTarget != Robot.targetTypes.throwingTarget) {
+            // We are not tracking the ball, just return
+            shootNow=false;
+			return;
+        }
+        
         Robot.limeLight.getCameraData();
 
-        SmartDashboard.putBoolean("shootnow:", shootNow);
 
         if (Robot.limeLight.getllTargetValid()){
             // We found a valid vision target.
@@ -45,31 +51,31 @@ public class LimeLightWork extends Command {
             double area = Robot.limeLight.getllTargetArea();
             double threshold;
 
-            System.out.println("LimeLightWork: X: " + Robot.limeLight.getllTargetX());
+            System.out.println("LimeLightWork: X: " + Robot.limeLight.getllTargetX() + " Area: " + area );
 
             if (area < .2) {
-                threshold = 3;
+                threshold = 2;
             } else if (area < 1) {
-                threshold = 4;
+                threshold = 3;
             } else if (area < 2) {
-                threshold = 5;
+                threshold = 4;
             } else {
                 threshold = 5;
             }
 
             if ( Robot.limeLight.getllTargetX() < ( -1 * threshold ) ) {
                 // Target is to the left of the Robot, need to move left
-                Robot.robotTurn=-.25;
+                Robot.robotTurn=-.3;
                 centeredCount=0;
                 shootNow=false;
             } else if ( Robot.limeLight.getllTargetX() > threshold ) {
                 // Target is to the left of the Robot, need to move right
-                Robot.robotTurn=.25;
+                Robot.robotTurn=.3;
                 centeredCount=0;
                 shootNow=false;
             } else {
                 centeredCount++;
-                if (centeredCount > 10) {
+                if (centeredCount > 20) {
                     shootNow=true;
                 } else {
                     shootNow=false;
@@ -77,10 +83,10 @@ public class LimeLightWork extends Command {
                 Robot.robotTurn=0;
             }
 
-            if ( Robot.limeLight.getllTargetX() < -1 ) {
-                Robot.limeLight.setllTurretTarget((int)(Robot.limeLight.getllTargetX() * 25));
-            } else if ( Robot.limeLight.getllTargetX() > 1 ) {
-                Robot.limeLight.setllTurretTarget((int)(Robot.limeLight.getllTargetX() * 25));
+            if ( Robot.limeLight.getllTargetX() < -.25 ) {
+                Robot.limeLight.setllTurretTarget((int)(Robot.limeLight.getllTargetX() * 20));
+            } else if ( Robot.limeLight.getllTargetX() > .25 ) {
+                Robot.limeLight.setllTurretTarget((int)(Robot.limeLight.getllTargetX() * 20));
             } else {
                 Robot.limeLight.setllTurretTarget(0);
             }
@@ -92,7 +98,7 @@ public class LimeLightWork extends Command {
 
             if (iter > 10 && iter < 350) {
                 // Try turning until we pick up a target
-                Robot.robotTurn= -0.25;
+                Robot.robotTurn= -0.3;
             } else {
                 Robot.robotTurn=0;
             }    
@@ -105,7 +111,7 @@ public class LimeLightWork extends Command {
             Robot.robotDrive=0;
         }
 
-        System.out.println("LimeLightWork: RT: " + Robot.robotTurn);
+        //System.out.println("LimeLightWork: RT: " + Robot.robotTurn);
 
     }          
 

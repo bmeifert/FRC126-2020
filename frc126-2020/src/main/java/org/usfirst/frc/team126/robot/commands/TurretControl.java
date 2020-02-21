@@ -45,11 +45,13 @@ public class TurretControl extends Command {
         SmartDashboard.putNumber("turretEncoder", currentEncoder);
     
         targetEncoder = Robot.turret.getTargetPosition(currentEncoder, Robot.objectId);
-        
+  
+        SmartDashboard.putNumber("turretTarget", targetEncoder);
+    
         encoderDistance = Math.abs(targetEncoder - currentEncoder);
 
-        if ( targetEncoder > currentEncoder + 200 || targetEncoder < currentEncoder - 200) {
-            //currentState = turretStates.seek;
+        if ( targetEncoder > currentEncoder + 15 || targetEncoder < currentEncoder - 15) {
+            currentState = turretStates.seek;
         }
         int fudgeFactor=100;
         switch(currentState) {
@@ -86,6 +88,16 @@ public class TurretControl extends Command {
             default:
                 currentState = turretStates.idle;
             break;
+        }
+
+        if (Robot.turret.zeroLeft) {
+            Robot.turretRotator.setSelectedSensorPosition(0,0,100);
+            Robot.turret.zeroLeft = false;
+        }
+
+        if (Robot.turret.zeroRight) {
+            Robot.turretRotator.setSelectedSensorPosition(0,0,100);
+            Robot.turret.zeroRight = false;
         }
     }
 

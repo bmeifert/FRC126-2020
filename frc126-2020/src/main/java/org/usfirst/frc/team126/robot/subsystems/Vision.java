@@ -202,7 +202,7 @@ public class Vision extends Subsystem {
 		}
 
 		double area = h * w;
-		if ( area < 2000 ) {
+		if ( area < 2500 ) {
 			Robot.robotDrive=.25;
 		} else {
 			Robot.robotDrive=0;
@@ -214,7 +214,7 @@ public class Vision extends Subsystem {
 		double turnFactor = .25;
 	    if (Robot.robotDrive != 0) {
 		    // Slow down the turn if we are moving forward
-			turnFactor = .20;
+			turnFactor = .15;
 		}
 
 		if ( targetPosition < -200) {
