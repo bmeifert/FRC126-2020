@@ -87,15 +87,14 @@ public class Robot extends TimedRobot {
 		OperatorControl.currentState = driveStates.drive;
 
 		SmartDashboard.putNumber("Voltage Threshold", voltageThreshold);
-		autoPosition.addOption("Default", 0);
+		autoPosition.addOption("Default (Center)", 0);
 		autoPosition.addOption("Left", 1);
 		autoPosition.addOption("Right", 2);
 		autoPosition.addOption("Center", 3);
 		SmartDashboard.putData("AutoPosition", autoPosition);
-		autoFunction.addOption("Default", 0);
-		autoFunction.addOption("Function 0", 1);
-		autoFunction.addOption("Function 1", 2);
-		autoFunction.addOption("Function 2", 3);
+		autoFunction.addOption("Default (Move)", 0);
+		autoFunction.addOption("Move", 1);
+		autoFunction.addOption("Full", 2);
 		SmartDashboard.putData("AutoFunction", autoFunction);
 
 		Log.print(0, "Robot", "Robot Init Completed");
@@ -133,17 +132,41 @@ public class Robot extends TimedRobot {
 			selectedAutoFunction = 0;
 		}
 		switch(selectedAutoPosition) {
-			case 0 :
-				autonomous = (Command) new AutoDrive();
-				break;
 			case 1 :
-				autonomous = (Command) new AutoTest();
+				switch(selectedAutoFunction) {
+					case 2 :
+						autonomous = (Command) new AutoL2();
+					break;
+
+					default:
+						autonomous = (Command) new AutoL1();
+					break;
+				}
 				break;
 			case 2 :
-				autonomous = (Command) new AutoWait();
-				break;
+				switch(selectedAutoFunction) {
+					case 2 :
+						autonomous = (Command) new AutoR2();
+					break;
+
+					default:
+						autonomous = (Command) new AutoR1();
+					break;
+				}
+			break;
+			case 3 :
+				switch(selectedAutoFunction) {
+					case 2 :
+						autonomous = (Command) new AutoC2();
+					break;
+
+					default:
+						autonomous = (Command) new AutoC1();
+					break;
+				}
+			break;
 			default :
-				autonomous = (Command) new AutoDrive();
+				autonomous = (Command) new AutoC1();
 				break;
 		}
 		if(autonomous != null){

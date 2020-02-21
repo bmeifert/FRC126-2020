@@ -83,35 +83,6 @@ public class OperatorControl extends Command {
 				Robot.driveBase.Drive(driveJoystick.getLeftStickY() / 2, driveJoystick.getRightStickX() / 2);
 			break;
 
-			case demo:
-				if(driveJoystick.isRShoulderButton()) {
-					if(gearSwitchPress) {
-
-					} else {
-						if(gear) {
-							s1.set(false);
-							gear = false;
-						} else {
-							s1.set(true);
-							gear = true;
-						}
-						gearSwitchPress = true;
-					}
-				} else {
-					gearSwitchPress = false;
-				}
-				targetRPM = 500 + driveJoystick.getRightTrigger() * 6000;
-				targetRPMdistance = targetRPM - Robot.driveBase.getPeakRPM();
-				SmartDashboard.putNumber("Peak RPM", Robot.driveBase.getPeakRPM());
-				currentTargetSpeed += targetRPMdistance / 65000;
-				if(currentTargetSpeed > 1) {
-					currentTargetSpeed = 1;
-				} else if(currentTargetSpeed < -1) {
-					currentTargetSpeed = -1;
-				}
-			Robot.driveBase.Drive(currentTargetSpeed, 0.0);
-			break;
-
 			default:
 				Robot.driveBase.Drive(driveJoystick.getLeftStickY(), driveJoystick.getRightStickX() / 2);
 				if(driveJoystick.isXButton()) {
