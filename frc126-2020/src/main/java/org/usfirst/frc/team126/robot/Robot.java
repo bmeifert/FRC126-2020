@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Solenoid; 
 
 import org.usfirst.frc.team126.robot.subsystems.*;
 import org.usfirst.frc.team126.robot.commands.*;
@@ -38,6 +39,7 @@ public class Robot extends TimedRobot {
 	public static TalonFX falcon1 = new TalonFX(12);
 	public static TalonSRX armPulleyMotor = new TalonSRX(RobotMap.armPulleyMotor);
 	public static TalonSRX sideToSidePullyMotor = new TalonSRX(RobotMap.sideToSidePullyMotor);
+	public static Solenoid armPiston = new Solenoid(RobotMap.armPiston);
 
 	public double robotID;
 	double currentFalconSpeed;

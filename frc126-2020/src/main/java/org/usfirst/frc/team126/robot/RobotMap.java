@@ -50,6 +50,9 @@ public class RobotMap {
 	public static int armPulleyMotor = 8;
 	public static int sideToSidePullyMotor = 9;
 
+	// Solenoids
+	public static int armPiston = 1;
+
 	//Motor Inversions
 	public static int left1Inversion;
 	public static int right1Inversion;
