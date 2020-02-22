@@ -26,6 +26,29 @@ public class OperatorControl extends Command {
 	@Override
 	protected void initialize() {
 		Log.print(0, "OI", "Operator control initialized.");
+		Robot.limeLight.setStreamMode(0);
+	}
+
+	private void resetDriveBase() {
+		Robot.driveBase.Drive(0,0);
+		Robot.robotTurn = 0;
+		Robot.robotDrive = 0;
+	}
+
+	private double collisionAvoidance(double inSpeed) {
+		if (Robot.distance.getDistanceAvg() < 10 && inSpeed > 0) {
+			return 0;
+		}	
+
+		if (Robot.distance.getDistanceAvg() < 20 && inSpeed > .25) {
+			return .25;
+		}	
+
+		if (Robot.distance.getDistanceAvg() < 50 && inSpeed > .50) {
+			return .5;
+		}	
+
+		return inSpeed;
 	}
 
 	// Called every tick (20ms)
@@ -53,27 +76,20 @@ public class OperatorControl extends Command {
 		    	if(!driveJoystick.isYButton() && !driveJoystick.isXButton() && !driveJoystick.isBButton()) {
 					currentState = driveStates.drive;
 					Robot.trackTarget= Robot.targetTypes.noTarget;
-					Robot.robotTurn = 0;
-					Robot.robotDrive = 0;
+					resetDriveBase();
 					Robot.limeLight.setLED(true);
 				} else {
 					if (Robot.trackTarget != Robot.targetTypes.turretOnly) {
 						System.out.println("Direction: " + Robot.robotTurn + " Drive: " + Robot.robotDrive );
 						if (Robot.robotDrive == 0 && Robot.robotTurn == 0) {
-							Robot.driveBase.Drive(driveJoystick.getLeftStickY(), driveJoystick.getRightStickX() / 2);
+							Robot.driveBase.Drive(collisionAvoidance(driveJoystick.getLeftStickY()), 
+							                      driveJoystick.getRightStickX() / 2);
 						} else {
-							double drive=Robot.robotDrive;
-							if (Robot.distance.getDistanceAvg() < 30 ) {
-								drive=0;
-							}
-							Robot.driveBase.Drive(drive,Robot.robotTurn);
+							Robot.driveBase.Drive(collisionAvoidance(Robot.robotDrive),Robot.robotTurn);
 						}	 
 					} else {
-						double drive=driveJoystick.getLeftStickY();
-						if (Robot.distance.getDistanceAvg() < 100 ) { if (drive > .5) drive=.5; }
-						if (Robot.distance.getDistanceAvg() < 50 ) { if (drive > .25) drive=.25; }
-						if (Robot.distance.getDistanceAvg() < 25 ) { if (drive > 0) drive=.0; }
-						Robot.driveBase.Drive(drive, driveJoystick.getRightStickX() / 2);
+						Robot.driveBase.Drive(collisionAvoidance(driveJoystick.getLeftStickY()),
+						                      driveJoystick.getRightStickX() / 2);
 					}
 		        }
 			break;
@@ -120,20 +136,16 @@ public class OperatorControl extends Command {
 
 			default:
 				if(driveJoystick.isXButton()) {
-					Robot.driveBase.Drive(0,0);
+					resetDriveBase();
 					currentState = driveStates.targetSeek;
 					Robot.trackTarget= Robot.targetTypes.throwingTarget;
-					Robot.limeLight.setStreamMode(0);
 				    // turn on the LEDs on the lime light
 					Robot.limeLight.setLED(true);
-					// Reset any previous motion
-					Robot.robotTurn = 0;
-					Robot.robotDrive = 0;
 					return;
 				}	
 
 				if (driveJoystick.isYButton()) {
-					Robot.driveBase.Drive(0,0);
+					resetDriveBase();
 					currentState = driveStates.targetSeek;
  
 					boolean llball=false;
@@ -146,20 +158,14 @@ public class OperatorControl extends Command {
 						Robot.trackTarget= Robot.targetTypes.ballLLTarget;
 						Robot.limeLight.setLED(true);
 					}	
-					Robot.robotTurn = 0;
-					Robot.robotDrive = 0;
 					return;
 				}
 
 				if (driveJoystick.isBButton()) {
-					Robot.driveBase.Drive(0,0);
+					resetDriveBase();
 					currentState = driveStates.targetSeek;
 					Robot.trackTarget= Robot.targetTypes.turretOnly;
-					Robot.limeLight.setStreamMode(0);
 					Robot.limeLight.setLED(true);
-					// Reset any previous motion
-					Robot.robotTurn = 0;
-					Robot.robotDrive = 0;
 					return;
 				}
 
@@ -171,14 +177,12 @@ public class OperatorControl extends Command {
 					Robot.turret.zeroRight=true;
 				}
 
-				double drive=driveJoystick.getLeftStickY();
-				if (Robot.distance.getDistanceAvg() < 100 ) { if (drive > .5) drive=.5; }
-				if (Robot.distance.getDistanceAvg() < 50 ) { if (drive > .25) drive=.25; }
-				if (Robot.distance.getDistanceAvg() < 25 ) { if (drive > 0 ) drive=.0; }
-				Robot.driveBase.Drive(drive, driveJoystick.getRightStickX() / 2);
+				Robot.driveBase.Drive(collisionAvoidance(driveJoystick.getLeftStickY()),
+														 driveJoystick.getRightStickX() / 2);
+
 				if (driveJoystick.isAButton()) {
-					
-					 if (count > targetLightCount + 25) {
+				    // Toggle the target light
+					if (count > targetLightCount + 25) {
 						Robot.tLight.toggleTargetLight();
 						targetLightCount = count;
 					}	
