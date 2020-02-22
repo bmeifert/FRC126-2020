@@ -6,10 +6,10 @@ import org.usfirst.frc.team126.robot.subsystems.LidarLite;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DigitalInput;
 
-public class SensorsPeriodic extends Command {
+public class DistanceMeasure extends Command {
 	int count=0;
 
-	public SensorsPeriodic() {
+	public DistanceMeasure() {
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.distance);
 	}
@@ -19,15 +19,10 @@ public class SensorsPeriodic extends Command {
 	protected void initialize() {
 	}
 
-	// Called every tick (20ms)
-	@SuppressWarnings("static-access")
 	@Override
 	protected void execute() {
-		double ret = Robot.distance.getDistance();
+		double ret = Robot.distance.measureDistance();
         SmartDashboard.putNumber("Distance Sensor: ", ret);
-		if (count++ % 10 == 0) {
-			//System.out.println("Sensor Reading " + String.format("%5.2f", ret));
-        }	   
     }
 
 	// Returns true if command finished
@@ -39,12 +34,10 @@ public class SensorsPeriodic extends Command {
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
-
 	}
 
 	// Called when another command tries to use this command's subsystem
 	@Override
 	protected void interrupted() {
-
 	}
 }

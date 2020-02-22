@@ -62,10 +62,18 @@ public class OperatorControl extends Command {
 						if (Robot.robotDrive == 0 && Robot.robotTurn == 0) {
 							Robot.driveBase.Drive(driveJoystick.getLeftStickY(), driveJoystick.getRightStickX() / 2);
 						} else {
-							Robot.driveBase.Drive(Robot.robotDrive,Robot.robotTurn);
+							double drive=Robot.robotDrive;
+							if (Robot.distance.getDistanceAvg() < 30 ) {
+								drive=0;
+							}
+							Robot.driveBase.Drive(drive,Robot.robotTurn);
 						}	 
 					} else {
-						Robot.driveBase.Drive(driveJoystick.getLeftStickY(), driveJoystick.getRightStickX() / 2);
+						double drive=driveJoystick.getLeftStickY();
+						if (Robot.distance.getDistanceAvg() < 100 ) { if (drive > .5) drive=.5; }
+						if (Robot.distance.getDistanceAvg() < 50 ) { if (drive > .25) drive=.25; }
+						if (Robot.distance.getDistanceAvg() < 25 ) { if (drive > 0) drive=.0; }
+						Robot.driveBase.Drive(drive, driveJoystick.getRightStickX() / 2);
 					}
 		        }
 			break;
@@ -163,7 +171,11 @@ public class OperatorControl extends Command {
 					Robot.turret.zeroRight=true;
 				}
 
-				Robot.driveBase.Drive(driveJoystick.getLeftStickY(), driveJoystick.getRightStickX() / 2);
+				double drive=driveJoystick.getLeftStickY();
+				if (Robot.distance.getDistanceAvg() < 100 ) { if (drive > .5) drive=.5; }
+				if (Robot.distance.getDistanceAvg() < 50 ) { if (drive > .25) drive=.25; }
+				if (Robot.distance.getDistanceAvg() < 25 ) { if (drive > 0 ) drive=.0; }
+				Robot.driveBase.Drive(drive, driveJoystick.getRightStickX() / 2);
 				if (driveJoystick.isAButton()) {
 					
 					 if (count > targetLightCount + 25) {
