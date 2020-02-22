@@ -10,53 +10,74 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 public class Turret extends Subsystem {
-
+	public boolean zeroLeft=false;
+	public boolean zeroRight=false;
+	
+	/************************************************************************
+	 ************************************************************************/
 
 	public void initDefaultCommand() {
 		setDefaultCommand(new TurretControl());
 	}
 
+	/************************************************************************
+	 ************************************************************************/
+
 	public static void Setup() {
 		Robot.turretRotator.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 100);
 		Robot.turretRotator.setSelectedSensorPosition(0,0,100);
-		
 	}
-	public static double getEncoder(){
+	
+	/************************************************************************
+	 ************************************************************************/
+
+	public double getEncoder(){
 		return Robot.turretRotator.getSelectedSensorPosition();
 	}
-	public static void setSpeed(double speed) {
+
+	/************************************************************************
+	 ************************************************************************/
+
+	public void setSpeed(double speed) {
 		Robot.turretRotator.set(ControlMode.PercentOutput, speed);
 		SmartDashboard.putNumber("turretRotator", speed);
 	}
-	public static double getSpeedCurve(double distance) {
+
+	/************************************************************************
+	 ************************************************************************/
+
+	public double getSpeedCurve(double distance) {
 		double targetSpeed;
-		targetSpeed = distance / 1000;
-		if(targetSpeed < 0.1) {
-			targetSpeed = 0.1;
+		targetSpeed = distance / 500;
+		if(targetSpeed < 0.15) {
+			targetSpeed = 0.15;
 		}
-		if(targetSpeed > 0.5) {
-			targetSpeed = 0.5;
+		if(targetSpeed > 0.6) {
+			targetSpeed = 0.6;
 		}
 		return targetSpeed;
 	}
-	public static double getTargetPosition(double currentPosition) {
-		double targetPosition;
-		double visionX = Robot.vision.getX();
-		System.out.println(visionX);
-		if(visionX == -1) {
-			
-			return currentPosition;
-		}
-		//double visionX = SmartDashboard.getNumber("targetEncoder", 150);
-		if(visionX > 165) {
-			targetPosition = currentPosition + (visionX - 165) * 10;
-		} else if(visionX < 135) {
-			targetPosition = currentPosition + (visionX - 135) * 10;
-		} else {
-			targetPosition = currentPosition;
-		}
-		return targetPosition;
 
+	/************************************************************************
+	 ************************************************************************/
 
+	public double getTargetPosition(double currentPosition, int objectID) {
+
+		if (Robot.trackTarget == Robot.targetTypes.throwingTarget ||
+			Robot.trackTarget == Robot.targetTypes.turretOnly ) {
+			// We are tracking the throwing target
+			System.out.println("Turret getTargetPosition: " + Robot.limeLight.getllTurretTarget());
+			return Robot.limeLight.getllTurretTarget();
+		}
+
+		if (zeroLeft) {
+			return currentPosition - 75;
+		}
+
+		if (zeroRight) {
+			return currentPosition + 75;
+		}
+
+		return currentPosition;
 	}
 }

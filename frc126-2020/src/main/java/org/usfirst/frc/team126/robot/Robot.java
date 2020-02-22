@@ -23,6 +23,7 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 public class Robot extends TimedRobot {
 
@@ -31,16 +32,29 @@ public class Robot extends TimedRobot {
 	public static TalonSRX left2 = new TalonSRX(RobotMap.left2);
 	public static TalonSRX right2 = new TalonSRX(RobotMap.right2);
 	public static TalonSRX turretRotator = new TalonSRX(RobotMap.turretRotator);
-	public static TalonSRX turretShooter = new TalonSRX(RobotMap.turretShooter);
+	//public static TalonSRX turretShooter = new TalonSRX(RobotMap.turretShooter);
 	public static TalonSRX spinnerMotor = new TalonSRX(RobotMap.spinnerMotor);
-	public static CANSparkMax spark1 = new CANSparkMax(10, CANSparkMaxLowLevel.MotorType.kBrushless);
-	public static CANSparkMax spark2 = new CANSparkMax(11, CANSparkMaxLowLevel.MotorType.kBrushless);
+
+	public static CANSparkMax throwerMotor1 = new CANSparkMax(10, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax throwerMotor2 = new CANSparkMax(11, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax pickupMotor = new CANSparkMax(12, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax loadMotor = new CANSparkMax(13, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax turretMotor = new CANSparkMax(14, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax hoodtMotor = new CANSparkMax(15, CANSparkMaxLowLevel.MotorType.kBrushless);
+
 	public static TalonFX falcon1 = new TalonFX(12);
+	public static VictorSPX victor1 = new VictorSPX(50);
+	public static enum targetTypes{noTarget, throwingTarget, ballTarget, turretOnly, ballLLTarget};
 
 	public double robotID;
 	double currentFalconSpeed;
 	double falconRPMdistance;
 
+	public static int objectId=1;
+	public static targetTypes trackTarget = Robot.targetTypes.noTarget;
+	public static double robotTurn = 0;
+	public static double robotDrive = 0;
+	
 	public static Command autonomous; // Create the subsystems that control the hardware
 	public static WestCoastDrive driveBase;
 	public static InternalData internalData;
@@ -53,6 +67,8 @@ public class Robot extends TimedRobot {
 	public static double voltageThreshold;
 	public static Vision vision;
 	public static LidarLite distance;
+	public static TargetLight tLight;
+	public static LimeLight limeLight;
 
 	Color detectedColor;
 
@@ -85,6 +101,8 @@ public class Robot extends TimedRobot {
 		driveCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
 		server.setSource(driveCam);
 		distance = new LidarLite(new DigitalInput(5));
+		tLight = new TargetLight();
+		limeLight = new LimeLight();
 	
 		InternalData.initGyro();
 		InternalData.resetGyro();
@@ -92,7 +110,9 @@ public class Robot extends TimedRobot {
 		Turret.Setup();
 
 		voltageThreshold = 10;
+		
 		OperatorControl.currentState = driveStates.drive;
+		//OperatorControl.currentState = driveStates.targetSeek;
 
 		SmartDashboard.putNumber("Voltage Threshold", voltageThreshold);
 		autoPosition.addOption("Default", 0);
@@ -171,9 +191,11 @@ public class Robot extends TimedRobot {
 			autonomous.cancel();
 		}
 		OperatorControl.currentState = driveStates.drive;
+		//OperatorControl.currentState = driveStates.targetSeek;
+
 		Log.print(1, "Robot", "Robot Enabled - Operator control");
 		currentFalconSpeed = 0;
-		SmartDashboard.putNumber("Motor Test Speed", 0);
+		//SmartDashboard.putNumber("Motor Test Speed", 0);
 		falcon1.set(ControlMode.PercentOutput, 0);
 		
     }
@@ -182,6 +204,8 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() { // Runs periodically during teleop
 		Scheduler.getInstance().run();
 		SmartDashboard.putString("Drive State", OperatorControl.currentState.toString());
+		SmartDashboard.putString("Track Target", Robot.trackTarget.toString());
+		/*
 		falconRPMdistance = SmartDashboard.getNumber("Motor Test Speed", 0) - falcon1.getSelectedSensorVelocity() / 3.41;
 		currentFalconSpeed += falconRPMdistance / 65000;
 		if(currentFalconSpeed > 1) {
@@ -197,6 +221,7 @@ public class Robot extends TimedRobot {
 		falcon1.set(ControlMode.PercentOutput, currentFalconSpeed);
 		SmartDashboard.putNumber("falcon1", currentFalconSpeed);
 		SmartDashboard.putNumber("Falcon RPM", Math.abs(falcon1.getSelectedSensorVelocity() / 3.41));
+		*/
 	}
 
 	@Override

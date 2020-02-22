@@ -1,134 +1,247 @@
 package org.usfirst.frc.team126.robot.subsystems;
 
 import org.usfirst.frc.team126.robot.commands.*;
+import org.usfirst.frc.team126.robot.Robot;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.usfirst.frc.team126.robot.subsystems.PixyPacket;
 
 public class Vision extends Subsystem {
 
     public PixyI2C Pixy;
-	public PixyPacket[] packetData = new PixyPacket[8];
+	public PixyPacket[] packetData;
 	String print;
-	double currentX;
-	double currentY;
 
-    public Vision() {
-		Pixy = new PixyI2C("pixy", new I2C(Port.kOnboard, 0x54), packetData, new PixyException(print), new PixyPacket());
-		currentX = -1;
-		currentY = -1;
+	boolean upperLightOn = false;
+	boolean lowerLightOn = false;
+
+	int centeredCount=0;
+	boolean grabNow=false;
+
+	int servoX, servoY;
+
+	/************************************************************************
+	 ************************************************************************/
+
+	public Vision() {
+		Pixy = new PixyI2C("pixy", new I2C(Port.kOnboard, 0x54));
+		packetData = new PixyPacket[24];
+		for (int x=0; x<24; x++) {	
+			packetData[x] = new PixyPacket();
+		}
+		centerServo();
+		setServo();
     }
-    
-    public void initDefaultCommand() {
+
+	/************************************************************************
+	 ************************************************************************/
+
+	public int getServoX() {
+       return servoX;
+	}
+
+	/************************************************************************
+	 ************************************************************************/
+
+	 public int getServoY() {
+		return servoY;
+	}
+
+	/************************************************************************
+	 ************************************************************************/
+
+	 public void setServoX(int value) {
+		servoX=value;
+		if (servoX < 15) { servoX = 15; }
+		if (servoX > 500 ) { servoX = 500; }
+	}
+
+	/************************************************************************
+	 ************************************************************************/
+
+	public void setServoY(int value) {
+		servoY=value;
+		if (servoY < 15) { servoY = 15; }
+		if (servoY > 500 ) { servoY = 500; }
+	}
+
+	/************************************************************************
+	 ************************************************************************/
+
+	public void incrServoX(int value) {
+		int tmp = servoX + value;
+		setServoX(tmp);
+	}
+
+	/************************************************************************
+	 ************************************************************************/
+
+	public void incrServoY(int value) {
+		int tmp = servoY + value;
+		setServoY(tmp);
+	}
+
+	/************************************************************************
+	 ************************************************************************/
+
+	public void centerServo() {
+		setServoX(250);
+		setServoY(425);
+	}
+
+	/************************************************************************
+	 ************************************************************************/
+
+	 public void initDefaultCommand() {
 		setDefaultCommand(new CameraData());
-		for (int i = 0; i < packetData.length; i++) {
-			packetData[i] = new PixyPacket();
-		}
-	}
-	public double getX() {
-		return currentX;
-	}
-	public double getY() {
-		return currentY;
 	}
 
-    public void refreshPacketData() {
-		// Clear out the old data in the packets
-		for (int i = 0; i < packetData.length; i++) {
-			if (packetData[i] == null) {
-				//System.out.println("Packetdata[" + (i) + "] == NULL");
-			} else {
-				packetData[i].isValid=false;
-			}	
-		}
+	/************************************************************************
+	 ************************************************************************/
 
-		//SmartDashboard.putString("Pixy getPacketData", "Retrieving Data");
-
-		// Try and read the packets from the Pixy 
+	public void setLED(int red, int green, int blue) {
 		try {
-			Pixy.readPackets();
+			Pixy.setLED(red, green, blue);
 		} catch (PixyException e) {
 			SmartDashboard.putString("Pixy Error: ", "exception");
-			for (int i = 0; i < packetData.length; i++) {
-				packetData[i].isValid=false;
-			}
 		}
-
-		for (int i = 0; i < packetData.length; i++) {
-			if (!packetData[i].isValid) {
-				// If we hit an error, mark the packet as invalid
-
-				/*
-				SmartDashboard.putString("Pixy Error: " + (i+1), "True");
-				SmartDashboard.putNumber("Pixy X Value: " + (i+1), 99999999);
-				SmartDashboard.putNumber("Pixy Y Value: " + (i+1), 99999999);
-				SmartDashboard.putNumber("Pixy Width Value: " + (i+1), 99999999);
-				SmartDashboard.putNumber("Pixy Height Value: " + (i+1), 99999999);
-				*/
-				/*
-				currentX = -1;
-				currentY = -1;
-				System.out.println("Invalid packet - set to -1");
-				*/
-			} else {
-				int x,y,h,w;
-				x=packetData[i].X;
-				y=packetData[i].Y;
-				w=packetData[i].Width;
-				h=packetData[i].Height;
-				String xmove,ymove;
-
-				// If the read was good, mark the packet valid
-				/*
-	        	SmartDashboard.putString("Pixy Error: " + (i+1), "False");
-				SmartDashboard.putNumber("Pixy X Value: " + (i+1), x);
-				SmartDashboard.putNumber("Pixy Y Value: " + (i+1), y);
-				SmartDashboard.putNumber("Pixy Width Value: " + (i+1), w);
-				SmartDashboard.putNumber("Pixy Height Value: " + (i+1), h);
-				*/
-				currentX = x;
-				currentY = y;
-				if (x < 135) { 
-					xmove = "Move Left"; 
-				} else if (x > 165) { 
-					xmove = "Move Right"; 
-				} else {
-					 xmove = "X-Centered"; 
-				} 
-
-				if (y < 80) { 
-					ymove = "Move Up"; 
-				} else if (y > 120) { 
-					ymove = "Move Down"; 
-				} else {
-					 ymove = "Y-Centered"; 
-				} 
-
-				System.out.println("Packet " + (i+1) + " " + xmove + " " + ymove + " = " + packetData[i].toString());
-			}
-		}	
-
-		//SmartDashboard.putString("Pixy getPacketData", "done");
 	}
-	public double getPacketData(int packetID, String dataID ) {
-		packetID += -1; // offset
-		if(dataID == "x") {
-			return packetData[packetID].X;
+
+	/************************************************************************
+	 ************************************************************************/
+
+	public void setLamp(boolean upperOn, boolean lowerOn) {
+		try {
+			if (upperOn != upperLightOn || lowerOn != lowerLightOn ) {
+				Pixy.setLamp(upperOn, lowerOn);
+				upperLightOn = upperOn;
+				lowerLightOn = lowerOn;
+			}	   
+		} catch (PixyException e) {
+			SmartDashboard.putString("Pixy Error: ", "exception");
 		}
-		if(dataID == "y") {
-			return packetData[packetID].Y;
+	}
+
+	/************************************************************************
+	 ************************************************************************/
+
+	public void setServo() {
+		try {
+			Pixy.setServo(servoX, servoY);
+		} catch (PixyException e) {
+			SmartDashboard.putString("Pixy Error: ", "exception");
 		}
-		if(dataID == "v") {
-			if(packetData[packetID].isValid == true) {
-				return 1;
+	}
+
+	/************************************************************************
+	 ************************************************************************/
+
+	public void getItems(int objectId, int maxBlocks) {
+		try {
+			Pixy.getBlocks(objectId, maxBlocks, packetData);
+		} catch (PixyException e) {
+			SmartDashboard.putString("Pixy Error: ", "exception");
+		}	
+	}
+
+	/************************************************************************
+	 ************************************************************************/
+
+	public double trackTargetPosition(int objectID) {
+		double targetPosition=0;
+		double servoRatio = 1.7;
+
+		SmartDashboard.putBoolean("grabNow:", grabNow);
+		
+		if (Robot.trackTarget != Robot.targetTypes.ballTarget) {
+			// We are not tracking the ball, just return
+			centeredCount=0;
+			grabNow=false;
+			return 0;
+		}
+		
+		if ( !Robot.vision.packetData[objectID].isValid ) {
+			centeredCount = 0;
+			Robot.robotTurn = 0;
+			Robot.robotDrive = 0;
+			grabNow=false;
+			return 0;
+		}
+		
+		int y = Robot.vision.packetData[objectID].Y;
+		int x = Robot.vision.packetData[objectID].X;
+		int h = Robot.vision.packetData[objectID].Height;
+		int w = Robot.vision.packetData[objectID].Width;
+		int sx = Robot.vision.getServoX();
+		int sy = Robot.vision.getServoY();
+
+		servoRatio += (h * w) / 4000.0;
+
+		if (sx < 200) {
+			targetPosition = ( (sx - 255) * servoRatio *-1);	
+			if ( x < 80 ) {
+				targetPosition -= ( (80 - x) * servoRatio); 
 			}
-			else {
-				return 0;
+			if ( x > 120 ) {
+				targetPosition += ( (x-120) * servoRatio); 
 			}
+		} else if (sx > 300) {
+			targetPosition = ( (sx - 255) * servoRatio *-1);
+			if ( x < 80 ) {
+				targetPosition -= ( (80 - x) * servoRatio); 
+			}
+			if ( x > 120 ) {
+				targetPosition += ( (x-120) * servoRatio); 
+			}
+		} else if (x < 80 ) {
+			targetPosition = (x * -1 * servoRatio);
+		} else if (x > 120) {
+			targetPosition = ((x-110) * servoRatio);
 		}
-		else {
-			return -1;
+
+		double area = h * w;
+		if ( area < 2500 ) {
+			Robot.robotDrive=.25;
+		} else {
+			Robot.robotDrive=0;
 		}
+
+		System.out.println("vision valid, x:" + x + " tp:" + targetPosition 
+				 + " sx" + sx + " h:" + h + " w: " + w + " a:" + area);
+
+		double turnFactor = .25;
+	    if (Robot.robotDrive != 0) {
+		    // Slow down the turn if we are moving forward
+			turnFactor = .15;
+		}
+
+		if ( targetPosition < -200) {
+			System.out.println("Move Left");
+			Robot.robotTurn= turnFactor * -1;
+			centeredCount=0;
+			grabNow=false;
+		} else if ( targetPosition > 200) {
+			System.out.println("Move Right");
+			Robot.robotTurn=turnFactor;  
+			centeredCount=0;
+			grabNow=false;
+		} else {		 
+			 if (Robot.robotDrive == 0) {
+				 centeredCount++;
+			 } else {
+				centeredCount=0;
+			 }		 
+			 if (centeredCount > 10) {
+				System.out.println("Grab Ball!");
+				grabNow=true;
+			 } else {
+				System.out.println("Move Center");
+			 }
+			 Robot.robotTurn=0;
+		}  		 
+
+		return targetPosition;
 	}
 }
