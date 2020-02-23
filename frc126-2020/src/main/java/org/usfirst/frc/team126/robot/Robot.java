@@ -20,6 +20,7 @@ import org.usfirst.frc.team126.robot.RobotMap;
 import com.revrobotics.ColorSensorV3;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 public class Robot extends TimedRobot {
 
@@ -28,11 +29,27 @@ public class Robot extends TimedRobot {
 	public static TalonFX left2 = new TalonFX(RobotMap.left2);
 	public static TalonFX right2 = new TalonFX(RobotMap.right2);
 	public static TalonSRX turretRotator = new TalonSRX(RobotMap.turretRotator);
-	public static TalonSRX turretShooter = new TalonSRX(RobotMap.turretShooter);
+	//public static TalonSRX turretShooter = new TalonSRX(RobotMap.turretShooter);
 	public static TalonSRX spinnerMotor = new TalonSRX(RobotMap.spinnerMotor);
+
+  public static CANSparkMax throwerMotor1 = new CANSparkMax(20, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax throwerMotor2 = new CANSparkMax(21, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax pickupMotor = new CANSparkMax(22, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax loadMotor = new CANSparkMax(23, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax turretMotor = new CANSparkMax(24, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax hoodtMotor = new CANSparkMax(25, CANSparkMaxLowLevel.MotorType.kBrushless);
+
+	public static TalonFX falcon1 = new TalonFX(12);
+	public static VictorSPX victor1 = new VictorSPX(50);
+	public static enum targetTypes{noTarget, throwingTarget, ballTarget, turretOnly, ballLLTarget};
 
 	public double robotID;
 
+	public static int objectId=1;
+	public static targetTypes trackTarget = Robot.targetTypes.noTarget;
+	public static double robotTurn = 0;
+	public static double robotDrive = 0;
+	
 	public static Command autonomous; // Create the subsystems that control the hardware
 	public static WestCoastDrive driveBase;
 	public static InternalData internalData;
@@ -45,6 +62,8 @@ public class Robot extends TimedRobot {
 	public static double voltageThreshold;
 	//public static Vision vision;
 	public static LidarLite distance;
+	public static TargetLight tLight;
+	public static LimeLight limeLight;
 
 	Color detectedColor;
 
@@ -77,6 +96,8 @@ public class Robot extends TimedRobot {
 		driveCam.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
 		server.setSource(driveCam);
 		distance = new LidarLite(new DigitalInput(5));
+		tLight = new TargetLight();
+		limeLight = new LimeLight();
 	
 		InternalData.initGyro();
 		InternalData.resetGyro();
@@ -84,7 +105,9 @@ public class Robot extends TimedRobot {
 		Turret.Setup();
 
 		voltageThreshold = 10;
+		
 		OperatorControl.currentState = driveStates.drive;
+		//OperatorControl.currentState = driveStates.targetSeek;
 
 		SmartDashboard.putNumber("Voltage Threshold", voltageThreshold);
 		autoPosition.addOption("Default (Center)", 0);
@@ -186,6 +209,8 @@ public class Robot extends TimedRobot {
 			autonomous.cancel();
 		}
 		OperatorControl.currentState = driveStates.drive;
+		//OperatorControl.currentState = driveStates.targetSeek;
+
 		Log.print(1, "Robot", "Robot Enabled - Operator control");
 		
     }
@@ -194,6 +219,7 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() { // Runs periodically during teleop
 		Scheduler.getInstance().run();
 		SmartDashboard.putString("Drive State", OperatorControl.currentState.toString());
+		SmartDashboard.putString("Track Target", Robot.trackTarget.toString());
 	}
 
 	@Override

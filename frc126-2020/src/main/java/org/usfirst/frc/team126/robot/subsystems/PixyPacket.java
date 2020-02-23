@@ -6,13 +6,21 @@ public class PixyPacket {
 	public int Y;
 	public int Width;
 	public int Height;
+	public int trackingIndex;
+	public int age;
 	public boolean isValid;
-	//public int checksumError;
+	public int checksumError;
 	
- 	public PixyPacket() {
+	/************************************************************************
+	 ************************************************************************/
+
+	public PixyPacket() {
 		initPacket();
 	}
 	
+	/************************************************************************
+	 ************************************************************************/
+
 	public String toString() {
 		return "" +
 	" S:" + Signature +
@@ -20,8 +28,13 @@ public class PixyPacket {
 	" Y:" + Y +
 	" W:" + Width + 
 	" H:" + Height +
+	" TI:" + trackingIndex +
+	" AGE:" + age +
 	" Valid: " + isValid;
 	}
+
+	/************************************************************************
+	 ************************************************************************/
 
 	public void initPacket() {
 		Signature=0;
@@ -29,6 +42,8 @@ public class PixyPacket {
 		Y=0;
 		Width=0;
 		Height=0;
+		trackingIndex=0;
+		age=0;
 		isValid=false;
 	}
 }
