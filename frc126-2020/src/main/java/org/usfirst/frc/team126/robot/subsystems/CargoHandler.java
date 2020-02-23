@@ -20,13 +20,13 @@ public class CargoHandler extends Subsystem {
 
 
     public void runThrower() {
-        Robot.throwerMotor1.set(1);
-        Robot.throwerMotor2.set(1);
+        //Robot.throwerMotor1.set(1);
+        //Robot.throwerMotor2.set(1);
     }
     
     public void stopThrower() {
-        Robot.throwerMotor1.set(0);
-        Robot.throwerMotor2.set(0);
+        //Robot.throwerMotor1.set(0);
+        //Robot.throwerMotor2.set(0);
     }
 
     public void extendIntake() {
@@ -38,18 +38,18 @@ public class CargoHandler extends Subsystem {
     }
 
     public void runPickup() {
-        Robot.pickupMotor.set(1);
+        //Robot.pickupMotor.set(1);
     }
 
     public void stopPickup() {
-        Robot.pickupMotor.set(0);
+        //Robot.pickupMotor.set(0);
     }
 
     public void runloadMotor() {
-        Robot.loadMotor.set(1);
+        //Robot.loadMotor.set(1);
     }
 
     public void stoploadMotor() {
-        Robot.loadMotor.set(0);
+        //Robot.loadMotor.set(0);
     }
 }

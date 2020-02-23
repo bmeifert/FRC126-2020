@@ -32,13 +32,15 @@ public class Robot extends TimedRobot {
 	//public static TalonSRX turretShooter = new TalonSRX(RobotMap.turretShooter);
 	public static TalonSRX spinnerMotor = new TalonSRX(RobotMap.spinnerMotor);
 
-  public static CANSparkMax throwerMotor1 = new CANSparkMax(20, CANSparkMaxLowLevel.MotorType.kBrushless);
+	/*
+	public static CANSparkMax throwerMotor1 = new CANSparkMax(20, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static CANSparkMax throwerMotor2 = new CANSparkMax(21, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static CANSparkMax pickupMotor = new CANSparkMax(22, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static CANSparkMax loadMotor = new CANSparkMax(23, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static CANSparkMax turretMotor = new CANSparkMax(24, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static CANSparkMax hoodtMotor = new CANSparkMax(25, CANSparkMaxLowLevel.MotorType.kBrushless);
-
+	*/
+	
 	public static TalonFX falcon1 = new TalonFX(12);
 	public static VictorSPX victor1 = new VictorSPX(50);
 	public static enum targetTypes{noTarget, throwingTarget, ballTarget, turretOnly, ballLLTarget};
@@ -60,7 +62,7 @@ public class Robot extends TimedRobot {
 	public static VideoSink server;
 	public static ColorSensorV3 colorDetector;
 	public static double voltageThreshold;
-	//public static Vision vision;
+	public static Vision vision;
 	public static LidarLite distance;
 	public static TargetLight tLight;
 	public static LimeLight limeLight;

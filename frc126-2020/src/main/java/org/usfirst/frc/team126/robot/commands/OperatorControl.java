@@ -65,20 +65,13 @@ public class OperatorControl extends Command {
 	@Override
 	protected void execute() {
 		// START CONTROL SETUP
-
-		count++;
-
 		// Get stick inputs
 		JoystickWrapper driveJoystick = new JoystickWrapper(Robot.oi.driveController, 0.05);
 		JoystickWrapper operatorJoystick = new JoystickWrapper(Robot.oi.operatorController, 0.05);
-
 		// END CONTROLS SETUP
-		//if(driveJoystick.isAButton()) {
-		//	currentState = driveStates.drive;
-		//	ColorSpinner.spin(0);
-		//}
 
 		//System.out.println("currentState: " + currentState);
+		count++;
 		
 		switch(currentState) {
 			case targetSeek:
@@ -179,16 +172,16 @@ public class OperatorControl extends Command {
 				}
 
 				/*
-        if (driveJoystick.isRShoulderButton() ) {
+      			  if (driveJoystick.isRShoulderButton() ) {
 					Robot.turret.zeroRight=true;
 				}
-        */
+    		    */
 
 				/*
-        if(driveJoystick.isYButton()) {
+    			if(driveJoystick.isYButton()) {
 					currentState = driveStates.demo;
 				}
-        */
+    		    */
         
 				if(driveJoystick.isRShoulderButton()) {
 					if(!gearSwitchPress) {
