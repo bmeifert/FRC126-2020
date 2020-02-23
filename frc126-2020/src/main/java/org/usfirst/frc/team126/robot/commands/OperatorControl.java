@@ -181,7 +181,12 @@ public class OperatorControl extends Command {
     			if(driveJoystick.isYButton()) {
 					currentState = driveStates.demo;
 				}
-    		    */
+				*/
+				if(driveJoystick.getPovUp()) {
+					Robot.cargoHandler.runLoadMotor();
+				} else {
+					Robot.cargoHandler.stopLoadMotor();
+				}
         
 				if(driveJoystick.isRShoulderButton()) {
 					if(!gearSwitchPress) {

@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
 	public static CANSparkMax throwerMotor1 = new CANSparkMax(20, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static CANSparkMax throwerMotor2 = new CANSparkMax(21, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static CANSparkMax pickupMotor = new CANSparkMax(22, CANSparkMaxLowLevel.MotorType.kBrushless);
-	public static CANSparkMax loadMotor = new CANSparkMax(23, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax loadMotor = new CANSparkMax(RobotMap.loadMotor, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static CANSparkMax turretMotor = new CANSparkMax(24, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static CANSparkMax hoodtMotor = new CANSparkMax(25, CANSparkMaxLowLevel.MotorType.kBrushless);
 	
@@ -67,6 +67,7 @@ public class Robot extends TimedRobot {
 	public static LidarLite distance;
 	public static TargetLight tLight;
 	public static LimeLight limeLight;
+	public static CargoHandler cargoHandler;
 
 	Color detectedColor;
 
@@ -90,6 +91,7 @@ public class Robot extends TimedRobot {
 
 		driveBase = new WestCoastDrive();
 		turret = new Turret();
+		cargoHandler = new CargoHandler();
 		internalData = new InternalData();
 		colorDetector = new ColorSensorV3(Port.kOnboard);
 		//vision = new Vision();

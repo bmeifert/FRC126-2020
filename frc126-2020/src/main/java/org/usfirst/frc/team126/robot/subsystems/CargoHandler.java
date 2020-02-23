@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class CargoHandler extends Subsystem {
     private Solenoid intekeSolenoid;
+    static double loadMotorSpeed = 0;
+    static double throwerSpeed = 0;
+    static double pickupSpeed = 0;
 
     public CargoHandler () {
         intekeSolenoid = new Solenoid(2);
@@ -20,13 +23,19 @@ public class CargoHandler extends Subsystem {
 
 
     public void runThrower() {
-        Robot.throwerMotor1.set(1);
-        Robot.throwerMotor2.set(1);
+        if(throwerSpeed > 1) {
+            throwerSpeed = 1;
+        } else {
+            throwerSpeed += 0.1;
+        }
+        Robot.throwerMotor1.set(throwerSpeed);
+        Robot.throwerMotor2.set(throwerSpeed);
     }
     
     public void stopThrower() {
-        Robot.throwerMotor1.set(0);
-        Robot.throwerMotor2.set(0);
+        throwerSpeed = 0;
+        Robot.throwerMotor1.set(throwerSpeed);
+        Robot.throwerMotor2.set(throwerSpeed);
     }
 
     public void extendIntake() {
@@ -38,18 +47,30 @@ public class CargoHandler extends Subsystem {
     }
 
     public void runPickup() {
-        Robot.pickupMotor.set(1);
+        if(pickupSpeed > 1) {
+            pickupSpeed = 1;
+        } else {
+            pickupSpeed += 0.05;
+        }
+        Robot.pickupMotor.set(pickupSpeed);
     }
 
     public void stopPickup() {
-        Robot.pickupMotor.set(0);
+        pickupSpeed = 0;
+        Robot.pickupMotor.set(pickupSpeed);
     }
 
-    public void runloadMotor() {
-        Robot.loadMotor.set(1);
+    public void runLoadMotor() {
+        if(loadMotorSpeed > 1) {
+            loadMotorSpeed = 1;
+        } else {
+            loadMotorSpeed += 0.05;
+        }
+        Robot.loadMotor.set(0 - loadMotorSpeed);
     }
 
-    public void stoploadMotor() {
-        Robot.loadMotor.set(0);
+    public void stopLoadMotor() {
+        loadMotorSpeed = 0;
+        Robot.loadMotor.set(loadMotorSpeed);
     }
 }

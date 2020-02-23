@@ -87,12 +87,12 @@ public class JoystickWrapper {
         return joystick.getPOV() == 0;
     }
     public boolean getPovLeft() {
-        return joystick.getPOV() == 90;
+        return joystick.getPOV() == 270;
     }
     public boolean getPovRight() {
         return joystick.getPOV() == 180;
     }
     public boolean getPovDown() {
-        return joystick.getPOV() == 270;
+        return joystick.getPOV() == 90;
     }
 }

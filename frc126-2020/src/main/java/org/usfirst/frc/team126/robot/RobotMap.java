@@ -47,6 +47,7 @@ public class RobotMap {
 	public static int turretRotator = 5;
 	public static int turretShooter = 6;
 	public static int spinnerMotor = 7;
+	public static int loadMotor = 13;
 
 	//Motor Inversions
 	public static int fbInversion = -1;

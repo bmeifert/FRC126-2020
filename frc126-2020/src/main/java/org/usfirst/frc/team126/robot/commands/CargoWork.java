@@ -4,13 +4,17 @@ import org.usfirst.frc.team126.robot.Robot;
 import org.usfirst.frc.team126.robot.subsystems.CargoHandler;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
  *
  */
 public class CargoWork extends Command {
-
     // Called just before this Command runs the first time
+    public CargoWork() {
+      // Use requires() here to declare subsystem dependencies
+      requires(Robot.cargoHandler);
+    }
     protected void initialize() {
     }
 
