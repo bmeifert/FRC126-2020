@@ -40,7 +40,6 @@ public class Turret extends Subsystem {
 
 	public void setSpeed(double speed) {
 		Robot.turretRotator.set(ControlMode.PercentOutput, speed);
-		SmartDashboard.putNumber("turretRotator", speed);
 	}
 
 	/************************************************************************

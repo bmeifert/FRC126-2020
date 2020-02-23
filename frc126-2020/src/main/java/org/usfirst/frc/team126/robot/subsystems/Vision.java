@@ -9,8 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team126.robot.subsystems.PixyPacket;
 
 public class Vision extends Subsystem {
-
-    public PixyI2C Pixy;
+  public PixyI2C Pixy;
 	public PixyPacket[] packetData;
 	String print;
 
@@ -33,7 +32,7 @@ public class Vision extends Subsystem {
 		}
 		centerServo();
 		setServo();
-    }
+  }
 
 	/************************************************************************
 	 ************************************************************************/

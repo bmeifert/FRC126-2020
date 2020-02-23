@@ -3,18 +3,26 @@ package org.usfirst.frc.team126.robot.commands;
 import org.usfirst.frc.team126.robot.Robot;
 import org.usfirst.frc.team126.robot.subsystems.ColorSpinner;
 import org.usfirst.frc.team126.robot.subsystems.Log;
-
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 public class OperatorControl extends Command {	
-	public static enum driveStates{drive, rotationControl, positionControl, chassis, targetSeek};
-	public static driveStates currentState = driveStates.targetSeek;
+	public static enum driveStates{drive, rotationControl, positionControl, chassis, demo, targetSeek};
+	public static driveStates currentState = driveStates.drive;
 	public static Color targetColor;
 	public static double targetRotations;
+	static double targetRPM, targetRPMdistance, currentTargetSpeed;
 	static double currentRotations;
 	static boolean rotationFirstIteration = true;
 	static boolean onTargetColor;
-	static int count=0;
+	DoubleSolenoid s1 = new DoubleSolenoid(0,1);
+
+	static boolean gearSwitchPress = false;
+	static boolean gear = false;
+
+  static int count=0;
 	static int targetLightCount=0;
 
 	public OperatorControl() {
@@ -26,6 +34,7 @@ public class OperatorControl extends Command {
 	@Override
 	protected void initialize() {
 		Log.print(0, "OI", "Operator control initialized.");
+		s1.set(DoubleSolenoid.Value.kForward);
 		Robot.limeLight.setStreamMode(0);
 	}
 
@@ -130,10 +139,6 @@ public class OperatorControl extends Command {
 				Robot.driveBase.Drive(driveJoystick.getLeftStickY() / 2, driveJoystick.getRightStickX() / 2);
 			break;
 
-			case chassis:
-				Robot.driveBase.Drive(driveJoystick.getTriggers() * -1, driveJoystick.getLeftStickX() / 2);
-			break;
-
 			default:
 				if(driveJoystick.isXButton()) {
 					resetDriveBase();
@@ -173,8 +178,31 @@ public class OperatorControl extends Command {
 					Robot.turret.zeroLeft=true;
 				}
 
-				if (driveJoystick.isRShoulderButton() ) {
+				/*
+        if (driveJoystick.isRShoulderButton() ) {
 					Robot.turret.zeroRight=true;
+				}
+        */
+
+				/*
+        if(driveJoystick.isYButton()) {
+					currentState = driveStates.demo;
+				}
+        */
+        
+				if(driveJoystick.isRShoulderButton()) {
+					if(!gearSwitchPress) {
+						if(gear) {
+							s1.set(DoubleSolenoid.Value.kForward);
+							gear = false;
+						} else {
+							s1.set(DoubleSolenoid.Value.kReverse);
+							gear = true;
+						}
+						gearSwitchPress = true;
+					}
+				} else {
+					gearSwitchPress = false;
 				}
 
 				Robot.driveBase.Drive(collisionAvoidance(driveJoystick.getLeftStickY()),

@@ -18,37 +18,32 @@ import org.usfirst.frc.team126.robot.commands.*;
 import org.usfirst.frc.team126.robot.commands.OperatorControl.driveStates;
 import org.usfirst.frc.team126.robot.RobotMap;
 import com.revrobotics.ColorSensorV3;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 public class Robot extends TimedRobot {
 
-	public static TalonSRX left1 = new TalonSRX(RobotMap.left1); // Create the hardware that all the subsystems use
-	public static TalonSRX right1 = new TalonSRX(RobotMap.right1);
-	public static TalonSRX left2 = new TalonSRX(RobotMap.left2);
-	public static TalonSRX right2 = new TalonSRX(RobotMap.right2);
+	public static TalonFX left1 = new TalonFX(RobotMap.left1); // Create the hardware that all the subsystems use
+	public static TalonFX right1 = new TalonFX(RobotMap.right1);
+	public static TalonFX left2 = new TalonFX(RobotMap.left2);
+	public static TalonFX right2 = new TalonFX(RobotMap.right2);
 	public static TalonSRX turretRotator = new TalonSRX(RobotMap.turretRotator);
 	//public static TalonSRX turretShooter = new TalonSRX(RobotMap.turretShooter);
 	public static TalonSRX spinnerMotor = new TalonSRX(RobotMap.spinnerMotor);
 
-	public static CANSparkMax throwerMotor1 = new CANSparkMax(10, CANSparkMaxLowLevel.MotorType.kBrushless);
-	public static CANSparkMax throwerMotor2 = new CANSparkMax(11, CANSparkMaxLowLevel.MotorType.kBrushless);
-	public static CANSparkMax pickupMotor = new CANSparkMax(12, CANSparkMaxLowLevel.MotorType.kBrushless);
-	public static CANSparkMax loadMotor = new CANSparkMax(13, CANSparkMaxLowLevel.MotorType.kBrushless);
-	public static CANSparkMax turretMotor = new CANSparkMax(14, CANSparkMaxLowLevel.MotorType.kBrushless);
-	public static CANSparkMax hoodtMotor = new CANSparkMax(15, CANSparkMaxLowLevel.MotorType.kBrushless);
+  public static CANSparkMax throwerMotor1 = new CANSparkMax(20, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax throwerMotor2 = new CANSparkMax(21, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax pickupMotor = new CANSparkMax(22, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax loadMotor = new CANSparkMax(23, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax turretMotor = new CANSparkMax(24, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax hoodtMotor = new CANSparkMax(25, CANSparkMaxLowLevel.MotorType.kBrushless);
 
 	public static TalonFX falcon1 = new TalonFX(12);
 	public static VictorSPX victor1 = new VictorSPX(50);
 	public static enum targetTypes{noTarget, throwingTarget, ballTarget, turretOnly, ballLLTarget};
 
 	public double robotID;
-	double currentFalconSpeed;
-	double falconRPMdistance;
 
 	public static int objectId=1;
 	public static targetTypes trackTarget = Robot.targetTypes.noTarget;
@@ -65,7 +60,7 @@ public class Robot extends TimedRobot {
 	public static VideoSink server;
 	public static ColorSensorV3 colorDetector;
 	public static double voltageThreshold;
-	public static Vision vision;
+	//public static Vision vision;
 	public static LidarLite distance;
 	public static TargetLight tLight;
 	public static LimeLight limeLight;
@@ -94,7 +89,7 @@ public class Robot extends TimedRobot {
 		turret = new Turret();
 		internalData = new InternalData();
 		colorDetector = new ColorSensorV3(Port.kOnboard);
-		vision = new Vision();
+		//vision = new Vision();
 
 		driveCam = CameraServer.getInstance().startAutomaticCapture(0);
 		server = CameraServer.getInstance().getServer();
@@ -115,15 +110,14 @@ public class Robot extends TimedRobot {
 		//OperatorControl.currentState = driveStates.targetSeek;
 
 		SmartDashboard.putNumber("Voltage Threshold", voltageThreshold);
-		autoPosition.addOption("Default", 0);
+		autoPosition.addOption("Default (Center)", 0);
 		autoPosition.addOption("Left", 1);
 		autoPosition.addOption("Right", 2);
 		autoPosition.addOption("Center", 3);
 		SmartDashboard.putData("AutoPosition", autoPosition);
-		autoFunction.addOption("Default", 0);
-		autoFunction.addOption("Function 0", 1);
-		autoFunction.addOption("Function 1", 2);
-		autoFunction.addOption("Function 2", 3);
+		autoFunction.addOption("Default (Move)", 0);
+		autoFunction.addOption("Move", 1);
+		autoFunction.addOption("Full", 2);
 		SmartDashboard.putData("AutoFunction", autoFunction);
 
 		Log.print(0, "Robot", "Robot Init Completed");
@@ -161,17 +155,41 @@ public class Robot extends TimedRobot {
 			selectedAutoFunction = 0;
 		}
 		switch(selectedAutoPosition) {
-			case 0 :
-				autonomous = (Command) new AutoDrive();
-				break;
 			case 1 :
-				autonomous = (Command) new AutoTest();
+				switch(selectedAutoFunction) {
+					case 2 :
+						autonomous = (Command) new AutoL2();
+					break;
+
+					default:
+						autonomous = (Command) new AutoL1();
+					break;
+				}
 				break;
 			case 2 :
-				autonomous = (Command) new AutoWait();
-				break;
+				switch(selectedAutoFunction) {
+					case 2 :
+						autonomous = (Command) new AutoR2();
+					break;
+
+					default:
+						autonomous = (Command) new AutoR1();
+					break;
+				}
+			break;
+			case 3 :
+				switch(selectedAutoFunction) {
+					case 2 :
+						autonomous = (Command) new AutoC2();
+					break;
+
+					default:
+						autonomous = (Command) new AutoC1();
+					break;
+				}
+			break;
 			default :
-				autonomous = (Command) new AutoDrive();
+				autonomous = (Command) new AutoC1();
 				break;
 		}
 		if(autonomous != null){
@@ -194,9 +212,6 @@ public class Robot extends TimedRobot {
 		//OperatorControl.currentState = driveStates.targetSeek;
 
 		Log.print(1, "Robot", "Robot Enabled - Operator control");
-		currentFalconSpeed = 0;
-		//SmartDashboard.putNumber("Motor Test Speed", 0);
-		falcon1.set(ControlMode.PercentOutput, 0);
 		
     }
 
@@ -205,23 +220,6 @@ public class Robot extends TimedRobot {
 		Scheduler.getInstance().run();
 		SmartDashboard.putString("Drive State", OperatorControl.currentState.toString());
 		SmartDashboard.putString("Track Target", Robot.trackTarget.toString());
-		/*
-		falconRPMdistance = SmartDashboard.getNumber("Motor Test Speed", 0) - falcon1.getSelectedSensorVelocity() / 3.41;
-		currentFalconSpeed += falconRPMdistance / 65000;
-		if(currentFalconSpeed > 1) {
-			currentFalconSpeed = 1;
-		} else if(currentFalconSpeed < -1) {
-			currentFalconSpeed = -1;
-		}
-		if(Math.abs(falconRPMdistance) < 30) {
-			SmartDashboard.putBoolean("RPM locked", true);
-		} else {
-			SmartDashboard.putBoolean("RPM locked", false);
-		}
-		falcon1.set(ControlMode.PercentOutput, currentFalconSpeed);
-		SmartDashboard.putNumber("falcon1", currentFalconSpeed);
-		SmartDashboard.putNumber("Falcon RPM", Math.abs(falcon1.getSelectedSensorVelocity() / 3.41));
-		*/
 	}
 
 	@Override
