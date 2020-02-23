@@ -18,6 +18,9 @@ import org.usfirst.frc.team126.robot.commands.*;
 import org.usfirst.frc.team126.robot.commands.OperatorControl.driveStates;
 import org.usfirst.frc.team126.robot.RobotMap;
 import com.revrobotics.ColorSensorV3;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
@@ -32,7 +35,7 @@ public class Robot extends TimedRobot {
 	//public static TalonSRX turretShooter = new TalonSRX(RobotMap.turretShooter);
 	public static TalonSRX spinnerMotor = new TalonSRX(RobotMap.spinnerMotor);
 
-  public static CANSparkMax throwerMotor1 = new CANSparkMax(20, CANSparkMaxLowLevel.MotorType.kBrushless);
+    public static CANSparkMax throwerMotor1 = new CANSparkMax(20, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static CANSparkMax throwerMotor2 = new CANSparkMax(21, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static CANSparkMax pickupMotor = new CANSparkMax(22, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static CANSparkMax loadMotor = new CANSparkMax(23, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -60,7 +63,7 @@ public class Robot extends TimedRobot {
 	public static VideoSink server;
 	public static ColorSensorV3 colorDetector;
 	public static double voltageThreshold;
-	//public static Vision vision;
+	public static Vision vision;
 	public static LidarLite distance;
 	public static TargetLight tLight;
 	public static LimeLight limeLight;
