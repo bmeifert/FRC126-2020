@@ -53,6 +53,7 @@ public class WestCoastDrive extends Subsystem {
 	}
 
 	public void Drive(double fb, double rot) { // Send power to the drive motors
+		fb *= RobotMap.fbInversion;
 		leftMultiplier = fb + (rot);
 		rightMultiplier = fb - (rot);
 		leftSpeed = leftMultiplier;

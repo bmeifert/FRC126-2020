@@ -49,6 +49,7 @@ public class RobotMap {
 	public static int spinnerMotor = 7;
 
 	//Motor Inversions
+	public static int fbInversion = -1;
 	public static int left1Inversion;
 	public static int right1Inversion;
 	public static int left2Inversion;
@@ -61,6 +62,7 @@ public class RobotMap {
 
 	public static void setRobot(double robotID){
 		if(robotID == 0){ // 2020 compbot
+			fbInversion = -1;
 			left1Inversion = -1; // Motor inversions
 			right1Inversion = 1;
 			left2Inversion = -1;
