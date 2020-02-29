@@ -68,6 +68,7 @@ public class Robot extends TimedRobot {
 	public static TargetLight tLight;
 	public static LimeLight limeLight;
 	public static CargoHandler cargoHandler;
+	public static Solenoids solenoids;
 
 	Color detectedColor;
 
@@ -92,6 +93,7 @@ public class Robot extends TimedRobot {
 		driveBase = new WestCoastDrive();
 		turret = new Turret();
 		cargoHandler = new CargoHandler();
+		solenoids = new Solenoids();
 		internalData = new InternalData();
 		colorDetector = new ColorSensorV3(Port.kOnboard);
 		//vision = new Vision();
