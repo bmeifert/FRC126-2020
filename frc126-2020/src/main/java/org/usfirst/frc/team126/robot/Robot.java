@@ -34,12 +34,12 @@ public class Robot extends TimedRobot {
 	//public static TalonSRX turretShooter = new TalonSRX(RobotMap.turretShooter);
 	public static TalonSRX spinnerMotor = new TalonSRX(RobotMap.spinnerMotor);
 
-	public static CANSparkMax throwerMotor1 = new CANSparkMax(20, CANSparkMaxLowLevel.MotorType.kBrushless);
-	public static CANSparkMax throwerMotor2 = new CANSparkMax(21, CANSparkMaxLowLevel.MotorType.kBrushless);
-	public static CANSparkMax pickupMotor = new CANSparkMax(22, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static TalonFX throwerMotor1 = new TalonFX(RobotMap.throwerMotor1);
+	public static TalonFX throwerMotor2 = new TalonFX(RobotMap.throwerMotor2);
+	public static CANSparkMax pickupMotor = new CANSparkMax(RobotMap.pickupMotor, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static CANSparkMax loadMotor = new CANSparkMax(RobotMap.loadMotor, CANSparkMaxLowLevel.MotorType.kBrushless);
-	public static CANSparkMax turretMotor = new CANSparkMax(24, CANSparkMaxLowLevel.MotorType.kBrushless);
-	public static CANSparkMax hoodtMotor = new CANSparkMax(25, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax turretMotor = new CANSparkMax(RobotMap.turretMotor, CANSparkMaxLowLevel.MotorType.kBrushless);
+	public static CANSparkMax hoodMotor = new CANSparkMax(RobotMap.hoodMotor, CANSparkMaxLowLevel.MotorType.kBrushless);
 	
 	
 	public static TalonFX falcon1 = new TalonFX(12);
