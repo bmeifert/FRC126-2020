@@ -47,7 +47,13 @@ public class RobotMap {
 	public static int turretRotator = 5;
 	public static int turretShooter = 6;
 	public static int spinnerMotor = 7;
+	public static int turretMotor = 8;
+	public static int throwerMotor1 = 9;
+	public static int throwerMotor2 = 10;
+	public static int hoodMotor = 11;
+	public static int pickupMotor = 12;
 	public static int loadMotor = 13;
+
 
 	//Motor Inversions
 	public static int fbInversion = -1;
@@ -55,9 +61,6 @@ public class RobotMap {
 	public static int right1Inversion;
 	public static int left2Inversion;
 	public static int right2Inversion;
-	public static int turretRotatorInversion;
-	public static int turretShooterInversion;
-	public static int spinnerMotorInversion;
 
 	//Position Calibrations
 
@@ -68,19 +71,12 @@ public class RobotMap {
 			right1Inversion = 1;
 			left2Inversion = -1;
 			right2Inversion = 1;
-			turretRotatorInversion = 1;
-			turretShooterInversion = 1;
-			spinnerMotorInversion = 1;
 
 		} else if(robotID == 1){ // 2019 testbed
 			left1Inversion = -1; // Motor inversions
 			right1Inversion = 1;
 			left2Inversion = -1;
 			right2Inversion = 1;
-			turretRotatorInversion = 1;
-			turretShooterInversion = 1;
-			spinnerMotorInversion = -1;
-
 		}
 	}
 }

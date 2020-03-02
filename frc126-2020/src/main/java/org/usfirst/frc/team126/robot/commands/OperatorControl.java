@@ -3,10 +3,7 @@ package org.usfirst.frc.team126.robot.commands;
 import org.usfirst.frc.team126.robot.Robot;
 import org.usfirst.frc.team126.robot.subsystems.ColorSpinner;
 import org.usfirst.frc.team126.robot.subsystems.Log;
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 public class OperatorControl extends Command {	
 	public static enum driveStates{drive, rotationControl, positionControl, chassis, demo, targetSeek};
@@ -17,7 +14,7 @@ public class OperatorControl extends Command {
 	static double currentRotations;
 	static boolean rotationFirstIteration = true;
 	static boolean onTargetColor;
-	DoubleSolenoid s1 = new DoubleSolenoid(0,1);
+	
 
 	static boolean gearSwitchPress = false;
 	static boolean gear = false;
@@ -34,7 +31,6 @@ public class OperatorControl extends Command {
 	@Override
 	protected void initialize() {
 		Log.print(0, "OI", "Operator control initialized.");
-		s1.set(DoubleSolenoid.Value.kForward);
 		Robot.limeLight.setStreamMode(0);
 	}
 
@@ -191,10 +187,10 @@ public class OperatorControl extends Command {
 				if(driveJoystick.isRShoulderButton()) {
 					if(!gearSwitchPress) {
 						if(gear) {
-							s1.set(DoubleSolenoid.Value.kForward);
+							Robot.solenoids.downshift();
 							gear = false;
 						} else {
-							s1.set(DoubleSolenoid.Value.kReverse);
+							Robot.solenoids.upshift();
 							gear = true;
 						}
 						gearSwitchPress = true;
@@ -203,8 +199,7 @@ public class OperatorControl extends Command {
 					gearSwitchPress = false;
 				}
 
-				Robot.driveBase.Drive(collisionAvoidance(driveJoystick.getLeftStickY()),
-														 driveJoystick.getRightStickX() / 2);
+				Robot.driveBase.Drive(driveJoystick.getLeftStickY(), driveJoystick.getRightStickX() / 2);
 
 				if (driveJoystick.isAButton()) {
 				    // Toggle the target light

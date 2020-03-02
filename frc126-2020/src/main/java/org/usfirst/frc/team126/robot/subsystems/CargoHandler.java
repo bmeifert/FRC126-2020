@@ -1,5 +1,7 @@
 package org.usfirst.frc.team126.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import org.usfirst.frc.team126.robot.Robot;
 import org.usfirst.frc.team126.robot.commands.*;
 import edu.wpi.first.wpilibj.Counter;
@@ -28,14 +30,14 @@ public class CargoHandler extends Subsystem {
         } else {
             throwerSpeed += 0.1;
         }
-        Robot.throwerMotor1.set(throwerSpeed);
-        Robot.throwerMotor2.set(throwerSpeed);
+        Robot.throwerMotor1.set(ControlMode.PercentOutput, throwerSpeed);
+        Robot.throwerMotor2.set(ControlMode.PercentOutput, throwerSpeed);
     }
     
     public void stopThrower() {
         throwerSpeed = 0;
-        Robot.throwerMotor1.set(throwerSpeed);
-        Robot.throwerMotor2.set(throwerSpeed);
+        Robot.throwerMotor1.set(ControlMode.PercentOutput, throwerSpeed);
+        Robot.throwerMotor2.set(ControlMode.PercentOutput, throwerSpeed);
     }
 
     public void extendIntake() {
