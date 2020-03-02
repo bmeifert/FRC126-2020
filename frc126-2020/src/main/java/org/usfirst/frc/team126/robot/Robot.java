@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 import org.usfirst.frc.team126.robot.subsystems.*;
@@ -41,7 +42,7 @@ public class Robot extends TimedRobot {
 	public static CANSparkMax turretMotor = new CANSparkMax(24, CANSparkMaxLowLevel.MotorType.kBrushless);
 	public static CANSparkMax hoodtMotor = new CANSparkMax(25, CANSparkMaxLowLevel.MotorType.kBrushless);
 	
-	
+	public static Compressor compressor;
 	public static TalonFX falcon1 = new TalonFX(12);
 	public static VictorSPX victor1 = new VictorSPX(50);
 	public static enum targetTypes{noTarget, throwingTarget, ballTarget, turretOnly, ballLLTarget};
@@ -92,6 +93,7 @@ public class Robot extends TimedRobot {
 		driveBase = new WestCoastDrive();
 		turret = new Turret();
 		cargoHandler = new CargoHandler();
+		compressor = new Compressor();
 		internalData = new InternalData();
 		colorDetector = new ColorSensorV3(Port.kOnboard);
 		//vision = new Vision();
