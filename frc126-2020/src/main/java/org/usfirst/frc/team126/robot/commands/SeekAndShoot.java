@@ -29,7 +29,6 @@ public class SeekAndShoot extends Command {
         Robot.driveBase.Drive(0, 0);
         Robot.turret.Rotate(0);
         Robot.turret.moveHood(0);
-        Robot.turret.zeroRotator();
         counter = 0;
         isDone = false;
         turretLocked = false;
@@ -48,7 +47,6 @@ public class SeekAndShoot extends Command {
                         Robot.turret.Rotate(0.1);
                     } else {
                         Robot.turret.Rotate(0);
-                        Robot.turret.zeroRotator();
                         turretLocked = true;
                     }
                 }
