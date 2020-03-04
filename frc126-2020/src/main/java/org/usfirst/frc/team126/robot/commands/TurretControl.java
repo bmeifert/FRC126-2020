@@ -41,7 +41,7 @@ public class TurretControl extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        currentEncoder = Robot.turret.getEncoder();
+        currentEncoder = Robot.turret.getRotatorEncoder();
         SmartDashboard.putNumber("turretEncoder", currentEncoder);
     
         targetEncoder = Robot.turret.getTargetPosition(currentEncoder, Robot.objectId);
@@ -56,48 +56,38 @@ public class TurretControl extends Command {
         int fudgeFactor=25;
         switch(currentState) {
             case idle:
-            Robot.turret.setSpeed(0);
+            //Robot.turret.Rotate(0);
             break;
             case seek:
                 if(currentEncoder < targetEncoder - fudgeFactor) {
-                    Robot.turret.setSpeed(Robot.turret.getSpeedCurve(encoderDistance));
+                    Robot.turret.Rotate(Robot.turret.getSpeedCurve(encoderDistance));
                 } else if(currentEncoder > targetEncoder + fudgeFactor) {
-                    Robot.turret.setSpeed(0 - Robot.turret.getSpeedCurve(encoderDistance));
+                    Robot.turret.Rotate(0 - Robot.turret.getSpeedCurve(encoderDistance));
                 } else {
-                    Robot.turret.setSpeed(0);
+                    Robot.turret.Rotate(0);
                     currentState = turretStates.lock;
                 }
             break;
             case lock:
                 if(currentEncoder < targetEncoder - fudgeFactor) {
-                    Robot.turret.setSpeed(Robot.turret.getSpeedCurve(encoderDistance));
+                    Robot.turret.Rotate(Robot.turret.getSpeedCurve(encoderDistance));
                     currentState = turretStates.seek;
                 } else if(currentEncoder > targetEncoder + fudgeFactor) {
-                    Robot.turret.setSpeed(0 - Robot.turret.getSpeedCurve(encoderDistance));
+                    Robot.turret.Rotate(0 - Robot.turret.getSpeedCurve(encoderDistance));
                     currentState = turretStates.seek;
                 } else {
                     if(currentEncoder < targetEncoder - fudgeFactor) {
-                        Robot.turret.setSpeed(Robot.turret.getSpeedCurve(encoderDistance));
+                        Robot.turret.Rotate(Robot.turret.getSpeedCurve(encoderDistance));
                     } else if(currentEncoder > targetEncoder + fudgeFactor) {
-                        Robot.turret.setSpeed(0 - Robot.turret.getSpeedCurve(encoderDistance));
+                        Robot.turret.Rotate(0 - Robot.turret.getSpeedCurve(encoderDistance));
                     } else {
-                        Robot.turret.setSpeed(0);
+                        Robot.turret.Rotate(0);
                     }
                 }
             break;
             default:
                 currentState = turretStates.idle;
             break;
-        }
-
-        if (Robot.turret.zeroLeft) {
-            Robot.turretRotator.setSelectedSensorPosition(0,0,100);
-            Robot.turret.zeroLeft = false;
-        }
-
-        if (Robot.turret.zeroRight) {
-            Robot.turretRotator.setSelectedSensorPosition(0,0,100);
-            Robot.turret.zeroRight = false;
         }
     }
 
@@ -114,7 +104,7 @@ public class TurretControl extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-        Robot.turret.setSpeed(0);
+        Robot.turret.Rotate(0);
     }
 
 	/************************************************************************
@@ -123,6 +113,6 @@ public class TurretControl extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-        Robot.turret.setSpeed(0);
+        Robot.turret.Rotate(0);
     }
 }

@@ -8,10 +8,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.EncoderType;
 
 public class Turret extends Subsystem {
-	public boolean zeroLeft=false;
-	public boolean zeroRight=false;
+	public static boolean zeroed=false;
+	static CANEncoder rotatorEncoder = new CANEncoder(Robot.turretMotor);
+	static CANEncoder hoodEncoder = new CANEncoder(Robot.hoodMotor);
+	static int shooterGrace = 0;
+	static boolean shooterOn = false;
 	
 	/************************************************************************
 	 ************************************************************************/
@@ -24,22 +29,47 @@ public class Turret extends Subsystem {
 	 ************************************************************************/
 
 	public static void Setup() {
-		Robot.turretRotator.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 100);
-		Robot.turretRotator.setSelectedSensorPosition(0,0,100);
+		rotatorEncoder.setPosition(0);
+		hoodEncoder.setPosition(0);
 	}
 	
 	/************************************************************************
 	 ************************************************************************/
 
-	public double getEncoder(){
-		return Robot.turretRotator.getSelectedSensorPosition();
+	public double getRotatorEncoder(){
+		return rotatorEncoder.getPosition();
+	}
+	public double getHoodEncoder() {
+		return hoodEncoder.getPosition();
 	}
 
 	/************************************************************************
 	 ************************************************************************/
-
-	public void setSpeed(double speed) {
-		Robot.turretRotator.set(ControlMode.PercentOutput, speed);
+	public void Rotate(double speed) {
+		if(getRotatorEncoder() < -25 && speed < 0) {
+			speed = 0;
+		}
+		if(getRotatorEncoder() > 25 && speed > 0) {
+			speed = 0;
+		}
+		Robot.turretMotor.set(speed);
+	}
+	public void zeroRotator() {
+		rotatorEncoder.setPosition(0);
+	}
+	public void moveHood(double speed) {
+		//System.out.println("Hood moving: Encoder"+ getHoodEncoder());
+		if(getHoodEncoder() < 0.5 && speed < 0) {
+			speed = 0;
+		}
+		if(getHoodEncoder() > 8 && speed > 0) {
+			speed = 0;
+		}
+		Robot.hoodMotor.set(speed);
+	}
+	public void zeroHood() {
+		Robot.hoodMotor.set(-0.2);
+		hoodEncoder.setPosition(0);
 	}
 
 	/************************************************************************
@@ -47,7 +77,7 @@ public class Turret extends Subsystem {
 
 	public double getSpeedCurve(double distance) {
 		double targetSpeed;
-		targetSpeed = distance / 500;
+		targetSpeed = distance / 1000;
 		if(targetSpeed < 0.15) {
 			targetSpeed = 0.15;
 		}
@@ -67,14 +97,6 @@ public class Turret extends Subsystem {
 			// We are tracking the throwing target
 			System.out.println("Turret getTargetPosition: " + Robot.limeLight.getllTurretTarget());
 			return Robot.limeLight.getllTurretTarget();
-		}
-
-		if (zeroLeft) {
-			return currentPosition - 75;
-		}
-
-		if (zeroRight) {
-			return currentPosition + 75;
 		}
 
 		return currentPosition;

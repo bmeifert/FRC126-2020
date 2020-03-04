@@ -44,7 +44,7 @@ public class ColorSpinner extends Subsystem {
 		return colorMatch.matchClosestColor(ColorMatch.makeColor(getRed(), getGreen(), getBlue())).color;
 	}
 	public static void spin(double speed) {
-		Robot.spinnerMotor.set(ControlMode.PercentOutput, speed);
-		SmartDashboard.putNumber("spinnerMotor", speed);
+		//Robot.spinnerMotor.set(ControlMode.PercentOutput, speed);
+		//SmartDashboard.putNumber("spinnerMotor", speed);
 	}
 }

@@ -11,8 +11,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class WestCoastDrive extends Subsystem {
 
-	double leftMultiplier, rightMultiplier, leftSpeed, rightSpeed, fbSlowDown, rotSlowDown, limiter, left1RPM, left2RPM, right1RPM, right2RPM;
-	double previousLimiter = 1;
+	double leftMultiplier, rightMultiplier, leftSpeed, rightSpeed, left1RPM, left2RPM, right1RPM, right2RPM;
 	public void initDefaultCommand() {
 		setDefaultCommand(new OperatorControl());
 		leftSpeed = 0;
@@ -59,17 +58,6 @@ public class WestCoastDrive extends Subsystem {
 		leftSpeed = leftMultiplier;
 		rightSpeed = rightMultiplier;
 
-		limiter = 1 + (1 * (InternalData.getVoltage() - Robot.voltageThreshold));
-		if(limiter < 0) {
-			limiter = 0;
-		} else if(limiter > 1) {
-			limiter = 1;
-		}
-		previousLimiter = (4 * previousLimiter + limiter) / 5;
-		if(InternalData.getVoltage() < Robot.voltageThreshold) {
-			leftSpeed *= previousLimiter;
-			rightSpeed *= previousLimiter;
-		}
 		Robot.left1.set(ControlMode.PercentOutput, leftSpeed * RobotMap.left1Inversion);
 		Robot.right1.set(ControlMode.PercentOutput, rightSpeed * RobotMap.right1Inversion);
 		Robot.left2.set(ControlMode.PercentOutput, leftSpeed * RobotMap.left2Inversion);

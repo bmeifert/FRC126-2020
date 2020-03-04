@@ -6,7 +6,7 @@ import org.usfirst.frc.team126.robot.subsystems.Log;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.util.Color;
 public class OperatorControl extends Command {	
-	public static enum driveStates{drive, rotationControl, positionControl, chassis, demo, targetSeek};
+	public static enum driveStates{drive, rotationControl, positionControl, targetSeek};
 	public static driveStates currentState = driveStates.drive;
 	public static Color targetColor;
 	public static double targetRotations;
@@ -19,7 +19,7 @@ public class OperatorControl extends Command {
 	static boolean gearSwitchPress = false;
 	static boolean gear = false;
 
-  static int count=0;
+  	static int count=0;
 	static int targetLightCount=0;
 
 	public OperatorControl() {
@@ -34,13 +34,14 @@ public class OperatorControl extends Command {
 		Robot.limeLight.setStreamMode(0);
 	}
 
-	private void resetDriveBase() {
+	public static void resetDriveBase() {
 		Robot.driveBase.Drive(0,0);
 		Robot.robotTurn = 0;
 		Robot.robotDrive = 0;
 	}
 
 	private double collisionAvoidance(double inSpeed) {
+		/*
 		if (Robot.distance.getDistanceAvg() < 10 && inSpeed > 0) {
 			return 0;
 		}	
@@ -52,6 +53,9 @@ public class OperatorControl extends Command {
 		if (Robot.distance.getDistanceAvg() < 50 && inSpeed > .50) {
 			return .5;
 		}	
+		*/
+
+		// TODO Enable this at some point
 
 		return inSpeed;
 	}
@@ -68,7 +72,9 @@ public class OperatorControl extends Command {
 
 		//System.out.println("currentState: " + currentState);
 		count++;
-		
+		if(driveJoystick.isAButton()) {
+			currentState = driveStates.drive;
+		}
 		switch(currentState) {
 			case targetSeek:
 		    	if(!driveJoystick.isYButton() && !driveJoystick.isXButton() && !driveJoystick.isBButton()) {
@@ -138,6 +144,7 @@ public class OperatorControl extends Command {
 					return;
 				}	
 
+				/*
 				if (driveJoystick.isYButton()) {
 					resetDriveBase();
 					currentState = driveStates.targetSeek;
@@ -154,6 +161,7 @@ public class OperatorControl extends Command {
 					}	
 					return;
 				}
+				*/
 
 				if (driveJoystick.isBButton()) {
 					resetDriveBase();
@@ -163,41 +171,48 @@ public class OperatorControl extends Command {
 					return;
 				}
 
-				if (driveJoystick.isLShoulderButton() ) {
-					Robot.turret.zeroLeft=true;
+				if(operatorJoystick.isRShoulderButton()) {
+					Robot.solenoids.extendLoader();
+					Robot.solenoids.foldLoader();
+				}
+				if(operatorJoystick.isLShoulderButton()) {
+					Robot.solenoids.retractLoader();
+					Robot.solenoids.unfoldLoader();
 				}
 
-				/*
-      			  if (driveJoystick.isRShoulderButton() ) {
-					Robot.turret.zeroRight=true;
-				}
-    		    */
-
-				/*
-    			if(driveJoystick.isYButton()) {
-					currentState = driveStates.demo;
-				}
-				*/
-				if(driveJoystick.getPovUp()) {
-					Robot.cargoHandler.runLoadMotor();
+				if(operatorJoystick.isLStickPressButton()) {
+					Robot.turret.zeroHood();
 				} else {
-					Robot.cargoHandler.stopLoadMotor();
+					Robot.turret.moveHood(operatorJoystick.getLeftStickY() / 4);
+				}
+				
+				Robot.cargoHandler.setLoadMotor(0 - operatorJoystick.getTriggers());
+
+				if(operatorJoystick.isAButton()) {
+					Robot.cargoHandler.runShooter();
+				} else {
+					Robot.cargoHandler.stopShooter();
+				}
+				if(operatorJoystick.getPovUp()) {
+					Robot.cargoHandler.runPickup();
+				} else if(operatorJoystick.getPovDown()) {
+					Robot.cargoHandler.runPickupReverse();
+				} else {
+					Robot.cargoHandler.stopPickup();
 				}
         
 				if(driveJoystick.isRShoulderButton()) {
-					if(!gearSwitchPress) {
-						if(gear) {
-							Robot.solenoids.downshift();
-							gear = false;
-						} else {
-							Robot.solenoids.upshift();
-							gear = true;
-						}
-						gearSwitchPress = true;
-					}
-				} else {
-					gearSwitchPress = false;
+					Robot.solenoids.upshift();
 				}
+				if(driveJoystick.isLShoulderButton()) {
+					Robot.solenoids.downshift();
+				}
+				if(operatorJoystick.isRStickPressButton()) {
+					Robot.turret.zeroRotator();
+				} else {
+					Robot.turret.Rotate(0 - operatorJoystick.getRightStickX() / 6);
+				}
+				
 
 				Robot.driveBase.Drive(driveJoystick.getLeftStickY(), driveJoystick.getRightStickX() / 2);
 

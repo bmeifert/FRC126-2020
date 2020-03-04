@@ -21,20 +21,16 @@ import org.usfirst.frc.team126.robot.RobotMap;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 public class Robot extends TimedRobot {
-
 	public static TalonFX left1 = new TalonFX(RobotMap.left1); // Create the hardware that all the subsystems use
 	public static TalonFX right1 = new TalonFX(RobotMap.right1);
 	public static TalonFX left2 = new TalonFX(RobotMap.left2);
 	public static TalonFX right2 = new TalonFX(RobotMap.right2);
-	public static TalonSRX turretRotator = new TalonSRX(RobotMap.turretRotator);
-	//public static TalonSRX turretShooter = new TalonSRX(RobotMap.turretShooter);
-	public static TalonSRX spinnerMotor = new TalonSRX(RobotMap.spinnerMotor);
-
+	//public static TalonSRX spinnerMotor = new TalonSRX(RobotMap.spinnerMotor);
 	public static TalonFX throwerMotor1 = new TalonFX(RobotMap.throwerMotor1);
 	public static TalonFX throwerMotor2 = new TalonFX(RobotMap.throwerMotor2);
 	public static CANSparkMax pickupMotor = new CANSparkMax(RobotMap.pickupMotor, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -43,7 +39,6 @@ public class Robot extends TimedRobot {
 	public static CANSparkMax hoodMotor = new CANSparkMax(RobotMap.hoodMotor, CANSparkMaxLowLevel.MotorType.kBrushless);
 	
 	public static Compressor compressor;
-	public static TalonFX falcon1 = new TalonFX(12);
 	public static VictorSPX victor1 = new VictorSPX(50);
 	public static enum targetTypes{noTarget, throwingTarget, ballTarget, turretOnly, ballLLTarget};
 
@@ -70,6 +65,7 @@ public class Robot extends TimedRobot {
 	public static LimeLight limeLight;
 	public static CargoHandler cargoHandler;
 	public static Solenoids solenoids;
+	public static SupplyCurrentLimitConfiguration currentConfig;
 
 	Color detectedColor;
 
@@ -107,6 +103,30 @@ public class Robot extends TimedRobot {
 		distance = new LidarLite(new DigitalInput(5));
 		tLight = new TargetLight();
 		limeLight = new LimeLight();
+		
+		// Drivebase current limiter
+		currentConfig = new SupplyCurrentLimitConfiguration();
+		currentConfig.currentLimit = 40;
+		currentConfig.enable = true;
+		currentConfig.triggerThresholdCurrent = 60;
+		currentConfig.triggerThresholdTime = 0.1;
+		left1.configSupplyCurrentLimit(currentConfig);
+		left2.configSupplyCurrentLimit(currentConfig);
+		right1.configSupplyCurrentLimit(currentConfig);
+		right2.configSupplyCurrentLimit(currentConfig);
+		left1.configOpenloopRamp(0.5);
+		left2.configOpenloopRamp(0.5);
+		right1.configOpenloopRamp(0.5);
+		right2.configOpenloopRamp(0.5);
+
+		pickupMotor.setControlFramePeriodMs(0);
+		loadMotor.setControlFramePeriodMs(0);
+		turretMotor.setControlFramePeriodMs(0);
+		hoodMotor.setControlFramePeriodMs(0);
+		pickupMotor.setSmartCurrentLimit(80);
+		loadMotor.setSmartCurrentLimit(80);
+		turretMotor.setSmartCurrentLimit(80);
+		hoodMotor.setSmartCurrentLimit(80);
 	
 		InternalData.initGyro();
 		InternalData.resetGyro();
@@ -134,9 +154,8 @@ public class Robot extends TimedRobot {
 	
 	@Override
 	public void robotPeriodic() { // Runs periodically regardless of robot state
-		SmartDashboard.putNumber("Match Time Left", InternalData.getMatchTime()); // Provide the drivers all the cool data
 		SmartDashboard.putNumber("Voltage", InternalData.getVoltage());
-		SmartDashboard.putBoolean("Enabled", InternalData.isEnabled());
+		SmartDashboard.putNumber("Turret Encoder", turret.getRotatorEncoder());
 		voltageThreshold = SmartDashboard.getNumber("Voltage Threshold", voltageThreshold);
 	}
 

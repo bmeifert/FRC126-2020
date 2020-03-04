@@ -6,18 +6,22 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 
 public class Solenoids extends Subsystem {
-	Solenoid loaderLeft = new Solenoid(2);
-	Solenoid loaderRight = new Solenoid(3);
+	DoubleSolenoid loaderFolder = new DoubleSolenoid(2,3);
+	DoubleSolenoid loaderExtender = new DoubleSolenoid(4,5);
 	DoubleSolenoid gearbox = new DoubleSolenoid(0,1);
 	public void initDefaultCommand() {
 	}
 	public void extendLoader() {
-		loaderLeft.set(true);
-		loaderRight.set(true);
+		loaderExtender.set(DoubleSolenoid.Value.kReverse);
 	}
 	public void retractLoader() {
-		loaderLeft.set(false);
-		loaderRight.set(false);
+		loaderExtender.set(DoubleSolenoid.Value.kForward);
+	}
+	public void foldLoader() {
+		loaderFolder.set(DoubleSolenoid.Value.kReverse);
+	}
+	public void unfoldLoader() {
+		loaderFolder.set(DoubleSolenoid.Value.kForward);
 	}
 	public void upshift() {
 		gearbox.set(DoubleSolenoid.Value.kReverse);

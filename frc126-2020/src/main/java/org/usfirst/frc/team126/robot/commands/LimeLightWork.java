@@ -117,7 +117,7 @@ public class LimeLightWork extends Command {
             iter++;
             centeredCount=0;
             shootNow=false;
-            Robot.limeLight.setllTurretTarget(Robot.turret.getEncoder());
+            Robot.limeLight.setllTurretTarget(Robot.turret.getRotatorEncoder());
 
             if (iter > 10 && iter < 350) {
                 // Try turning until we pick up a target
