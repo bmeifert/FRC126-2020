@@ -16,6 +16,7 @@ public class Turret extends Subsystem {
 	static CANEncoder rotatorEncoder = new CANEncoder(Robot.turretMotor);
 	static CANEncoder hoodEncoder = new CANEncoder(Robot.hoodMotor);
 	static int shooterGrace = 0;
+	double mDist = 0;
 	static boolean shooterOn = false;
 	
 	/************************************************************************
@@ -73,6 +74,26 @@ public class Turret extends Subsystem {
 	public void zeroHood() {
 		Robot.hoodMotor.set(-0.25);
 		hoodEncoder.setPosition(0);
+	}
+	public void followHood() {
+		mDist = (mDist * 9 + Robot.distance.measureDistance()) / 10;
+		double targetHood = 0.5 + mDist / 100;
+		double speed = 0;
+		if(Robot.turret.getHoodEncoder() > targetHood + 0.5) {
+			speed = -0.25;
+		} else if(Robot.turret.getHoodEncoder() < targetHood - 0.5) {
+			speed = 0.25;
+		} else {
+			Robot.turret.moveHood(0);
+		}
+		if(getHoodEncoder() < 0.5 && speed < 0) {
+			speed = 0;
+		}
+		if(getHoodEncoder() > 8 && speed > 0) {
+			speed = 0;
+		}
+		Robot.hoodMotor.set(speed);
+
 	}
 
 	/************************************************************************

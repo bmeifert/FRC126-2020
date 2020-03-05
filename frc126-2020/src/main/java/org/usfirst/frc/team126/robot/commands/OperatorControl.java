@@ -182,6 +182,8 @@ public class OperatorControl extends Command {
 
 				if(operatorJoystick.isLStickPressButton()) {
 					Robot.turret.zeroHood();
+				} else if(operatorJoystick.getPovRight()) {
+					Robot.turret.followHood();
 				} else {
 					Robot.turret.moveHood(operatorJoystick.getLeftStickY() / 4);
 				}

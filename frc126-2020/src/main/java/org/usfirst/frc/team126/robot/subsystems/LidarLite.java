@@ -35,7 +35,6 @@ public class LidarLite extends Subsystem {
     }
 
     public void initDefaultCommand() {
-        setDefaultCommand(new DistanceMeasure());
     }
 
     /**

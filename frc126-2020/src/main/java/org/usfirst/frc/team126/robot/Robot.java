@@ -60,7 +60,6 @@ public class Robot extends TimedRobot {
 	public static UsbCamera driveCam;
 	public static VideoSink server;
 	public static ColorSensorV3 colorDetector;
-	public static double voltageThreshold;
 	public static Vision vision;
 	public static LidarLite distance;
 	public static TargetLight tLight;
@@ -140,13 +139,10 @@ public class Robot extends TimedRobot {
 		InternalData.resetGyro();
 		ColorSpinner.Setup();
 		Turret.Setup();
-
-		voltageThreshold = 10;
 		
 		OperatorControl.currentState = driveStates.drive;
 		//OperatorControl.currentState = driveStates.targetSeek;
 
-		SmartDashboard.putNumber("Voltage Threshold", voltageThreshold);
 		autoPosition.addOption("Default (Center)", 0);
 		autoPosition.addOption("Left", 1);
 		autoPosition.addOption("Right", 2);
@@ -165,8 +161,8 @@ public class Robot extends TimedRobot {
 	public void robotPeriodic() { // Runs periodically regardless of robot state
 		SmartDashboard.putNumber("Turret Encoder", turret.getRotatorEncoder());
 		SmartDashboard.putNumber("Drivebase RPM", driveBase.getMeanRPM());
+		SmartDashboard.putNumber("Distance Sensor: ", Robot.distance.measureDistance());
 		isAutoTransmission = SmartDashboard.getBoolean("Automatic Transmission", false);
-		voltageThreshold = SmartDashboard.getNumber("Voltage Threshold", voltageThreshold);
 	}
 
 	@Override
