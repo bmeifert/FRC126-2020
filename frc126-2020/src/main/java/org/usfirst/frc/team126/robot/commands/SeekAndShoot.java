@@ -50,10 +50,10 @@ public class SeekAndShoot extends Command {
                         turretLocked = true;
                     }
                 }
-                if(Robot.turret.getHoodEncoder() > targetHood + 0.25) {
-                    Robot.turret.moveHood(-0.3);
-                } else if(Robot.turret.getHoodEncoder() < targetHood - 0.25) {
-                    Robot.turret.moveHood(0.3);
+                if(Robot.turret.getHoodEncoder() > targetHood + 0.5) {
+                    Robot.turret.moveHood(-0.25);
+                } else if(Robot.turret.getHoodEncoder() < targetHood - 0.5) {
+                    Robot.turret.moveHood(0.25);
                 } else {
                     Robot.turret.moveHood(0);
                     hoodLocked = true;
@@ -81,9 +81,9 @@ public class SeekAndShoot extends Command {
                 Robot.cargoHandler.runLoadMotor();
 
                 counter++;
-                if(counter > 200) {
+                if(counter > 100) {
                     Robot.cargoHandler.runPickup();
-                    if(counter > 400) {
+                    if(counter > 200) {
                         counter = 0;
                         seekState = seekStates.done;
                     }
@@ -96,6 +96,8 @@ public class SeekAndShoot extends Command {
                 Robot.cargoHandler.stopPickup();
                 Robot.cargoHandler.stopShooter();
                 isDone = true;
+                Robot.solenoids.extendLoader();
+                Robot.solenoids.foldLoader();
             break;
         }
     }

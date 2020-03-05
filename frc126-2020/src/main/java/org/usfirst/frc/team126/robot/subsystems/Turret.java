@@ -39,6 +39,9 @@ public class Turret extends Subsystem {
 	public double getRotatorEncoder(){
 		return rotatorEncoder.getPosition();
 	}
+	public void setRotatorEncoder(double upos){
+		rotatorEncoder.setPosition(upos);
+	}
 	public double getHoodEncoder() {
 		return hoodEncoder.getPosition();
 	}
@@ -68,7 +71,7 @@ public class Turret extends Subsystem {
 		Robot.hoodMotor.set(speed);
 	}
 	public void zeroHood() {
-		Robot.hoodMotor.set(-0.2);
+		Robot.hoodMotor.set(-0.25);
 		hoodEncoder.setPosition(0);
 	}
 

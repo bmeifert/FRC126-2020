@@ -9,12 +9,11 @@ import edu.wpi.first.wpilibj.command.Command;
  *
  */
 public class ZeroTurret extends Command {
-    double startPos;
+    double startPos = 20;
     boolean isDone = false;
-    public ZeroTurret(double pos) {
+    public ZeroTurret() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-        startPos = pos;
     }
 
     // Called just before this Command runs the first time
@@ -23,19 +22,19 @@ public class ZeroTurret extends Command {
         Robot.turret.Rotate(0);
         Robot.turret.moveHood(0);
         Robot.turret.zeroRotator();
+        Robot.turret.setRotatorEncoder(startPos);
         isDone = false;
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         Robot.driveBase.Drive(0, 0);
-        if(Robot.turret.getRotatorEncoder() > startPos + 0.1) {
+        if(Robot.turret.getRotatorEncoder() > 0.1) {
             Robot.turret.Rotate(-0.1);
-        } else if(Robot.turret.getRotatorEncoder() < startPos - 0.1) {
+        } else if(Robot.turret.getRotatorEncoder() < -0.1) {
             Robot.turret.Rotate(0.1);
         } else {
             Robot.turret.Rotate(0);
-            Robot.turret.zeroRotator();
             isDone = true;
         }
     }

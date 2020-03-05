@@ -28,7 +28,6 @@ public class TargetLight extends Subsystem {
 		} else {
 			Robot.victor1.set(ControlMode.PercentOutput, 0);
 		}
-		SmartDashboard.putBoolean("targetLight", targetLightOn);
 	}
 
 	/************************************************************************

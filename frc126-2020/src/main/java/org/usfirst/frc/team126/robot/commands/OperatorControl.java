@@ -20,7 +20,7 @@ public class OperatorControl extends Command {
 	static boolean gear = false;
 
   	static int count=0;
-	static int targetLightCount=0;
+	static boolean TargetLightToggleOn = false;
 
 	public OperatorControl() {
 		// Use requires() here to declare subsystem dependencies
@@ -200,13 +200,22 @@ public class OperatorControl extends Command {
 				} else {
 					Robot.cargoHandler.stopPickup();
 				}
+				if(Robot.isAutoTransmission) {
+					if(Robot.driveBase.getMeanRPM() < 1000) {
+						Robot.solenoids.downshift();
+					} else if(Robot.driveBase.getMeanRPM() > 5000) {
+						Robot.solenoids.upshift();
+					}
+				} else {
+					if(driveJoystick.isRShoulderButton()) {
+						Robot.solenoids.upshift();
+					}
+					if(driveJoystick.isLShoulderButton()) {
+						Robot.solenoids.downshift();
+					}
+				}
         
-				if(driveJoystick.isRShoulderButton()) {
-					Robot.solenoids.upshift();
-				}
-				if(driveJoystick.isLShoulderButton()) {
-					Robot.solenoids.downshift();
-				}
+
 				if(operatorJoystick.isRStickPressButton()) {
 					Robot.turret.zeroRotator();
 				} else {
@@ -216,13 +225,16 @@ public class OperatorControl extends Command {
 
 				Robot.driveBase.Drive(driveJoystick.getLeftStickY(), driveJoystick.getRightStickX() / 2);
 
-				if (driveJoystick.isAButton()) {
-				    // Toggle the target light
-					if (count > targetLightCount + 25) {
+				if (operatorJoystick.getPovLeft()) {
+					if (TargetLightToggleOn) {
+						
+					} else {
+						TargetLightToggleOn = true;
 						Robot.tLight.toggleTargetLight();
-						targetLightCount = count;
-					}	
-				}	
+					}
+				} else {
+					TargetLightToggleOn = false;
+				}
 			break;
 		}
 

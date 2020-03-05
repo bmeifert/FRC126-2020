@@ -21,6 +21,7 @@ import org.usfirst.frc.team126.robot.RobotMap;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
@@ -48,6 +49,7 @@ public class Robot extends TimedRobot {
 	public static targetTypes trackTarget = Robot.targetTypes.noTarget;
 	public static double robotTurn = 0;
 	public static double robotDrive = 0;
+	public static boolean isAutoTransmission = false;
 	
 	public static Command autonomous; // Create the subsystems that control the hardware
 	public static WestCoastDrive driveBase;
@@ -118,6 +120,12 @@ public class Robot extends TimedRobot {
 		left2.configOpenloopRamp(0.5);
 		right1.configOpenloopRamp(0.5);
 		right2.configOpenloopRamp(0.5);
+		left1.setNeutralMode(NeutralMode.Brake);
+		left2.setNeutralMode(NeutralMode.Brake);
+		right1.setNeutralMode(NeutralMode.Brake);
+		right2.setNeutralMode(NeutralMode.Brake);
+		throwerMotor1.setNeutralMode(NeutralMode.Coast);
+		throwerMotor2.setNeutralMode(NeutralMode.Coast);
 
 		pickupMotor.setControlFramePeriodMs(0);
 		loadMotor.setControlFramePeriodMs(0);
@@ -149,13 +157,15 @@ public class Robot extends TimedRobot {
 		autoFunction.addOption("Full", 2);
 		SmartDashboard.putData("AutoFunction", autoFunction);
 
+		SmartDashboard.putBoolean("Automatic Transmission", false);
 		Log.print(0, "Robot", "Robot Init Completed");
 	}
 	
 	@Override
 	public void robotPeriodic() { // Runs periodically regardless of robot state
-		SmartDashboard.putNumber("Voltage", InternalData.getVoltage());
 		SmartDashboard.putNumber("Turret Encoder", turret.getRotatorEncoder());
+		SmartDashboard.putNumber("Drivebase RPM", driveBase.getMeanRPM());
+		isAutoTransmission = SmartDashboard.getBoolean("Automatic Transmission", false);
 		voltageThreshold = SmartDashboard.getNumber("Voltage Threshold", voltageThreshold);
 	}
 
