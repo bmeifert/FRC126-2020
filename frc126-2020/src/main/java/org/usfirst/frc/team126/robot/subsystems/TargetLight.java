@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class TargetLight extends Subsystem {
 	boolean targetLightOn=false;
+	boolean targetLightDisabled = false;
 
 	/************************************************************************
 	 ************************************************************************/
@@ -24,7 +25,12 @@ public class TargetLight extends Subsystem {
 
 	public void setLight() {
 		if (targetLightOn) {
-			Robot.victor1.set(ControlMode.PercentOutput, 1);
+			if(targetLightDisabled) {
+				Robot.victor1.set(ControlMode.PercentOutput, 0);
+			} else {
+				Robot.victor1.set(ControlMode.PercentOutput, 1);
+			}
+
 		} else {
 			Robot.victor1.set(ControlMode.PercentOutput, 0);
 		}
@@ -39,5 +45,11 @@ public class TargetLight extends Subsystem {
 	   } else {
            	targetLightOn=true;
 	   }
+	}
+	public void disableTargetLight() {
+		targetLightDisabled = true;
+	}
+	public void enableTargetLight() {
+		targetLightDisabled = false;
 	}
 }

@@ -160,6 +160,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotPeriodic() { // Runs periodically regardless of robot state
 		SmartDashboard.putNumber("Turret Encoder", turret.getRotatorEncoder());
+		SmartDashboard.putNumber("Hood Encoder", turret.getHoodEncoder());
 		SmartDashboard.putNumber("Drivebase RPM", driveBase.getMeanRPM());
 		SmartDashboard.putNumber("Distance Sensor: ", Robot.distance.measureDistance());
 		isAutoTransmission = SmartDashboard.getBoolean("Automatic Transmission", false);

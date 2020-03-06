@@ -76,13 +76,20 @@ public class Turret extends Subsystem {
 		hoodEncoder.setPosition(0);
 	}
 	public void followHood() {
+		/*
+		* 6.1 @ 700cm
+		* 5.1 @ 600cm
+		* 4.6 @ 500cm
+		* 4.2 @ 400cm
+		* 3.6 @ 300cm
+		*/
 		mDist = (mDist * 9 + Robot.distance.measureDistance()) / 10;
-		double targetHood = 0.5 + mDist / 100;
+		double targetHood = 1.70 + mDist * 0.0059;
 		double speed = 0;
-		if(Robot.turret.getHoodEncoder() > targetHood + 0.5) {
-			speed = -0.25;
-		} else if(Robot.turret.getHoodEncoder() < targetHood - 0.5) {
-			speed = 0.25;
+		if(Robot.turret.getHoodEncoder() > targetHood + 0.15) {
+			speed = -0.15;
+		} else if(Robot.turret.getHoodEncoder() < targetHood - 0.15) {
+			speed = 0.15;
 		} else {
 			Robot.turret.moveHood(0);
 		}
@@ -93,7 +100,6 @@ public class Turret extends Subsystem {
 			speed = 0;
 		}
 		Robot.hoodMotor.set(speed);
-
 	}
 
 	/************************************************************************

@@ -18,7 +18,7 @@ public class OperatorControl extends Command {
 
 	static boolean gearSwitchPress = false;
 	static boolean gear = false;
-
+	static int iShooterCount = 0;
   	static int count=0;
 	static boolean TargetLightToggleOn = false;
 
@@ -135,6 +135,7 @@ public class OperatorControl extends Command {
 			break;
 
 			default:
+			/*
 				if(driveJoystick.isXButton()) {
 					resetDriveBase();
 					currentState = driveStates.targetSeek;
@@ -143,7 +144,7 @@ public class OperatorControl extends Command {
 					Robot.limeLight.setLED(true);
 					return;
 				}	
-
+				*/
 				/*
 				if (driveJoystick.isYButton()) {
 					resetDriveBase();
@@ -162,7 +163,7 @@ public class OperatorControl extends Command {
 					return;
 				}
 				*/
-
+				/*
 				if (driveJoystick.isBButton()) {
 					resetDriveBase();
 					currentState = driveStates.targetSeek;
@@ -170,6 +171,7 @@ public class OperatorControl extends Command {
 					Robot.limeLight.setLED(true);
 					return;
 				}
+				*/
 
 				if(operatorJoystick.isRShoulderButton()) {
 					Robot.solenoids.extendLoader();
@@ -180,21 +182,47 @@ public class OperatorControl extends Command {
 					Robot.solenoids.unfoldLoader();
 				}
 
-				if(operatorJoystick.isLStickPressButton()) {
-					Robot.turret.zeroHood();
-				} else if(operatorJoystick.getPovRight()) {
-					Robot.turret.followHood();
+				if(operatorJoystick.getRightTrigger() > 0.5) {
+					if(iShooterCount < 50) {
+						Robot.tLight.disableTargetLight();
+						Robot.turret.followHood();
+						Robot.cargoHandler.runShooter();
+					} else {
+						Robot.tLight.enableTargetLight();
+						Robot.cargoHandler.runShooter();
+						Robot.cargoHandler.runLoadMotor();
+					}
+					iShooterCount++;
 				} else {
-					Robot.turret.moveHood(operatorJoystick.getLeftStickY() / 4);
-				}
-				
-				Robot.cargoHandler.setLoadMotor(0 - operatorJoystick.getTriggers());
+					if(operatorJoystick.isAButton()) {
+						Robot.cargoHandler.runShooter();
+					} else {
+						Robot.cargoHandler.stopShooter();
+					}
+					
+					if(operatorJoystick.isLStickPressButton()) {
+						Robot.turret.zeroHood();
+						Robot.tLight.enableTargetLight();
+					} else if(operatorJoystick.getPovRight()) {
+						Robot.turret.followHood();
+						Robot.tLight.disableTargetLight();
+					} else {
+						Robot.tLight.enableTargetLight();
+						Robot.turret.moveHood(operatorJoystick.getLeftStickY() / 4);
+					}
 
-				if(operatorJoystick.isAButton()) {
-					Robot.cargoHandler.runShooter();
-				} else {
-					Robot.cargoHandler.stopShooter();
+					if(operatorJoystick.isXButton()) {
+						Robot.cargoHandler.runLoadMotor();
+					} else if(operatorJoystick.isBButton()) {
+						Robot.cargoHandler.runLoadMotorReverse();
+					} else {
+						Robot.cargoHandler.stopLoadMotor();
+					}
+					iShooterCount = 0;
 				}
+
+
+
 				if(operatorJoystick.getPovUp()) {
 					Robot.cargoHandler.runPickup();
 				} else if(operatorJoystick.getPovDown()) {
@@ -217,7 +245,6 @@ public class OperatorControl extends Command {
 					}
 				}
         
-
 				if(operatorJoystick.isRStickPressButton()) {
 					Robot.turret.zeroRotator();
 				} else {
