@@ -13,15 +13,12 @@ public class SeekAndShoot extends Command {
     public seekStates seekState = seekStates.seek;
     public int counter = 0;
     public double targetRotator;
-    public double targetHood;
     boolean isDone = false;
     boolean turretLocked = false;
-    boolean hoodLocked = false;
-    public SeekAndShoot(double tr, double th) {
+    public SeekAndShoot(double tr) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
         targetRotator = tr;
-        targetHood = th;
     }
 
     // Called just before this Command runs the first time
@@ -32,7 +29,6 @@ public class SeekAndShoot extends Command {
         counter = 0;
         isDone = false;
         turretLocked = false;
-        hoodLocked = false;
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -50,22 +46,15 @@ public class SeekAndShoot extends Command {
                         turretLocked = true;
                     }
                 }
-                if(Robot.turret.getHoodEncoder() > targetHood + 0.5) {
-                    Robot.turret.moveHood(-0.25);
-                } else if(Robot.turret.getHoodEncoder() < targetHood - 0.5) {
-                    Robot.turret.moveHood(0.25);
-                } else {
-                    Robot.turret.moveHood(0);
-                    hoodLocked = true;
-                }
-                if(hoodLocked && turretLocked) {
+                if(turretLocked) {
                     seekState = seekStates.spinup;
                 }
             break;
             case spinup:
                 Robot.driveBase.Drive(0, 0);
                 Robot.turret.Rotate(0);
-                Robot.turret.moveHood(0);
+                Robot.tLight.disableTargetLight();
+                Robot.turret.followHood();
                 Robot.cargoHandler.runShooter();
                 counter++;
                 if(counter > 50) {
@@ -79,7 +68,7 @@ public class SeekAndShoot extends Command {
                 Robot.turret.moveHood(0);
                 Robot.cargoHandler.runShooter();
                 Robot.cargoHandler.runLoadMotor();
-
+                Robot.tLight.enableTargetLight();
                 counter++;
                 if(counter > 100) {
                     Robot.cargoHandler.runPickup();
@@ -87,7 +76,6 @@ public class SeekAndShoot extends Command {
                         counter = 0;
                         seekState = seekStates.done;
                     }
-
                 }
             break;
             case done:
